@@ -30,6 +30,12 @@ let resorcesStatus = {
 
 }
 
+const eventStatus = {
+  isLoading: false,
+  isError: false,
+  eventData: []
+};
+
 let filterStatus = {
   isLoading: false,
   isEror: false,
@@ -38,396 +44,397 @@ let filterStatus = {
 };
 
 function setIntialData() {
-  eventData = [
-    {
-      resourceId: "1",
-      start: new Date("2025-08-13T11:45:00+05:30"),
-      end: new Date("2025-08-14T13:00:00+05:30"),
-      id: "123",
-      type: "Full",
-      slotEventOverlap: true,
-      editable: false,
-      durationEditable: false,
-      eventStartEditable: false,
-      className: ["ec-event-active"],
-      extendedProps: {
-        employeeID: "100123",
-        employeeName: "Diana Alexiou",
-        address: "12 King Street, Newtown NSW 2042",
-        careerType: "Care Type xyz",
-        bookingStatus: "Scheduled",
-        region: "Bankstown",
-        eventType: "Care Worker",
-      },
-    },
-    {
-      resourceId: "1",
-      start: new Date("2025-08-13T11:55:00+05:30"),
-      end: new Date("2025-08-13T13:00:00+05:30"),
-      id: "123",
-      type: "Full",
-      slotEventOverlap: true,
-      editable: false,
-      durationEditable: false,
-      eventStartEditable: false,
-      className: ["ec-event-active"],
-      extendedProps: {
-        employeeID: "100123",
-        employeeName: "Diana Alexiou",
-        address: "12 King Street, Newtown NSW 2042",
-        careerType: "Care Type xyz",
-        bookingStatus: "Scheduled",
-        region: "Bankstown",
-        eventType: "Care Worker",
-      },
-    },
-    {
-      resourceId: "2",
-      start: new Date("2025-08-13T12:00:00+05:30"),
-      end: new Date("2025-08-13T13:00:00+05:30"),
-      editable: false,
-      durationEditable: false,
-      eventStartEditable: false,
-      className: ["ec-event-active"],
-      extendedProps: {
-        employeeID: "100124",
-        employeeName: "Olivia Clarke",
-        address: "100 Elizabeth St, Sydney NSW",
-        careerType: "Care Type xyz",
-        bookingStatus: "Scheduled",
-        region: "Beacon - Blacktown",
-        eventType: "Care Worker",
-      },
-    },
-    {
-      resourceId: "1",
-      start: new Date("2025-08-13T09:20:00+05:30"),
-      end: new Date("2025-08-13T11:00:00+05:30"),
-      editable: false,
-      durationEditable: false,
-      eventStartEditable: false,
-      className: ["ec-event-active"],
-      extendedProps: {
-        employeeID: "100125",
-        employeeName: "Liam Bennett",
-        address: "34 Pitt Street, Redfern NSW",
-        careerType: "Care Type xyz",
-        bookingStatus: "Completed",
-        region: "Bowral",
-        eventType: "Care Worker",
-      },
-    },
-    {
-      resourceId: "1",
-      start: new Date("2025-08-13T10:35:00+05:30"),
-      end: new Date("2025-08-13T15:00:00+05:30"),
-      editable: false,
-      durationEditable: false,
-      eventStartEditable: false,
-      className: ["ec-event-active"],
-      extendedProps: {
-        employeeID: "100125",
-        employeeName: "Liam Bennett",
-        address: "34 Pitt Street, Redfern NSW",
-        careerType: "Care Type xyz",
-        bookingStatus: "Completed",
-        region: "Bowral",
-        eventType: "Care Worker",
-      },
-    },
-    {
-      resourceId: "18",
-      start: new Date("2025-08-13T13:45:00+05:30"),
-      end: new Date("2025-08-13T15:00:00+05:30"),
-      editable: false,
-      durationEditable: false,
-      eventStartEditable: false,
-      className: ["ec-event-active"],
-      extendedProps: {
-        employeeID: "100125",
-        employeeName: "Liam Bennett",
-        address: "34 Pitt Street, Redfern NSW",
-        careerType: "Care Type xyz",
-        bookingStatus: "Completed",
-        region: "Bowral",
-        eventType: "Care Worker",
-      },
-    },
-    {
-      resourceId: "4",
-      start: new Date("2025-08-13T01:45:00+05:30"),
-      end: new Date("2025-08-13T12:45:00+05:30"),
-      editable: false,
-      durationEditable: false,
-      eventStartEditable: false,
-      className: ["ec-event-active"],
-      extendedProps: {
-        employeeID: "100126",
-        employeeName: "Mia Walker",
-        address: "77 George St, The Rocks NSW",
-        careerType: "Care Type xyz",
-        bookingStatus: "Completed",
-        region: "Cityeast",
-        eventType: "Care Worker",
-      },
-    },
-    {
-      resourceId: "5",
-      start: new Date("2025-08-13T10:00:00+05:30"),
-      end: new Date("2025-08-13T11:00:00+05:30"),
-      editable: false,
-      durationEditable: false,
-      eventStartEditable: false,
-      className: ["ec-event-active"],
-      extendedProps: {
-        employeeID: "100127",
-        employeeName: "Ethan Johnson",
-        address: "22 Oxford St, Darlinghurst NSW",
-        careerType: "Care Type xyz",
-        bookingStatus: "Completed",
-        region: "Dural",
-        eventType: "Care Worker",
-      },
-    },
-    {
-      resourceId: "6",
-      start: new Date("2025-08-13T08:00:00+05:30"),
-      end: new Date("2025-08-13T09:30:00+05:30"),
-      editable: false,
-      durationEditable: false,
-      eventStartEditable: false,
-      className: ["ec-event-active"],
-      extendedProps: {
-        employeeID: "100128",
-        employeeName: "Chloe Walker",
-        address: "5 High Street, Parramatta NSW",
-        careerType: "Care Type A",
-        bookingStatus: "Scheduled",
-        region: "Hawkesbury",
-        eventType: "Care Worker",
-      },
-    },
-    {
-      resourceId: "7",
-      start: new Date("2025-08-13T10:00:00+05:30"),
-      end: new Date("2025-08-13T11:15:00+05:30"),
-      editable: false,
-      durationEditable: false,
-      eventStartEditable: false,
-      className: ["ec-event-active"],
-      extendedProps: {
-        employeeID: "100129",
-        employeeName: "Noah Carter",
-        address: "88 Victoria Rd, Rydalmere NSW",
-        careerType: "Care Type B",
-        bookingStatus: "Scheduled",
-        region: "Beacon - Blacktown",
-        eventType: "Domestic Assistance Worker",
-      },
-    },
-    {
-      resourceId: "8",
-      start: new Date("2025-08-13T11:30:00+05:30"),
-      end: new Date("2025-08-13T13:00:00+05:30"),
-      editable: false,
-      durationEditable: false,
-      eventStartEditable: false,
-      className: ["ec-event-active"],
-      extendedProps: {
-        employeeID: "100130",
-        employeeName: "Grace Foster",
-        address: "33 Norton St, Leichhardt NSW",
-        careerType: "Care Type C",
-        bookingStatus: "Completed",
-        region: "Bowral",
-        eventType: "Domestic Assistance Worker",
-      },
-    },
-    {
-      resourceId: "9",
-      start: new Date("2025-08-13T13:15:00+05:30"),
-      end: new Date("2025-08-13T14:45:00+05:30"),
-      editable: false,
-      durationEditable: false,
-      eventStartEditable: false,
-      className: ["ec-event-active"],
-      extendedProps: {
-        employeeID: "100131",
-        employeeName: "Oscar Hughes",
-        address: "50 King St, Mascot NSW",
-        careerType: "Care Type D",
-        bookingStatus: "Completed",
-        region: "Cityeast",
-        eventType: "Domestic Assistance Worker",
-      },
-    },
-    {
-      resourceId: "10",
-      start: new Date("2025-08-13T09:00:00+05:30"),
-      end: new Date("2025-08-13T10:30:00+05:30"),
-      editable: false,
-      durationEditable: false,
-      eventStartEditable: false,
-      className: ["ec-event-active"],
-      extendedProps: {
-        employeeID: "100132",
-        employeeName: "Liam Carter",
-        address: "120 George St, Liverpool NSW",
-        careerType: "Care Type A",
-        bookingStatus: "Scheduled",
-        region: "Dural",
-        eventType: "Domestic Assistance Worker",
-      },
-    },
-    {
-      resourceId: "11",
-      start: new Date("2025-08-13T14:00:00+05:30"),
-      end: new Date("2025-08-13T15:00:00+05:30"),
-      editable: false,
-      durationEditable: false,
-      eventStartEditable: false,
-      className: ["ec-event-active"],
-      extendedProps: {
-        employeeID: "100133",
-        employeeName: "Ava Reynolds",
-        address: "78 Campbell St, Surry Hills NSW",
-        careerType: "Care Type B",
-        bookingStatus: "Completed",
-        region: "Hawkesbury",
-        eventType: "Domestic Assistance Worker",
-      },
-    },
-    {
-      resourceId: "12",
-      start: new Date("2025-08-13T10:45:00+05:30"),
-      end: new Date("2025-08-13T12:00:00+05:30"),
-      editable: false,
-      durationEditable: false,
-      eventStartEditable: false,
-      className: ["ec-event-active"],
-      extendedProps: {
-        employeeID: "100134",
-        employeeName: "Freya Dawson",
-        address: "101 Queen St, Beaconsfield NSW",
-        careerType: "Care Type C",
-        bookingStatus: "Scheduled",
-        region: "Hawkesbury",
-        eventType: "Village Care Worker",
-      },
-    },
-    {
-      resourceId: "13",
-      start: new Date("2025-08-13T08:30:00+05:30"),
-      end: new Date("2025-08-13T09:30:00+05:30"),
-      editable: false,
-      durationEditable: false,
-      eventStartEditable: false,
-      className: ["ec-event-active"],
-      extendedProps: {
-        employeeID: "100135",
-        employeeName: "Sienna Brooks",
-        address: "43 Main St, Zetland NSW",
-        careerType: "Care Type D",
-        bookingStatus: "Scheduled",
-        region: "Dural",
-        eventType: "Village Care Worker",
-      },
-    },
-    {
-      resourceId: "14",
-      start: new Date("2025-08-13T15:00:00+05:30"),
-      end: new Date("2025-08-13T16:30:00+05:30"),
-      editable: false,
-      durationEditable: false,
-      eventStartEditable: false,
-      className: ["ec-event-active"],
-      extendedProps: {
-        employeeID: "100136",
-        employeeName: "Leo Murphy",
-        address: "67 Bridge Rd, Glebe NSW",
-        careerType: "Care Type A",
-        bookingStatus: "Completed",
-        region: "Cityeast",
-        eventType: "Village Care Worker",
-      },
-    },
-    {
-      resourceId: "15",
-      start: new Date("2025-08-13T13:00:00+05:30"),
-      end: new Date("2025-08-13T14:00:00+05:30"),
-      editable: false,
-      durationEditable: false,
-      eventStartEditable: false,
-      className: ["ec-event-active"],
-      extendedProps: {
-        employeeID: "100137",
-        employeeName: "Lily Morgan",
-        address: "19 Stanley St, Darlinghurst NSW",
-        careerType: "Care Type B",
-        bookingStatus: "Scheduled",
-        region: "Bowral",
-        eventType: "Village Care Worker",
-      },
-    },
-    {
-      resourceId: "16",
-      start: new Date("2025-08-13T11:15:00+05:30"),
-      end: new Date("2025-08-13T12:45:00+05:30"),
-      editable: false,
-      durationEditable: false,
-      eventStartEditable: false,
-      className: ["ec-event-active"],
-      extendedProps: {
-        employeeID: "100138",
-        employeeName: "Elliot Brooks",
-        address: "55 Bay St, Botany NSW",
-        careerType: "Care Type C",
-        bookingStatus: "Completed",
-        region: "Beacon - Blacktown",
-        eventType: "Village Care Worker",
-      },
-    },
-    {
-      resourceId: "17",
-      start: new Date("2025-08-13T08:45:00+05:30"),
-      end: new Date("2025-08-13T10:00:00+05:30"),
-      editable: false,
-      durationEditable: false,
-      eventStartEditable: false,
-      className: ["ec-event-active"],
-      extendedProps: {
-        employeeID: "100139",
-        employeeName: "Mason Green",
-        address: "66 Clarence St, Sydney NSW",
-        careerType: "Care Type D",
-        bookingStatus: "Scheduled",
-        region: "Bankstown",
-        eventType: "Village Care Worker",
-      },
-    },
-    {
-      resourceId: "18",
-      start: new Date("2025-08-13T14:15:00+05:30"),
-      end: new Date("2025-08-13T15:30:00+05:30"),
-      editable: false,
-      durationEditable: false,
-      eventStartEditable: false,
-      className: ["ec-event-active"],
-      extendedProps: {
-        employeeID: "100140",
-        employeeName: "Isla Matthews",
-        address: "20 Regent St, Chippendale NSW",
-        careerType: "Care Type A",
-        bookingStatus: "Completed",
-        region: "Bankstown",
-        eventType: "Domestic Assistance Worker",
-      },
-    },
-  ];
+  // eventData = [
+  //   {
+  //     resourceId: "1",
+  //     start: new Date("2025-08-13T11:45:00+05:30"),
+  //     end: new Date("2025-08-14T13:00:00+05:30"),
+  //     id: "123",
+  //     type: "Full",
+  //     slotEventOverlap: true,
+  //     editable: false,
+  //     durationEditable: false,
+  //     eventStartEditable: false,
+  //     className: ["ec-event-active"],
+  //     extendedProps: {
+  //       employeeID: "100123",
+  //       employeeName: "Diana Alexiou",
+  //       address: "12 King Street, Newtown NSW 2042",
+  //       careerType: "Care Type xyz",
+  //       bookingStatus: "Scheduled",
+  //       region: "Bankstown",
+  //       eventType: "Care Worker",
+  //     },
+  //   },
+  //   {
+  //     resourceId: "1",
+  //     start: new Date("2025-08-13T11:55:00+05:30"),
+  //     end: new Date("2025-08-13T13:00:00+05:30"),
+  //     id: "123",
+  //     type: "Full",
+  //     slotEventOverlap: true,
+  //     editable: false,
+  //     durationEditable: false,
+  //     eventStartEditable: false,
+  //     className: ["ec-event-active"],
+  //     extendedProps: {
+  //       employeeID: "100123",
+  //       employeeName: "Diana Alexiou",
+  //       address: "12 King Street, Newtown NSW 2042",
+  //       careerType: "Care Type xyz",
+  //       bookingStatus: "Scheduled",
+  //       region: "Bankstown",
+  //       eventType: "Care Worker",
+  //     },
+  //   },
+  //   {
+  //     resourceId: "2",
+  //     start: new Date("2025-08-13T12:00:00+05:30"),
+  //     end: new Date("2025-08-13T13:00:00+05:30"),
+  //     editable: false,
+  //     durationEditable: false,
+  //     eventStartEditable: false,
+  //     className: ["ec-event-active"],
+  //     extendedProps: {
+  //       employeeID: "100124",
+  //       employeeName: "Olivia Clarke",
+  //       address: "100 Elizabeth St, Sydney NSW",
+  //       careerType: "Care Type xyz",
+  //       bookingStatus: "Scheduled",
+  //       region: "Beacon - Blacktown",
+  //       eventType: "Care Worker",
+  //     },
+  //   },
+  //   {
+  //     resourceId: "1",
+  //     start: new Date("2025-08-13T09:20:00+05:30"),
+  //     end: new Date("2025-08-13T11:00:00+05:30"),
+  //     editable: false,
+  //     durationEditable: false,
+  //     eventStartEditable: false,
+  //     className: ["ec-event-active"],
+  //     extendedProps: {
+  //       employeeID: "100125",
+  //       employeeName: "Liam Bennett",
+  //       address: "34 Pitt Street, Redfern NSW",
+  //       careerType: "Care Type xyz",
+  //       bookingStatus: "Completed",
+  //       region: "Bowral",
+  //       eventType: "Care Worker",
+  //     },
+  //   },
+  //   {
+  //     resourceId: "1",
+  //     start: new Date("2025-08-13T10:35:00+05:30"),
+  //     end: new Date("2025-08-13T15:00:00+05:30"),
+  //     editable: false,
+  //     durationEditable: false,
+  //     eventStartEditable: false,
+  //     className: ["ec-event-active"],
+  //     extendedProps: {
+  //       employeeID: "100125",
+  //       employeeName: "Liam Bennett",
+  //       address: "34 Pitt Street, Redfern NSW",
+  //       careerType: "Care Type xyz",
+  //       bookingStatus: "Completed",
+  //       region: "Bowral",
+  //       eventType: "Care Worker",
+  //     },
+  //   },
+  //   {
+  //     resourceId: "18",
+  //     start: new Date("2025-08-13T13:45:00+05:30"),
+  //     end: new Date("2025-08-13T15:00:00+05:30"),
+  //     editable: false,
+  //     durationEditable: false,
+  //     eventStartEditable: false,
+  //     className: ["ec-event-active"],
+  //     extendedProps: {
+  //       employeeID: "100125",
+  //       employeeName: "Liam Bennett",
+  //       address: "34 Pitt Street, Redfern NSW",
+  //       careerType: "Care Type xyz",
+  //       bookingStatus: "Completed",
+  //       region: "Bowral",
+  //       eventType: "Care Worker",
+  //     },
+  //   },
+  //   {
+  //     resourceId: "4",
+  //     start: new Date("2025-08-13T01:45:00+05:30"),
+  //     end: new Date("2025-08-13T12:45:00+05:30"),
+  //     editable: false,
+  //     durationEditable: false,
+  //     eventStartEditable: false,
+  //     className: ["ec-event-active"],
+  //     extendedProps: {
+  //       employeeID: "100126",
+  //       employeeName: "Mia Walker",
+  //       address: "77 George St, The Rocks NSW",
+  //       careerType: "Care Type xyz",
+  //       bookingStatus: "Completed",
+  //       region: "Cityeast",
+  //       eventType: "Care Worker",
+  //     },
+  //   },
+  //   {
+  //     resourceId: "5",
+  //     start: new Date("2025-08-13T10:00:00+05:30"),
+  //     end: new Date("2025-08-13T11:00:00+05:30"),
+  //     editable: false,
+  //     durationEditable: false,
+  //     eventStartEditable: false,
+  //     className: ["ec-event-active"],
+  //     extendedProps: {
+  //       employeeID: "100127",
+  //       employeeName: "Ethan Johnson",
+  //       address: "22 Oxford St, Darlinghurst NSW",
+  //       careerType: "Care Type xyz",
+  //       bookingStatus: "Completed",
+  //       region: "Dural",
+  //       eventType: "Care Worker",
+  //     },
+  //   },
+  //   {
+  //     resourceId: "6",
+  //     start: new Date("2025-08-13T08:00:00+05:30"),
+  //     end: new Date("2025-08-13T09:30:00+05:30"),
+  //     editable: false,
+  //     durationEditable: false,
+  //     eventStartEditable: false,
+  //     className: ["ec-event-active"],
+  //     extendedProps: {
+  //       employeeID: "100128",
+  //       employeeName: "Chloe Walker",
+  //       address: "5 High Street, Parramatta NSW",
+  //       careerType: "Care Type A",
+  //       bookingStatus: "Scheduled",
+  //       region: "Hawkesbury",
+  //       eventType: "Care Worker",
+  //     },
+  //   },
+  //   {
+  //     resourceId: "7",
+  //     start: new Date("2025-08-13T10:00:00+05:30"),
+  //     end: new Date("2025-08-13T11:15:00+05:30"),
+  //     editable: false,
+  //     durationEditable: false,
+  //     eventStartEditable: false,
+  //     className: ["ec-event-active"],
+  //     extendedProps: {
+  //       employeeID: "100129",
+  //       employeeName: "Noah Carter",
+  //       address: "88 Victoria Rd, Rydalmere NSW",
+  //       careerType: "Care Type B",
+  //       bookingStatus: "Scheduled",
+  //       region: "Beacon - Blacktown",
+  //       eventType: "Domestic Assistance Worker",
+  //     },
+  //   },
+  //   {
+  //     resourceId: "8",
+  //     start: new Date("2025-08-13T11:30:00+05:30"),
+  //     end: new Date("2025-08-13T13:00:00+05:30"),
+  //     editable: false,
+  //     durationEditable: false,
+  //     eventStartEditable: false,
+  //     className: ["ec-event-active"],
+  //     extendedProps: {
+  //       employeeID: "100130",
+  //       employeeName: "Grace Foster",
+  //       address: "33 Norton St, Leichhardt NSW",
+  //       careerType: "Care Type C",
+  //       bookingStatus: "Completed",
+  //       region: "Bowral",
+  //       eventType: "Domestic Assistance Worker",
+  //     },
+  //   },
+  //   {
+  //     resourceId: "9",
+  //     start: new Date("2025-08-13T13:15:00+05:30"),
+  //     end: new Date("2025-08-13T14:45:00+05:30"),
+  //     editable: false,
+  //     durationEditable: false,
+  //     eventStartEditable: false,
+  //     className: ["ec-event-active"],
+  //     extendedProps: {
+  //       employeeID: "100131",
+  //       employeeName: "Oscar Hughes",
+  //       address: "50 King St, Mascot NSW",
+  //       careerType: "Care Type D",
+  //       bookingStatus: "Completed",
+  //       region: "Cityeast",
+  //       eventType: "Domestic Assistance Worker",
+  //     },
+  //   },
+  //   {
+  //     resourceId: "10",
+  //     start: new Date("2025-08-13T09:00:00+05:30"),
+  //     end: new Date("2025-08-13T10:30:00+05:30"),
+  //     editable: false,
+  //     durationEditable: false,
+  //     eventStartEditable: false,
+  //     className: ["ec-event-active"],
+  //     extendedProps: {
+  //       employeeID: "100132",
+  //       employeeName: "Liam Carter",
+  //       address: "120 George St, Liverpool NSW",
+  //       careerType: "Care Type A",
+  //       bookingStatus: "Scheduled",
+  //       region: "Dural",
+  //       eventType: "Domestic Assistance Worker",
+  //     },
+  //   },
+  //   {
+  //     resourceId: "11",
+  //     start: new Date("2025-08-13T14:00:00+05:30"),
+  //     end: new Date("2025-08-13T15:00:00+05:30"),
+  //     editable: false,
+  //     durationEditable: false,
+  //     eventStartEditable: false,
+  //     className: ["ec-event-active"],
+  //     extendedProps: {
+  //       employeeID: "100133",
+  //       employeeName: "Ava Reynolds",
+  //       address: "78 Campbell St, Surry Hills NSW",
+  //       careerType: "Care Type B",
+  //       bookingStatus: "Completed",
+  //       region: "Hawkesbury",
+  //       eventType: "Domestic Assistance Worker",
+  //     },
+  //   },
+  //   {
+  //     resourceId: "12",
+  //     start: new Date("2025-08-13T10:45:00+05:30"),
+  //     end: new Date("2025-08-13T12:00:00+05:30"),
+  //     editable: false,
+  //     durationEditable: false,
+  //     eventStartEditable: false,
+  //     className: ["ec-event-active"],
+  //     extendedProps: {
+  //       employeeID: "100134",
+  //       employeeName: "Freya Dawson",
+  //       address: "101 Queen St, Beaconsfield NSW",
+  //       careerType: "Care Type C",
+  //       bookingStatus: "Scheduled",
+  //       region: "Hawkesbury",
+  //       eventType: "Village Care Worker",
+  //     },
+  //   },
+  //   {
+  //     resourceId: "13",
+  //     start: new Date("2025-08-13T08:30:00+05:30"),
+  //     end: new Date("2025-08-13T09:30:00+05:30"),
+  //     editable: false,
+  //     durationEditable: false,
+  //     eventStartEditable: false,
+  //     className: ["ec-event-active"],
+  //     extendedProps: {
+  //       employeeID: "100135",
+  //       employeeName: "Sienna Brooks",
+  //       address: "43 Main St, Zetland NSW",
+  //       careerType: "Care Type D",
+  //       bookingStatus: "Scheduled",
+  //       region: "Dural",
+  //       eventType: "Village Care Worker",
+  //     },
+  //   },
+  //   {
+  //     resourceId: "14",
+  //     start: new Date("2025-08-13T15:00:00+05:30"),
+  //     end: new Date("2025-08-13T16:30:00+05:30"),
+  //     editable: false,
+  //     durationEditable: false,
+  //     eventStartEditable: false,
+  //     className: ["ec-event-active"],
+  //     extendedProps: {
+  //       employeeID: "100136",
+  //       employeeName: "Leo Murphy",
+  //       address: "67 Bridge Rd, Glebe NSW",
+  //       careerType: "Care Type A",
+  //       bookingStatus: "Completed",
+  //       region: "Cityeast",
+  //       eventType: "Village Care Worker",
+  //     },
+  //   },
+  //   {
+  //     resourceId: "15",
+  //     start: new Date("2025-08-13T13:00:00+05:30"),
+  //     end: new Date("2025-08-13T14:00:00+05:30"),
+  //     editable: false,
+  //     durationEditable: false,
+  //     eventStartEditable: false,
+  //     className: ["ec-event-active"],
+  //     extendedProps: {
+  //       employeeID: "100137",
+  //       employeeName: "Lily Morgan",
+  //       address: "19 Stanley St, Darlinghurst NSW",
+  //       careerType: "Care Type B",
+  //       bookingStatus: "Scheduled",
+  //       region: "Bowral",
+  //       eventType: "Village Care Worker",
+  //     },
+  //   },
+  //   {
+  //     resourceId: "16",
+  //     start: new Date("2025-08-13T11:15:00+05:30"),
+  //     end: new Date("2025-08-13T12:45:00+05:30"),
+  //     editable: false,
+  //     durationEditable: false,
+  //     eventStartEditable: false,
+  //     className: ["ec-event-active"],
+  //     extendedProps: {
+  //       employeeID: "100138",
+  //       employeeName: "Elliot Brooks",
+  //       address: "55 Bay St, Botany NSW",
+  //       careerType: "Care Type C",
+  //       bookingStatus: "Completed",
+  //       region: "Beacon - Blacktown",
+  //       eventType: "Village Care Worker",
+  //     },
+  //   },
+  //   {
+  //     resourceId: "17",
+  //     start: new Date("2025-08-13T08:45:00+05:30"),
+  //     end: new Date("2025-08-13T10:00:00+05:30"),
+  //     editable: false,
+  //     durationEditable: false,
+  //     eventStartEditable: false,
+  //     className: ["ec-event-active"],
+  //     extendedProps: {
+  //       employeeID: "100139",
+  //       employeeName: "Mason Green",
+  //       address: "66 Clarence St, Sydney NSW",
+  //       careerType: "Care Type D",
+  //       bookingStatus: "Scheduled",
+  //       region: "Bankstown",
+  //       eventType: "Village Care Worker",
+  //     },
+  //   },
+  //   {
+  //     resourceId: "18",
+  //     start: new Date("2025-08-13T14:15:00+05:30"),
+  //     end: new Date("2025-08-13T15:30:00+05:30"),
+  //     editable: false,
+  //     durationEditable: false,
+  //     eventStartEditable: false,
+  //     className: ["ec-event-active"],
+  //     extendedProps: {
+  //       employeeID: "100140",
+  //       employeeName: "Isla Matthews",
+  //       address: "20 Regent St, Chippendale NSW",
+  //       careerType: "Care Type A",
+  //       bookingStatus: "Completed",
+  //       region: "Bankstown",
+  //       eventType: "Domestic Assistance Worker",
+  //     },
+  //   },
+  // ];
 
   resourceData = [
 
   ];
+  handleGetEvents();
   reRenderEvents();
 }
 
@@ -925,6 +932,17 @@ function disposeAllTooltips() {
 // });
 function reRenderEvents() {
   //Rerender new Events
+  // window.ecCalendar.setOption("events", eventData);
+  // window.ecCalendar.setOption("resources", resourceData);
+
+  if (eventStatus.isLoading) {
+    window.ecCalendar.setOption("events", []);
+    return;
+  }
+  if (eventStatus.isError) {
+    window.ecCalendar.setOption("events", []);
+    return;
+  }
   window.ecCalendar.setOption("events", eventData);
   window.ecCalendar.setOption("resources", resourceData);
 }
@@ -935,7 +953,7 @@ function chnageActivetab() {
   const leaveTabBtn = document.getElementById("leave-tab-btn");
 
   initalTabBtn.addEventListener("click", (el) => {
-   
+
 
     // 🔹 Change UI
     initalTabBtn.children[0].classList.add("active-tab-btn");
@@ -948,7 +966,7 @@ function chnageActivetab() {
   });
 
   leaveTabBtn.addEventListener("click", (el) => {
-   
+
     leaveTabBtn.children[0].classList.add("active-tab-btn");
     initalTabBtn.children[0].classList.remove("active-tab-btn");
 
@@ -994,24 +1012,31 @@ function parseDate(date) {
   };
 }
 
+
+// Update renderTooltipContent to include suburb and hyperlink
 function renderTooltipContent(arg) {
-  console.log(arg)
+ 
   return `
     <div class="custom-tooltip-content">
       <p class="event-desc-id">${arg.event.extendedProps.employeeID}</p>
-      <p>12/11/2025 - 18/11/2025</p>
+      <p>${new Date(arg.event.start).toLocaleDateString()} - ${new Date(arg.event.end).toLocaleDateString()}</p>
       <div class="event-desc-grid">
         <p>Address (Work Order)</p>
         <p>${arg.event.extendedProps.address}</p>
+        <p>Suburb</p>
+        <p>${arg.event.extendedProps.suburb}</p>
         <p>Resources</p>
         <p>${arg.event.extendedProps.eventType}</p>
         <p>Booking Status</p>
         <p>${arg.event.extendedProps.bookingStatus}</p>
+        <p>Agreement Booking</p>
+        <p><a href="/agreement-booking/${arg.event.extendedProps.agreementBookingSetupId}" target="_blank">View Agreement</a></p>
       </div>
     </div>
   `;
 }
 
+// Update renderEventDetails to include suburb
 function renderEventDetails(arg) {
   const start = new Date(arg.event.start);
   const end = new Date(arg.event.end);
@@ -1040,8 +1065,9 @@ function renderEventDetails(arg) {
             <p><span
                     class="event-emp-id">${arg.event.extendedProps.employeeID}</span>${arg.event.extendedProps.employeeName}
             </p>
-             <p>${arg.event.extendedProps.region}</p>
+            <p>${arg.event.extendedProps.region}</p>
             <p>${arg.event.extendedProps.eventType}</p>
+            <p>${arg.event.extendedProps.suburb}</p>
             <p>${arg.event.extendedProps.duration}</p>
         </div>
          <div class="event-disp-icon">
@@ -1066,7 +1092,7 @@ function renderResources(info) {
 
   // Handle loading state
   if (resource.id === "loading") {
-    console.log("hereeeeeeee")
+
     return {
       html: `<div class="person-details">
                <div class="person-info">
@@ -1543,9 +1569,28 @@ function createCalendar() {
   }
 
   const ec = EventCalendar.create(ecEl, {
+    // view: "resourceTimelineDay",
+    // initialView: "resourceTimelineDay",
+    // slotWidth: "220", //249
+    // slotHeight: "80",
+    // duration: { days: 10 },
+    // headerToolbar: false,
+    // editable: false,
+    // durationEditable: false,
+    // eventStartEditable: false,
+    // slotEventOverlap: true,
+
+    // dayHeaderFormat: parseDate,
+    // eventContent: renderEventDetails,
+    // resourceLabelContent: renderResources,
+    // viewDidMount: renderSearch,
+    // eventAllUpdated: refreshCalendarUI,
+
+    // slotMinTime: "8:00:00",
+    // slotMaxTime: "16:00:00",
     view: "resourceTimelineDay",
     initialView: "resourceTimelineDay",
-    slotWidth: "220", //249
+    slotWidth: "220",
     slotHeight: "80",
     duration: { days: 10 },
     headerToolbar: false,
@@ -1553,13 +1598,11 @@ function createCalendar() {
     durationEditable: false,
     eventStartEditable: false,
     slotEventOverlap: true,
-
     dayHeaderFormat: parseDate,
     eventContent: renderEventDetails,
     resourceLabelContent: renderResources,
     viewDidMount: renderSearch,
     eventAllUpdated: refreshCalendarUI,
-
     slotMinTime: "8:00:00",
     slotMaxTime: "16:00:00",
   });
@@ -1599,6 +1642,164 @@ function fetchFilterOptions(options = {}) {
     }, delayMs);
   });
 }
+
+function fetchEvents(options = {}) {
+  const { simulateFailure = false, delayMs = 2000 } = options;
+
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      if (simulateFailure) {
+        reject(new Error('Failed to fetch events'));
+        return;
+      }
+      resolve([
+        {
+          "@odata.etag": "W/\"562523211\"",
+          "_msdyn_agreement_value": "be8120e7-fd9e-4cce-bb41-4cb5c2409976",
+          "_msdyn_resource_value": "b3141cf1-91e1-ee11-904c-000d3aca6924",
+          "msdyn_status": 690970002,
+          "msdyn_name": "00313",
+          "msdyn_agreementbookingdateid": "58cdee5a-d340-f011-8779-000d3a6a1ca6",
+          "msdyn_bookingdate": "2025-07-20T16:00:00Z",
+          "statecode": 0,
+          "msdyn_resource": {
+            "bookableresourceid": "b3141cf1-91e1-ee11-904c-000d3aca6924",
+            "name": "Jamie Higgins"
+          },
+          "msdyn_bookingsetup": {
+            "msdyn_estimatedduration": 975,
+            "msdyn_agreementbookingsetupid": "98fd7d12-c12f-f011-8c4d-00224894331c",
+            "_ang_incidenttype_value": "33c31285-1332-f011-8c4d-0022481174b1"
+          },
+          "msdyn_workorder": {
+            "msdyn_city": "MOUNT RANKIN",
+            "msdyn_address3": null,
+            "_msdyn_serviceterritory_value": "04c74320-0340-eb11-bf70-000d3a795b83",
+            "msdyn_stateorprovince": "NSW",
+            "msdyn_address1": "16 SPRING CL",
+            "msdyn_country": "Australia",
+            "msdyn_workorderid": "cb5547f4-c541-f011-8779-000d3ad28f5c",
+            "msdyn_postalcode": "2795",
+            "msdyn_address2": "MINTO"
+          }
+        },
+        
+        {
+          "@odata.etag": "W/\"563064379\"",
+          "_msdyn_agreement_value": "be8120e7-fd9e-4cce-bb41-4cb5c2409976",
+          "_msdyn_resource_value": "b3141cf1-91e1-ee11-904c-000d3aca6924",
+          "msdyn_status": 690970002,
+          "msdyn_name": "00313",
+          "msdyn_agreementbookingdateid": "9dcdee5a-d340-f011-8779-000d3a6a1ca6",
+          "msdyn_bookingdate": "2025-07-27T16:00:00Z",
+          "statecode": 0,
+          "msdyn_resource": {
+            "bookableresourceid": "b3141cf1-91e1-ee11-904c-000d3aca6924",
+            "name": "Jamie Higgins"
+          },
+          "msdyn_bookingsetup": {
+            "msdyn_estimatedduration": 975,
+            "msdyn_agreementbookingsetupid": "98fd7d12-c12f-f011-8c4d-00224894331c",
+            "_ang_incidenttype_value": "33c31285-1332-f011-8c4d-0022481174b1"
+          },
+          "msdyn_workorder": {
+            "msdyn_city": "MOUNT RANKIN",
+            "msdyn_address3": null,
+            "_msdyn_serviceterritory_value": "04c74320-0340-eb11-bf70-000d3a795b83",
+            "msdyn_stateorprovince": "NSW",
+            "msdyn_address1": "16 SPRING CL",
+            "msdyn_country": "Australia",
+            "msdyn_workorderid": "3ed39c12-4647-f011-8779-000d3aca5131",
+            "msdyn_postalcode": "2795",
+            "msdyn_address2": "MINTO"
+          }
+        }
+      ]);
+    }, delayMs);
+  });
+}
+
+async function handleGetEvents() {
+  const eventStatus = {
+    isLoading: true,
+    isError: false,
+    eventData: []
+  };
+
+  try {
+    const response = await fetchEvents({ simulateFailure: false, delayMs: 2000 });
+
+    // Map API response to calendar events
+    const statusMap = {
+      690970000: "Active",
+      690970001: "Processed",
+      690970002: "Canceled"
+    };
+
+    const mappedEvents = response.map(event => {
+      // Parse start date
+      const startDate = new Date(event.msdyn_bookingdate);
+
+      console.log("startDate", startDate)
+
+      // Calculate end date by adding estimated duration (in minutes)
+      const durationMinutes = event.msdyn_bookingsetup.msdyn_estimatedduration || 60; // Default to 60 minutes if not provided
+      const endDate = new Date(startDate.getTime() + durationMinutes * 60 * 1000);
+
+
+      // Construct address string
+      const addressParts = [
+        event.msdyn_workorder.msdyn_address1,
+        event.msdyn_workorder.msdyn_address2,
+        event.msdyn_workorder.msdyn_address3,
+        event.msdyn_workorder.msdyn_city,
+        event.msdyn_workorder.msdyn_stateorprovince,
+        event.msdyn_workorder.msdyn_postalcode,
+        event.msdyn_workorder.msdyn_country
+      ].filter(part => part).join(", ");
+
+      return {
+        resourceId: event._msdyn_resource_value,
+        start: startDate,
+        end: endDate,
+        id: event.msdyn_agreementbookingdateid,
+        type: "Full",
+        slotEventOverlap: true,
+        editable: false,
+        durationEditable: false,
+        eventStartEditable: false,
+        className: ["ec-event-active"],
+        extendedProps: {
+          employeeID: event.msdyn_name,
+          employeeName: event.msdyn_resource.name,
+          address: addressParts,
+          suburb: event.msdyn_workorder.msdyn_city,
+          careerType: "Care Type xyz", // Placeholder, update if API provides
+          bookingStatus: statusMap[event.msdyn_status] || "Unknown",
+          region: event.msdyn_workorder._msdyn_serviceterritory_value,
+          eventType: event.msdyn_bookingsetup._ang_incidenttype_value || "Care Worker",
+          agreementBookingSetupId: event.msdyn_bookingsetup.msdyn_agreementbookingsetupid
+        }
+      };
+    });
+
+    eventStatus.isLoading = false;
+    eventStatus.eventData = mappedEvents;
+    eventData = mappedEvents; // Update global eventData
+    console.log("Events fetched successfully:", mappedEvents);
+
+    // Update calendar with events
+    reRenderEvents();
+
+  } catch (error) {
+    console.error("Error fetching events:", error);
+    eventStatus.isLoading = false;
+    eventStatus.isError = true;
+    eventData = [];
+    reRenderEvents(); // Clear events on error
+  }
+}
+
 
 
 function fetchResources(options = {}) {
