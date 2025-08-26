@@ -4,6 +4,7 @@ function getElement(id) {
 
 // Custom Dropdown
 var dropdowns = document.querySelectorAll(".custom-dropdown");
+console.log("dropdowns", dropdowns)
 if (dropdowns.length) {
   // Only one global click listener for closing dropdowns
   document.addEventListener("click", function (e) {
@@ -98,8 +99,8 @@ if (typeof $ !== "undefined" && typeof $.fn.daterangepicker !== "undefined") {
       $dateInput.on("apply.daterangepicker", function (ev, picker) {
         $(this).val(
           picker.startDate.format("DD/MM/YYYY") +
-            " - " +
-            picker.endDate.format("DD/MM/YYYY")
+          " - " +
+          picker.endDate.format("DD/MM/YYYY")
         );
 
         // if (window.ecCalendar) {
@@ -242,3 +243,4 @@ $(".time-conatainer img").on("click", function (e) {
     $input.focus();
   }, 10);
 });
+

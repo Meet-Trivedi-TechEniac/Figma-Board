@@ -481,6 +481,8 @@ select:focus>option:hover {
 .person-info h5 {
     font-size: 1.4rem;
     font-weight: 400;
+    text-wrap: wrap;
+    max-width: 220px;
 }
 
 
@@ -488,6 +490,8 @@ select:focus>option:hover {
     font-size: 1.4rem;
     margin-top: 0.5rem;
     color: var(--text-light-2);
+    
+    ;
 }
 
 /* ========================================================
@@ -540,6 +544,8 @@ select:focus>option:hover {
 .ec-events {
     padding: 5px 0 !important;
 }
+
+
 
 
 /* ========================================================

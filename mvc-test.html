@@ -15,11 +15,10 @@
     <link rel="stylesheet" href="libs/bootstrap/bootstrap.min.css" />
     <link rel="stylesheet" href="libs/timePicker/jquery.timepicker.min.css" />
 
-
     <link rel="stylesheet" href="styles/genral.css" />
     <link rel="stylesheet" href="styles/style.css" />
 
-    <title>Figma Board</title>
+    <title>MVC Calendar Test</title>
 </head>
 
 <body>
@@ -28,7 +27,7 @@
         <div class="tab-container inner-padding">
             <button class="tab-btn btn" id="intial-tab-btn">
                 <!-- add active-tab-btn to activate tab-->
-                <p class="active-tab-btn" id="initial-button">Initial Board</p>
+                <p class="active-tab-btn">Initial Board</p>
                 <img src="Assets/icons/vdots.svg" alt="dots" />
             </button>
             <button class="tab-btn btn" id="leave-tab-btn">
@@ -53,22 +52,14 @@
                 <p>Refresh</p>
             </button>
 
-            <!-- <button class="toolbar-btn btn">
-                <img src="Assets/icons/timer.svg" />
-                <p>Hourly</p>
-                <img src="Assets/icons/DArrow.svg" alt="Arrow">
-            </button> -->
-
             <button class="toolbar-btn btn">
                 <img src="Assets/icons/LArrow.svg" alt="Arrow" id="calPrev" />
                 <label for="datefilter" class="btn">
                     <img src="Assets/icons/calendar-grid.svg" />
                 </label>
-                <!-- <p> 12/11/2024 - 18/11/2024</p> -->
                 <input type="text" id="datefilter" name="datefilter" value="" class="btn date-range" />
                 <img src="Assets/icons/RArrow.svg" alt="Arrow" id="calNext" />
             </button>
-
 
             <div class="toolbar-time">
                 <button class="toolbar-btn btn" id="starttime">
@@ -85,7 +76,6 @@
                     </div>
                 </button>
             </div>
-
         </div>
 
         <div class="filter-container inner-padding">
@@ -101,10 +91,6 @@
                     <img src="Assets/icons/refresh.svg" alt="refresh" />
                     <p>Reset to default</p>
                 </button>
-                <!-- <button class="btn action-btn">
-                    <img src="Assets/icons/save.svg" alt="save">
-                    <P>Save as default</P>
-                </button> -->
             </div>
 
             <div class="custom-dropdown">
@@ -114,7 +100,7 @@
                     <img src="Assets/icons/DArrow.svg" alt="" />
                 </div>
                 <ul class="dropdown-options">
-                    <!-- <li class="dropdown-option">
+                    <li class="dropdown-option">
                         <input type="checkbox" value="Bankstown" /> Bankstown
                     </li>
                     <li class="dropdown-option">
@@ -132,7 +118,7 @@
                     </li>
                     <li class="dropdown-option">
                         <input type="checkbox" value="Hawkesbury" /> Hawkesbury
-                    </li> -->
+                    </li>
                 </ul>
             </div>
 
@@ -143,7 +129,7 @@
                     <img src="Assets/icons/DArrow.svg" alt="" />
                 </div>
                 <ul class="dropdown-options">
-                    <!-- <li class="dropdown-option">
+                    <li class="dropdown-option">
                         <input type="checkbox" value="Care Worker" /> Care Worker
                     </li>
                     <li class="dropdown-option">
@@ -153,31 +139,9 @@
                     <li class="dropdown-option">
                         <input type="checkbox" value="Village Care Worker" /> Village Care
                         Worker
-                    </li> -->
+                    </li>
                 </ul>
             </div>
-
-
-            <!-- <div class="time-selects">
-                <div class="time-input-conatiner">
-                    <label for="starttime">Start Time</label>
-                    <div class="inputHolder" tabindex="0" name="starttime">
-                        <input type="text" class="starttime">
-                        <img src="Assets/icons/DArrow.svg" alt="Down Arrow" />
-                    </div>
-                </div>
-
-                <div class="time-input-conatiner">
-                    <label for="endtime">End Time</label>
-                    <div class="inputHolder" tabindex="0" name="endtime">
-                        <input type="text" class="endtime">
-                        <img src="Assets/icons/DArrow.svg" alt="Down Arrow" />
-                    </div>
-                </div>
-            </div> -->
-
-
-
         </div>
 
         <div class="ec-holder">
@@ -189,16 +153,55 @@
     <script src="libs/event-calendar/event-calendar.min.js"></script>
 
     <!-- Importing Date Range picker  -->
-
     <script src="libs/dateRangePicker/jquery.min.js"></script>
     <script src="libs/dateRangePicker/moment.min.js"></script>
     <script src="libs/dateRangePicker/daterangepicker.min.js"></script>
     <script src="libs/bootstrap/bootstrap.bundle.min.js"></script>
-
     <script src="libs/timePicker/jquery.timepicker.min.js"></script>
 
-    <script src="script/interaction.js"></script>
-    <script src="script/calendar.js"></script>
+    <!-- Import MVC Components -->
+    <script type="module" src="mvc/models/FilterModel.js"></script>
+    <script type="module" src="mvc/models/TimeModel.js"></script>
+    <script type="module" src="mvc/models/DateModel.js"></script>
+    <script type="module" src="mvc/models/EventsModel.js"></script>
+    <script type="module" src="mvc/models/ResourcesModel.js"></script>
+
+    <script type="module" src="mvc/services/TooltipService.js"></script>
+    <script type="module" src="mvc/services/ApiService.js"></script>
+    <script type="module" src="mvc/services/DataService.js"></script>
+
+    <script type="module" src="mvc/views/FilterView.js"></script>
+    <script type="module" src="mvc/views/TimeView.js"></script>
+    <script type="module" src="mvc/views/DateView.js"></script>
+    <script type="module" src="mvc/views/CalendarView.js"></script>
+    <script type="module" src="mvc/views/ResourceView.js"></script>
+
+    <script type="module" src="mvc/controllers/FilterController.js"></script>
+    <script type="module" src="mvc/controllers/TimeController.js"></script>
+    <script type="module" src="mvc/controllers/DateController.js"></script>
+    <script type="module" src="mvc/controllers/CalendarController.js"></script>
+    <script type="module" src="mvc/controllers/ResourcesController.js"></script>
+    <script type="module" src="mvc/controllers/AppController.js"></script>
+
+    <script type="module" src="mvc/main.js"></script>
+
+    <!-- Legacy scripts removed: running purely on MVC -->
+
+    <script>
+        // Test the MVC implementation
+        document.addEventListener('DOMContentLoaded', function () {
+            console.log('Testing MVC Calendar Implementation...');
+
+            // Wait for MVC app to initialize
+            setTimeout(() => {
+                if (window.mvcApp) {
+                    console.log('MVC App State:', window.mvcApp.getApplicationState());
+                } else {
+                    console.error('MVC App not initialized');
+                }
+            }, 1000);
+        });
+    </script>
 </body>
 
 </html>
