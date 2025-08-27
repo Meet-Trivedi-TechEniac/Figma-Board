@@ -928,674 +928,664 @@ async function handleGetEvents() {
 
 
 function fetchResources(options = {}) {
-
-  const { simulateFailure = false, delayMs = 5000 } = options;
-
   return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      if (simulateFailure) {
-        reject(new Error('Failed to fetch resources'));
-        return;
-      }
+    resolve({
+      "@odata.context": "https://aahdevelopment.crm6.dynamics.com/api/data/v9.1/$metadata#bookableresources(name,resourcetype,UserId(photourl))",
+      "value": [
+        {
+          "@odata.etag": "W/\"566454569\"",
+          "bookableresourceid": "b3141cf1-91e1-ee11-904c-000d3aca6924",
+          "name": "Jamie Higgins",
+          "resourcetype": 3,
+          "UserId": {
+            "ownerid": "cc428a1d-ac0b-ed11-b83d-00224891bbb1",
+            "systemuserid": "cc428a1d-ac0b-ed11-b83d-00224891bbb1",
+            "photourl": null
+          }
+        },
+        {
+          "@odata.etag": "W/\"480193957\"",
+          "bookableresourceid": "157d1c09-92e1-ee11-904c-000d3aca6924",
+          "name": "Jonathan Stacey",
+          "resourcetype": 3,
+          "UserId": {
+            "ownerid": "353c0984-c780-ed11-81ad-00224893b533",
+            "systemuserid": "353c0984-c780-ed11-81ad-00224893b533",
+            "photourl": null
+          }
+        },
+        {
+          "@odata.etag": "W/\"511212808\"",
+          "bookableresourceid": "c21bd34a-a606-ef11-9f89-000d3acb40a4",
+          "name": "Kerrie Ristau",
+          "resourcetype": 3,
+          "UserId": {
+            "ownerid": "c5ed65c6-2a49-ed11-bba2-00224893be4a",
+            "systemuserid": "c5ed65c6-2a49-ed11-bba2-00224893be4a",
+            "photourl": null
+          }
+        },
+        {
+          "@odata.etag": "W/\"564961242\"",
+          "bookableresourceid": "e12cbc88-a606-ef11-9f89-000d3acb40a4",
+          "name": "Edward Lo",
+          "resourcetype": 3,
+          "UserId": {
+            "ownerid": "284848dc-fc54-ed11-9562-00224893b1c0",
+            "systemuserid": "284848dc-fc54-ed11-9562-00224893b1c0",
+            "photourl": null
+          }
+        },
+        {
+          "@odata.etag": "W/\"480195234\"",
+          "bookableresourceid": "f3dc76b9-a606-ef11-9f89-000d3acb40a4",
+          "name": "Sacha Crick",
+          "resourcetype": 3,
+          "UserId": {
+            "ownerid": "fba9324c-a60c-ed11-b83d-002248128c80",
+            "systemuserid": "fba9324c-a60c-ed11-b83d-002248128c80",
+            "photourl": null
+          }
+        },
+        {
+          "@odata.etag": "W/\"525968845\"",
+          "bookableresourceid": "4b425a52-c244-ef11-a316-000d3acbd62b",
+          "name": "Alan Dunn",
+          "resourcetype": 3,
+          "UserId": {
+            "ownerid": "bc0ad1ed-b371-ed11-81ac-00224893b82f",
+            "systemuserid": "bc0ad1ed-b371-ed11-81ac-00224893b82f",
+            "photourl": null
+          }
+        },
+        {
+          "@odata.etag": "W/\"554373331\"",
+          "bookableresourceid": "027b0c5c-fa6f-ef11-a671-000d3acbd62b",
+          "name": "Adam Richards",
+          "resourcetype": 3,
+          "UserId": {
+            "ownerid": "5710d3db-87d9-ed11-a7c7-00224893b6c3",
+            "systemuserid": "5710d3db-87d9-ed11-a7c7-00224893b6c3",
+            "photourl": null
+          }
+        },
+        {
+          "@odata.etag": "W/\"533197331\"",
+          "bookableresourceid": "8607eb57-fb6f-ef11-a671-000d3acbd62b",
+          "name": "A STEP AHEAD IN FOOTCARE PTY LIMITED",
+          "resourcetype": 5,
+          "UserId": null
+        },
+        {
+          "@odata.etag": "W/\"536697240\"",
+          "bookableresourceid": "59034803-2397-ef11-8a69-000d3ad23c5b",
+          "name": "\tIKLEAN SERVICES (NORTH-WEST) PTY LTD",
+          "resourcetype": 5,
+          "UserId": null
+        },
+        {
+          "@odata.etag": "W/\"45407734\"",
+          "bookableresourceid": "331eca6a-5a51-eb11-a812-000d3ae11ff1",
+          "name": "Nathan Gouldberg",
+          "resourcetype": 5,
+          "UserId": null
+        },
+        {
+          "@odata.etag": "W/\"566754433\"",
+          "bookableresourceid": "6d616491-a106-ef11-9f89-002248100a21",
+          "name": "Clancy",
+          "resourcetype": 3,
+          "UserId": {
+            "ownerid": "c2f43a16-fbe1-ec11-bb3d-00224892f217",
+            "systemuserid": "c2f43a16-fbe1-ec11-bb3d-00224892f217",
+            "photourl": null
+          }
+        },
+        {
+          "@odata.etag": "W/\"480193942\"",
+          "bookableresourceid": "e7c99055-f2ea-ee11-a1fd-00224810de46",
+          "name": "Balaji Mariappan",
+          "resourcetype": 3,
+          "UserId": {
+            "ownerid": "9ceffa77-4878-ee11-8179-00224898a6e5",
+            "systemuserid": "9ceffa77-4878-ee11-8179-00224898a6e5",
+            "photourl": null
+          }
+        },
+        {
+          "@odata.etag": "W/\"83294117\"",
+          "bookableresourceid": "0f5729ba-9409-ed11-82e5-002248112e98",
+          "name": "Felix Yu",
+          "resourcetype": 3,
+          "UserId": {
+            "ownerid": "234f263c-63fb-ec11-82e6-002248112e98",
+            "systemuserid": "234f263c-63fb-ec11-82e6-002248112e98",
+            "photourl": null
+          }
+        },
+        {
+          "@odata.etag": "W/\"87370982\"",
+          "bookableresourceid": "ccac2631-aff6-ec11-82e7-002248112e98",
+          "name": "Heolle Olleres",
+          "resourcetype": 3,
+          "UserId": {
+            "ownerid": "3828dfb0-81dd-ec11-bb3c-002248951320",
+            "systemuserid": "3828dfb0-81dd-ec11-bb3c-002248951320",
+            "photourl": null
+          }
+        },
+        {
+          "@odata.etag": "W/\"571064529\"",
+          "bookableresourceid": "481ef7cb-3a56-f011-bec2-002248129443",
+          "name": "Aachal Shrestha",
+          "resourcetype": 3,
+          "UserId": {
+            "ownerid": "5cd87cda-529a-ee11-be37-00224898a934",
+            "systemuserid": "5cd87cda-529a-ee11-be37-00224898a934",
+            "photourl": null
+          }
+        },
+        {
+          "@odata.etag": "W/\"45407735\"",
+          "bookableresourceid": "f5a2a1dd-3077-eb11-a812-002248145e5a",
+          "name": "Qwerty Allied Health",
+          "resourcetype": 5,
+          "UserId": null
+        },
+        {
+          "@odata.etag": "W/\"45407736\"",
+          "bookableresourceid": "7adb98e6-bb69-eb11-a812-00224814616c",
+          "name": "Sehar Suleman",
+          "resourcetype": 3,
+          "UserId": {
+            "ownerid": "1df2c953-3038-eb11-bf69-00224814f9a4",
+            "systemuserid": "1df2c953-3038-eb11-bf69-00224814f9a4",
+            "photourl": null
+          }
+        },
+        {
+          "@odata.etag": "W/\"45407737\"",
+          "bookableresourceid": "68c5a7f8-bb69-eb11-a812-00224814616c",
+          "name": "Noah Gillham",
+          "resourcetype": 3,
+          "UserId": {
+            "ownerid": "1a5f1471-3338-eb11-bf69-00224814f9a4",
+            "systemuserid": "1a5f1471-3338-eb11-bf69-00224814f9a4",
+            "photourl": null
+          }
+        },
+        {
+          "@odata.etag": "W/\"45407738\"",
+          "bookableresourceid": "6005d80a-bc69-eb11-a812-00224814616c",
+          "name": "Kthryn Bondoc",
+          "resourcetype": 3,
+          "UserId": {
+            "ownerid": "0c995e4e-3438-eb11-bf69-00224814f9a4",
+            "systemuserid": "0c995e4e-3438-eb11-bf69-00224814f9a4",
+            "photourl": null
+          }
+        },
+        {
+          "@odata.etag": "W/\"45407739\"",
+          "bookableresourceid": "2870db59-1e90-eb11-b1ac-00224814651e",
+          "name": "Chadi Tannous",
+          "resourcetype": 3,
+          "UserId": {
+            "ownerid": "641ab393-5160-eb11-89f5-000d3a791111",
+            "systemuserid": "641ab393-5160-eb11-89f5-000d3a791111",
+            "photourl": null
+          }
+        },
+        {
+          "@odata.etag": "W/\"45407740\"",
+          "bookableresourceid": "05e98dde-1f90-eb11-b1ac-00224814651e",
+          "name": "John Brown",
+          "resourcetype": 5,
+          "UserId": null
+        },
+        {
+          "@odata.etag": "W/\"45407741\"",
+          "bookableresourceid": "ad78810c-2090-eb11-b1ac-00224814651e",
+          "name": "David Brown",
+          "resourcetype": 5,
+          "UserId": null
+        },
+        {
+          "@odata.etag": "W/\"50945828\"",
+          "bookableresourceid": "c565246b-1aec-eb11-bacb-00224814b19c",
+          "name": "Sue Sweeney",
+          "resourcetype": 3,
+          "UserId": {
+            "ownerid": "1495ca18-fb4a-eb11-bb23-000d3a797a6f",
+            "systemuserid": "1495ca18-fb4a-eb11-bb23-000d3a797a6f",
+            "photourl": null
+          }
+        },
+        {
+          "@odata.etag": "W/\"45419806\"",
+          "bookableresourceid": "b8bbfd6d-f3b1-eb11-8236-00224814b363",
+          "name": "Old Mate's Agency",
+          "resourcetype": 1,
+          "UserId": null
+        },
+        {
+          "@odata.etag": "W/\"51339408\"",
+          "bookableresourceid": "b03dab72-30e8-eb11-bacb-00224814b853",
+          "name": "Nilanthie Sivasubramaniam",
+          "resourcetype": 3,
+          "UserId": {
+            "ownerid": "778a4c7a-3038-eb11-bf69-00224814f9a4",
+            "systemuserid": "778a4c7a-3038-eb11-bf69-00224814f9a4",
+            "photourl": null
+          }
+        },
+        {
+          "@odata.etag": "W/\"564985542\"",
+          "bookableresourceid": "402fd944-4555-eb11-a812-00224814c8e9",
+          "name": "Ali Khan",
+          "resourcetype": 3,
+          "UserId": {
+            "ownerid": "cbd09f56-3238-eb11-a813-000d3ae11ff1",
+            "systemuserid": "cbd09f56-3238-eb11-a813-000d3ae11ff1",
+            "photourl": null
+          }
+        },
+        {
+          "@odata.etag": "W/\"45407743\"",
+          "bookableresourceid": "7a3c8a1d-bd53-eb11-a812-00224814ccfa",
+          "name": "Daniel",
+          "resourcetype": 3,
+          "UserId": {
+            "ownerid": "339646e9-3038-eb11-bf69-00224814f9a4",
+            "systemuserid": "339646e9-3038-eb11-bf69-00224814f9a4",
+            "photourl": null
+          }
+        },
+        {
+          "@odata.etag": "W/\"51865511\"",
+          "bookableresourceid": "df7e8147-1b56-eb11-a812-00224814ccfa",
+          "name": "Lovely Care Agency",
+          "resourcetype": 2,
+          "UserId": null
+        },
+        {
+          "@odata.etag": "W/\"51508754\"",
+          "bookableresourceid": "66c14257-e8f0-eb11-94ef-00224814e316",
+          "name": "Malachi Mashiah",
+          "resourcetype": 3,
+          "UserId": {
+            "ownerid": "1d1ab3ce-0d40-eb11-bf70-000d3a795b83",
+            "systemuserid": "1d1ab3ce-0d40-eb11-bf70-000d3a795b83",
+            "photourl": null
+          }
+        },
+        {
+          "@odata.etag": "W/\"70175959\"",
+          "bookableresourceid": "e2605644-02f1-eb11-94ef-00224814e316",
+          "name": "Philip Blow",
+          "resourcetype": 3,
+          "UserId": {
+            "ownerid": "c4218bef-3038-eb11-bf69-00224814f9a4",
+            "systemuserid": "c4218bef-3038-eb11-bf69-00224814f9a4",
+            "photourl": null
+          }
+        },
+        {
+          "@odata.etag": "W/\"51412234\"",
+          "bookableresourceid": "66a0d795-7def-eb11-94ef-00224814e3f2",
+          "name": "Juliana Teoh",
+          "resourcetype": 3,
+          "UserId": {
+            "ownerid": "51fa7ae4-098d-eb11-b1ac-002248155ce7",
+            "systemuserid": "51fa7ae4-098d-eb11-b1ac-002248155ce7",
+            "photourl": null
+          }
+        },
+        {
+          "@odata.etag": "W/\"48400580\"",
+          "bookableresourceid": "18b5397a-caa3-eb11-b1ac-0022481508c4",
+          "name": "Jeffrey Wonger",
+          "resourcetype": 3,
+          "UserId": {
+            "ownerid": "d1ad2b4c-3038-eb11-bf69-00224814f9a4",
+            "systemuserid": "d1ad2b4c-3038-eb11-bf69-00224814f9a4",
+            "photourl": null
+          }
+        },
+        {
+          "@odata.etag": "W/\"80265779\"",
+          "bookableresourceid": "41506cb7-8e60-eb11-a812-00224815157c",
+          "name": "Caroline Olminkhof",
+          "resourcetype": 3,
+          "UserId": {
+            "ownerid": "6899e557-3138-eb11-a813-000d3ae11ff1",
+            "systemuserid": "6899e557-3138-eb11-a813-000d3ae11ff1",
+            "photourl": null
+          }
+        },
+        {
+          "@odata.etag": "W/\"45407747\"",
+          "bookableresourceid": "f30360c9-8e60-eb11-a812-00224815157c",
+          "name": "Steven Sellen",
+          "resourcetype": 3,
+          "UserId": {
+            "ownerid": "1971814f-3338-eb11-bf69-00224814f9a4",
+            "systemuserid": "1971814f-3338-eb11-bf69-00224814f9a4",
+            "photourl": null
+          }
+        },
+        {
+          "@odata.etag": "W/\"564987038\"",
+          "bookableresourceid": "a5ba7ae1-8e60-eb11-a812-00224815157c",
+          "name": "Stephen Pocknall",
+          "resourcetype": 3,
+          "UserId": {
+            "ownerid": "1cb57a21-3138-eb11-a813-000d3ae11ff1",
+            "systemuserid": "1cb57a21-3138-eb11-a813-000d3ae11ff1",
+            "photourl": null
+          }
+        },
+        {
+          "@odata.etag": "W/\"564627980\"",
+          "bookableresourceid": "9659b5e8-2343-eb11-a812-002248151e02",
+          "name": "Joel Yeo",
+          "resourcetype": 3,
+          "UserId": {
+            "ownerid": "89d9dd7d-3338-eb11-bf69-00224814f9a4",
+            "systemuserid": "89d9dd7d-3338-eb11-bf69-00224814f9a4",
+            "photourl": null
+          }
+        },
+        {
+          "@odata.etag": "W/\"45407750\"",
+          "bookableresourceid": "b39bc4c4-6851-eb11-a812-002248151e02",
+          "name": "Raymond Lesmana",
+          "resourcetype": 3,
+          "UserId": {
+            "ownerid": "2bfc1d32-2c37-eb11-bf72-000d3a7970eb",
+            "systemuserid": "2bfc1d32-2c37-eb11-bf72-000d3a7970eb",
+            "photourl": null
+          }
+        },
+        {
+          "@odata.etag": "W/\"68821505\"",
+          "bookableresourceid": "30c5589a-9f4c-ec11-8f8e-002248151e5b",
+          "name": "Anglicare Health Centre Castle Hill",
+          "resourcetype": 5,
+          "UserId": null
+        },
+        {
+          "@odata.etag": "W/\"506070363\"",
+          "bookableresourceid": "76e033fa-e24c-ec11-8f8e-002248151e5b",
+          "name": "Alex Peterson",
+          "resourcetype": 3,
+          "UserId": {
+            "ownerid": "792e7a88-da1d-ec11-b6e7-00224818546f",
+            "systemuserid": "792e7a88-da1d-ec11-b6e7-00224818546f",
+            "photourl": null
+          }
+        },
+        {
+          "@odata.etag": "W/\"81622780\"",
+          "bookableresourceid": "bbb97b20-3b82-eb11-a812-0022481522dc",
+          "name": "Alexander Peterson",
+          "resourcetype": 3,
+          "UserId": {
+            "ownerid": "cb049c54-3438-eb11-bf69-00224814f9a4",
+            "systemuserid": "cb049c54-3438-eb11-bf69-00224814f9a4",
+            "photourl": null
+          }
+        },
+        {
+          "@odata.etag": "W/\"50675095\"",
+          "bookableresourceid": "0b2892be-da71-eb11-a812-002248153009",
+          "name": "Bathsheba Benjesse",
+          "resourcetype": 5,
+          "UserId": null
+        },
+        {
+          "@odata.etag": "W/\"50226239\"",
+          "bookableresourceid": "b8483eda-b6a8-eb11-9442-0022481533e7",
+          "name": "Darrel DCosta",
+          "resourcetype": 3,
+          "UserId": {
+            "ownerid": "bfe696d9-51a2-eb11-b1ac-002248150b30",
+            "systemuserid": "bfe696d9-51a2-eb11-b1ac-002248150b30",
+            "photourl": null
+          }
+        },
+        {
+          "@odata.etag": "W/\"62286762\"",
+          "bookableresourceid": "3d833dcd-9325-ec11-b6e6-002248153b9c",
+          "name": "Mount Everest SSG",
+          "resourcetype": 5,
+          "UserId": null
+        },
+        {
+          "@odata.etag": "W/\"45407753\"",
+          "bookableresourceid": "f1e07e6a-d08d-eb11-b1ac-002248155ce7",
+          "name": "Preety Singh",
+          "resourcetype": 3,
+          "UserId": {
+            "ownerid": "09095b86-e577-eb11-a812-002248145319",
+            "systemuserid": "09095b86-e577-eb11-a812-002248145319",
+            "photourl": null
+          }
+        },
+        {
+          "@odata.etag": "W/\"45407754\"",
+          "bookableresourceid": "ec57b619-068d-eb11-b1ac-002248155d0e",
+          "name": "Grace Boxall",
+          "resourcetype": 3,
+          "UserId": {
+            "ownerid": "35a514e3-058d-eb11-b1ac-002248155ce7",
+            "systemuserid": "35a514e3-058d-eb11-b1ac-002248155ce7",
+            "photourl": null
+          }
+        },
+        {
+          "@odata.etag": "W/\"48533958\"",
+          "bookableresourceid": "8176013b-078d-eb11-b1ac-002248155d0e",
+          "name": "Qiang Zhang",
+          "resourcetype": 3,
+          "UserId": {
+            "ownerid": "0611442c-068d-eb11-b1ac-002248155d0e",
+            "systemuserid": "0611442c-068d-eb11-b1ac-002248155d0e",
+            "photourl": null
+          }
+        },
+        {
+          "@odata.etag": "W/\"506599648\"",
+          "bookableresourceid": "1511e95f-078d-eb11-b1ac-002248155d0e",
+          "name": "Hong Liu",
+          "resourcetype": 3,
+          "UserId": {
+            "ownerid": "b7d31101-068d-eb11-b1ac-002248155d0e",
+            "systemuserid": "b7d31101-068d-eb11-b1ac-002248155d0e",
+            "photourl": null
+          }
+        },
+        {
+          "@odata.etag": "W/\"506599635\"",
+          "bookableresourceid": "7ea72179-078d-eb11-b1ac-002248155d0e",
+          "name": "Hanae Sakuma",
+          "resourcetype": 3,
+          "UserId": {
+            "ownerid": "ef428713-068d-eb11-b1ac-002248155d0e",
+            "systemuserid": "ef428713-068d-eb11-b1ac-002248155d0e",
+            "photourl": null
+          }
+        },
+        {
+          "@odata.etag": "W/\"506599756\"",
+          "bookableresourceid": "3f008f28-0a8d-eb11-b1ac-002248155d0e",
+          "name": "Rafael Santana",
+          "resourcetype": 3,
+          "UserId": {
+            "ownerid": "63895202-3438-eb11-bf69-00224814f9a4",
+            "systemuserid": "63895202-3438-eb11-bf69-00224814f9a4",
+            "photourl": null
+          }
+        },
+        {
+          "@odata.etag": "W/\"564984793\"",
+          "bookableresourceid": "cec4bf85-0a8d-eb11-b1ac-002248155d0e",
+          "name": "Emily Teale",
+          "resourcetype": 3,
+          "UserId": {
+            "ownerid": "f6d424ac-098d-eb11-b1ac-002248155ce7",
+            "systemuserid": "f6d424ac-098d-eb11-b1ac-002248155ce7",
+            "photourl": null
+          }
+        },
+        {
+          "@odata.etag": "W/\"511212754\"",
+          "bookableresourceid": "ad495c22-865c-ec11-8f8f-002248156ca8",
+          "name": "Fabio Phang",
+          "resourcetype": 3,
+          "UserId": {
+            "ownerid": "ff84f3f5-2057-ec11-8f8f-0022481484fb",
+            "systemuserid": "ff84f3f5-2057-ec11-8f8f-0022481484fb",
+            "photourl": null
+          }
+        },
+        {
+          "@odata.etag": "W/\"506599742\"",
+          "bookableresourceid": "ee203627-6b72-ec11-8942-002248158359",
+          "name": "Matthew Mccrorie",
+          "resourcetype": 3,
+          "UserId": {
+            "ownerid": "1971696a-8338-ec11-8c64-0022481567b9",
+            "systemuserid": "1971696a-8338-ec11-8c64-0022481567b9",
+            "photourl": null
+          }
+        },
+        {
+          "@odata.etag": "W/\"73625899\"",
+          "bookableresourceid": "c260b0d3-927d-ec11-8d20-0022481589ab",
+          "name": "Harold's SSG",
+          "resourcetype": 5,
+          "UserId": null
+        },
+        {
+          "@odata.etag": "W/\"60642235\"",
+          "bookableresourceid": "50a3b059-6510-ec11-b6e6-002248158fa3",
+          "name": "Leff's Agency",
+          "resourcetype": 5,
+          "UserId": null
+        },
+        {
+          "@odata.etag": "W/\"506599621\"",
+          "bookableresourceid": "ef98fcf8-df70-ec11-8f8e-002248159071",
+          "name": "Bhupesh Singal",
+          "resourcetype": 3,
+          "UserId": {
+            "ownerid": "21a8c1b1-7f6f-ec11-8f8e-002248159d64",
+            "systemuserid": "21a8c1b1-7f6f-ec11-8f8e-002248159d64",
+            "photourl": null
+          }
+        },
+        {
+          "@odata.etag": "W/\"506599700\"",
+          "bookableresourceid": "66b5019e-e070-ec11-8f8e-002248159071",
+          "name": "Karin Piasevoli",
+          "resourcetype": 3,
+          "UserId": {
+            "ownerid": "3b7801c9-806f-ec11-8f8e-0022481595fb",
+            "systemuserid": "3b7801c9-806f-ec11-8f8e-0022481595fb",
+            "photourl": null
+          }
+        },
+        {
+          "@odata.etag": "W/\"506599727\"",
+          "bookableresourceid": "8d123127-e170-ec11-8f8e-002248159071",
+          "name": "Kylie Dorahy",
+          "resourcetype": 3,
+          "UserId": {
+            "ownerid": "c98657da-806f-ec11-8f8e-002248159d64",
+            "systemuserid": "c98657da-806f-ec11-8f8e-002248159d64",
+            "photourl": null
+          }
+        },
+        {
+          "@odata.etag": "W/\"506599668\"",
+          "bookableresourceid": "61047d85-e170-ec11-8f8e-002248159071",
+          "name": "Jennifer Crowe",
+          "resourcetype": 3,
+          "UserId": {
+            "ownerid": "ab41aee5-806f-ec11-8f8e-0022481596cd",
+            "systemuserid": "ab41aee5-806f-ec11-8f8e-0022481596cd",
+            "photourl": null
+          }
+        },
+        {
+          "@odata.etag": "W/\"72695574\"",
+          "bookableresourceid": "26366cb3-e170-ec11-8f8e-002248159071",
+          "name": "Susan Thornhill",
+          "resourcetype": 3,
+          "UserId": {
+            "ownerid": "d49e83f3-806f-ec11-8f8e-0022481595fb",
+            "systemuserid": "d49e83f3-806f-ec11-8f8e-0022481595fb",
+            "photourl": null
+          }
+        },
+        {
+          "@odata.etag": "W/\"506599537\"",
+          "bookableresourceid": "1254e3ee-e170-ec11-8f8e-002248159071",
+          "name": "Alicia Sandles",
+          "resourcetype": 3,
+          "UserId": {
+            "ownerid": "c36b94fa-806f-ec11-8f8e-0022481595fb",
+            "systemuserid": "c36b94fa-806f-ec11-8f8e-0022481595fb",
+            "photourl": null
+          }
+        },
+        {
+          "@odata.etag": "W/\"549840636\"",
+          "bookableresourceid": "c7d51342-e270-ec11-8f8e-002248159071",
+          "name": "Joanmar Webster-This is added for testing Name field in BMR TABLE - Testing Again to check max BR na",
+          "resourcetype": 3,
+          "UserId": {
+            "ownerid": "c0cd4d06-816f-ec11-8f8e-0022481596cd",
+            "systemuserid": "c0cd4d06-816f-ec11-8f8e-0022481596cd",
+            "photourl": null
+          }
+        },
+        {
+          "@odata.etag": "W/\"135742049\"",
+          "bookableresourceid": "07a266d1-a716-ec11-b6e6-0022481834f0",
+          "name": "Ron Lee - SSG Visit",
+          "resourcetype": 5,
+          "UserId": null
+        },
+        {
+          "@odata.etag": "W/\"46842557\"",
+          "bookableresourceid": "be715d2a-5bc3-eb11-bacc-002248183900",
+          "name": "Medical Staff",
+          "resourcetype": 5,
+          "UserId": null
+        },
+        {
+          "@odata.etag": "W/\"66535164\"",
+          "bookableresourceid": "bd5f9907-602d-ec11-b6e6-002248183e76",
+          "name": "Ronen Tejaya",
+          "resourcetype": 3,
+          "UserId": {
+            "ownerid": "4a0b5d6d-1015-ec11-b6e6-0022481833e5",
+            "systemuserid": "4a0b5d6d-1015-ec11-b6e6-0022481833e5",
+            "photourl": null
+          }
+        },
+        {
+          "@odata.etag": "W/\"61880562\"",
+          "bookableresourceid": "2cbb0945-2a20-ec11-b6e6-002248185149",
+          "name": "Vaucluse SSG",
+          "resourcetype": 5,
+          "UserId": null
+        },
+      ]
+    });
 
-
-      resolve({
-        "@odata.context": "https://aahdevelopment.crm6.dynamics.com/api/data/v9.1/$metadata#bookableresources(name,resourcetype,UserId(photourl))",
-        "value": [
-          {
-            "@odata.etag": "W/\"566454569\"",
-            "bookableresourceid": "b3141cf1-91e1-ee11-904c-000d3aca6924",
-            "name": "Jamie Higgins",
-            "resourcetype": 3,
-            "UserId": {
-              "ownerid": "cc428a1d-ac0b-ed11-b83d-00224891bbb1",
-              "systemuserid": "cc428a1d-ac0b-ed11-b83d-00224891bbb1",
-              "photourl": null
-            }
-          },
-          {
-            "@odata.etag": "W/\"480193957\"",
-            "bookableresourceid": "157d1c09-92e1-ee11-904c-000d3aca6924",
-            "name": "Jonathan Stacey",
-            "resourcetype": 3,
-            "UserId": {
-              "ownerid": "353c0984-c780-ed11-81ad-00224893b533",
-              "systemuserid": "353c0984-c780-ed11-81ad-00224893b533",
-              "photourl": null
-            }
-          },
-          {
-            "@odata.etag": "W/\"511212808\"",
-            "bookableresourceid": "c21bd34a-a606-ef11-9f89-000d3acb40a4",
-            "name": "Kerrie Ristau",
-            "resourcetype": 3,
-            "UserId": {
-              "ownerid": "c5ed65c6-2a49-ed11-bba2-00224893be4a",
-              "systemuserid": "c5ed65c6-2a49-ed11-bba2-00224893be4a",
-              "photourl": null
-            }
-          },
-          {
-            "@odata.etag": "W/\"564961242\"",
-            "bookableresourceid": "e12cbc88-a606-ef11-9f89-000d3acb40a4",
-            "name": "Edward Lo",
-            "resourcetype": 3,
-            "UserId": {
-              "ownerid": "284848dc-fc54-ed11-9562-00224893b1c0",
-              "systemuserid": "284848dc-fc54-ed11-9562-00224893b1c0",
-              "photourl": null
-            }
-          },
-          {
-            "@odata.etag": "W/\"480195234\"",
-            "bookableresourceid": "f3dc76b9-a606-ef11-9f89-000d3acb40a4",
-            "name": "Sacha Crick",
-            "resourcetype": 3,
-            "UserId": {
-              "ownerid": "fba9324c-a60c-ed11-b83d-002248128c80",
-              "systemuserid": "fba9324c-a60c-ed11-b83d-002248128c80",
-              "photourl": null
-            }
-          },
-          {
-            "@odata.etag": "W/\"525968845\"",
-            "bookableresourceid": "4b425a52-c244-ef11-a316-000d3acbd62b",
-            "name": "Alan Dunn",
-            "resourcetype": 3,
-            "UserId": {
-              "ownerid": "bc0ad1ed-b371-ed11-81ac-00224893b82f",
-              "systemuserid": "bc0ad1ed-b371-ed11-81ac-00224893b82f",
-              "photourl": null
-            }
-          },
-          {
-            "@odata.etag": "W/\"554373331\"",
-            "bookableresourceid": "027b0c5c-fa6f-ef11-a671-000d3acbd62b",
-            "name": "Adam Richards",
-            "resourcetype": 3,
-            "UserId": {
-              "ownerid": "5710d3db-87d9-ed11-a7c7-00224893b6c3",
-              "systemuserid": "5710d3db-87d9-ed11-a7c7-00224893b6c3",
-              "photourl": null
-            }
-          },
-          {
-            "@odata.etag": "W/\"533197331\"",
-            "bookableresourceid": "8607eb57-fb6f-ef11-a671-000d3acbd62b",
-            "name": "A STEP AHEAD IN FOOTCARE PTY LIMITED",
-            "resourcetype": 5,
-            "UserId": null
-          },
-          {
-            "@odata.etag": "W/\"536697240\"",
-            "bookableresourceid": "59034803-2397-ef11-8a69-000d3ad23c5b",
-            "name": "\tIKLEAN SERVICES (NORTH-WEST) PTY LTD",
-            "resourcetype": 5,
-            "UserId": null
-          },
-          {
-            "@odata.etag": "W/\"45407734\"",
-            "bookableresourceid": "331eca6a-5a51-eb11-a812-000d3ae11ff1",
-            "name": "Nathan Gouldberg",
-            "resourcetype": 5,
-            "UserId": null
-          },
-          {
-            "@odata.etag": "W/\"566754433\"",
-            "bookableresourceid": "6d616491-a106-ef11-9f89-002248100a21",
-            "name": "Clancy",
-            "resourcetype": 3,
-            "UserId": {
-              "ownerid": "c2f43a16-fbe1-ec11-bb3d-00224892f217",
-              "systemuserid": "c2f43a16-fbe1-ec11-bb3d-00224892f217",
-              "photourl": null
-            }
-          },
-          {
-            "@odata.etag": "W/\"480193942\"",
-            "bookableresourceid": "e7c99055-f2ea-ee11-a1fd-00224810de46",
-            "name": "Balaji Mariappan",
-            "resourcetype": 3,
-            "UserId": {
-              "ownerid": "9ceffa77-4878-ee11-8179-00224898a6e5",
-              "systemuserid": "9ceffa77-4878-ee11-8179-00224898a6e5",
-              "photourl": null
-            }
-          },
-          {
-            "@odata.etag": "W/\"83294117\"",
-            "bookableresourceid": "0f5729ba-9409-ed11-82e5-002248112e98",
-            "name": "Felix Yu",
-            "resourcetype": 3,
-            "UserId": {
-              "ownerid": "234f263c-63fb-ec11-82e6-002248112e98",
-              "systemuserid": "234f263c-63fb-ec11-82e6-002248112e98",
-              "photourl": null
-            }
-          },
-          {
-            "@odata.etag": "W/\"87370982\"",
-            "bookableresourceid": "ccac2631-aff6-ec11-82e7-002248112e98",
-            "name": "Heolle Olleres",
-            "resourcetype": 3,
-            "UserId": {
-              "ownerid": "3828dfb0-81dd-ec11-bb3c-002248951320",
-              "systemuserid": "3828dfb0-81dd-ec11-bb3c-002248951320",
-              "photourl": null
-            }
-          },
-          {
-            "@odata.etag": "W/\"571064529\"",
-            "bookableresourceid": "481ef7cb-3a56-f011-bec2-002248129443",
-            "name": "Aachal Shrestha",
-            "resourcetype": 3,
-            "UserId": {
-              "ownerid": "5cd87cda-529a-ee11-be37-00224898a934",
-              "systemuserid": "5cd87cda-529a-ee11-be37-00224898a934",
-              "photourl": null
-            }
-          },
-          {
-            "@odata.etag": "W/\"45407735\"",
-            "bookableresourceid": "f5a2a1dd-3077-eb11-a812-002248145e5a",
-            "name": "Qwerty Allied Health",
-            "resourcetype": 5,
-            "UserId": null
-          },
-          {
-            "@odata.etag": "W/\"45407736\"",
-            "bookableresourceid": "7adb98e6-bb69-eb11-a812-00224814616c",
-            "name": "Sehar Suleman",
-            "resourcetype": 3,
-            "UserId": {
-              "ownerid": "1df2c953-3038-eb11-bf69-00224814f9a4",
-              "systemuserid": "1df2c953-3038-eb11-bf69-00224814f9a4",
-              "photourl": null
-            }
-          },
-          {
-            "@odata.etag": "W/\"45407737\"",
-            "bookableresourceid": "68c5a7f8-bb69-eb11-a812-00224814616c",
-            "name": "Noah Gillham",
-            "resourcetype": 3,
-            "UserId": {
-              "ownerid": "1a5f1471-3338-eb11-bf69-00224814f9a4",
-              "systemuserid": "1a5f1471-3338-eb11-bf69-00224814f9a4",
-              "photourl": null
-            }
-          },
-          {
-            "@odata.etag": "W/\"45407738\"",
-            "bookableresourceid": "6005d80a-bc69-eb11-a812-00224814616c",
-            "name": "Kthryn Bondoc",
-            "resourcetype": 3,
-            "UserId": {
-              "ownerid": "0c995e4e-3438-eb11-bf69-00224814f9a4",
-              "systemuserid": "0c995e4e-3438-eb11-bf69-00224814f9a4",
-              "photourl": null
-            }
-          },
-          {
-            "@odata.etag": "W/\"45407739\"",
-            "bookableresourceid": "2870db59-1e90-eb11-b1ac-00224814651e",
-            "name": "Chadi Tannous",
-            "resourcetype": 3,
-            "UserId": {
-              "ownerid": "641ab393-5160-eb11-89f5-000d3a791111",
-              "systemuserid": "641ab393-5160-eb11-89f5-000d3a791111",
-              "photourl": null
-            }
-          },
-          {
-            "@odata.etag": "W/\"45407740\"",
-            "bookableresourceid": "05e98dde-1f90-eb11-b1ac-00224814651e",
-            "name": "John Brown",
-            "resourcetype": 5,
-            "UserId": null
-          },
-          {
-            "@odata.etag": "W/\"45407741\"",
-            "bookableresourceid": "ad78810c-2090-eb11-b1ac-00224814651e",
-            "name": "David Brown",
-            "resourcetype": 5,
-            "UserId": null
-          },
-          {
-            "@odata.etag": "W/\"50945828\"",
-            "bookableresourceid": "c565246b-1aec-eb11-bacb-00224814b19c",
-            "name": "Sue Sweeney",
-            "resourcetype": 3,
-            "UserId": {
-              "ownerid": "1495ca18-fb4a-eb11-bb23-000d3a797a6f",
-              "systemuserid": "1495ca18-fb4a-eb11-bb23-000d3a797a6f",
-              "photourl": null
-            }
-          },
-          {
-            "@odata.etag": "W/\"45419806\"",
-            "bookableresourceid": "b8bbfd6d-f3b1-eb11-8236-00224814b363",
-            "name": "Old Mate's Agency",
-            "resourcetype": 1,
-            "UserId": null
-          },
-          {
-            "@odata.etag": "W/\"51339408\"",
-            "bookableresourceid": "b03dab72-30e8-eb11-bacb-00224814b853",
-            "name": "Nilanthie Sivasubramaniam",
-            "resourcetype": 3,
-            "UserId": {
-              "ownerid": "778a4c7a-3038-eb11-bf69-00224814f9a4",
-              "systemuserid": "778a4c7a-3038-eb11-bf69-00224814f9a4",
-              "photourl": null
-            }
-          },
-          {
-            "@odata.etag": "W/\"564985542\"",
-            "bookableresourceid": "402fd944-4555-eb11-a812-00224814c8e9",
-            "name": "Ali Khan",
-            "resourcetype": 3,
-            "UserId": {
-              "ownerid": "cbd09f56-3238-eb11-a813-000d3ae11ff1",
-              "systemuserid": "cbd09f56-3238-eb11-a813-000d3ae11ff1",
-              "photourl": null
-            }
-          },
-          {
-            "@odata.etag": "W/\"45407743\"",
-            "bookableresourceid": "7a3c8a1d-bd53-eb11-a812-00224814ccfa",
-            "name": "Daniel",
-            "resourcetype": 3,
-            "UserId": {
-              "ownerid": "339646e9-3038-eb11-bf69-00224814f9a4",
-              "systemuserid": "339646e9-3038-eb11-bf69-00224814f9a4",
-              "photourl": null
-            }
-          },
-          {
-            "@odata.etag": "W/\"51865511\"",
-            "bookableresourceid": "df7e8147-1b56-eb11-a812-00224814ccfa",
-            "name": "Lovely Care Agency",
-            "resourcetype": 2,
-            "UserId": null
-          },
-          {
-            "@odata.etag": "W/\"51508754\"",
-            "bookableresourceid": "66c14257-e8f0-eb11-94ef-00224814e316",
-            "name": "Malachi Mashiah",
-            "resourcetype": 3,
-            "UserId": {
-              "ownerid": "1d1ab3ce-0d40-eb11-bf70-000d3a795b83",
-              "systemuserid": "1d1ab3ce-0d40-eb11-bf70-000d3a795b83",
-              "photourl": null
-            }
-          },
-          {
-            "@odata.etag": "W/\"70175959\"",
-            "bookableresourceid": "e2605644-02f1-eb11-94ef-00224814e316",
-            "name": "Philip Blow",
-            "resourcetype": 3,
-            "UserId": {
-              "ownerid": "c4218bef-3038-eb11-bf69-00224814f9a4",
-              "systemuserid": "c4218bef-3038-eb11-bf69-00224814f9a4",
-              "photourl": null
-            }
-          },
-          {
-            "@odata.etag": "W/\"51412234\"",
-            "bookableresourceid": "66a0d795-7def-eb11-94ef-00224814e3f2",
-            "name": "Juliana Teoh",
-            "resourcetype": 3,
-            "UserId": {
-              "ownerid": "51fa7ae4-098d-eb11-b1ac-002248155ce7",
-              "systemuserid": "51fa7ae4-098d-eb11-b1ac-002248155ce7",
-              "photourl": null
-            }
-          },
-          {
-            "@odata.etag": "W/\"48400580\"",
-            "bookableresourceid": "18b5397a-caa3-eb11-b1ac-0022481508c4",
-            "name": "Jeffrey Wonger",
-            "resourcetype": 3,
-            "UserId": {
-              "ownerid": "d1ad2b4c-3038-eb11-bf69-00224814f9a4",
-              "systemuserid": "d1ad2b4c-3038-eb11-bf69-00224814f9a4",
-              "photourl": null
-            }
-          },
-          {
-            "@odata.etag": "W/\"80265779\"",
-            "bookableresourceid": "41506cb7-8e60-eb11-a812-00224815157c",
-            "name": "Caroline Olminkhof",
-            "resourcetype": 3,
-            "UserId": {
-              "ownerid": "6899e557-3138-eb11-a813-000d3ae11ff1",
-              "systemuserid": "6899e557-3138-eb11-a813-000d3ae11ff1",
-              "photourl": null
-            }
-          },
-          {
-            "@odata.etag": "W/\"45407747\"",
-            "bookableresourceid": "f30360c9-8e60-eb11-a812-00224815157c",
-            "name": "Steven Sellen",
-            "resourcetype": 3,
-            "UserId": {
-              "ownerid": "1971814f-3338-eb11-bf69-00224814f9a4",
-              "systemuserid": "1971814f-3338-eb11-bf69-00224814f9a4",
-              "photourl": null
-            }
-          },
-          {
-            "@odata.etag": "W/\"564987038\"",
-            "bookableresourceid": "a5ba7ae1-8e60-eb11-a812-00224815157c",
-            "name": "Stephen Pocknall",
-            "resourcetype": 3,
-            "UserId": {
-              "ownerid": "1cb57a21-3138-eb11-a813-000d3ae11ff1",
-              "systemuserid": "1cb57a21-3138-eb11-a813-000d3ae11ff1",
-              "photourl": null
-            }
-          },
-          {
-            "@odata.etag": "W/\"564627980\"",
-            "bookableresourceid": "9659b5e8-2343-eb11-a812-002248151e02",
-            "name": "Joel Yeo",
-            "resourcetype": 3,
-            "UserId": {
-              "ownerid": "89d9dd7d-3338-eb11-bf69-00224814f9a4",
-              "systemuserid": "89d9dd7d-3338-eb11-bf69-00224814f9a4",
-              "photourl": null
-            }
-          },
-          {
-            "@odata.etag": "W/\"45407750\"",
-            "bookableresourceid": "b39bc4c4-6851-eb11-a812-002248151e02",
-            "name": "Raymond Lesmana",
-            "resourcetype": 3,
-            "UserId": {
-              "ownerid": "2bfc1d32-2c37-eb11-bf72-000d3a7970eb",
-              "systemuserid": "2bfc1d32-2c37-eb11-bf72-000d3a7970eb",
-              "photourl": null
-            }
-          },
-          {
-            "@odata.etag": "W/\"68821505\"",
-            "bookableresourceid": "30c5589a-9f4c-ec11-8f8e-002248151e5b",
-            "name": "Anglicare Health Centre Castle Hill",
-            "resourcetype": 5,
-            "UserId": null
-          },
-          {
-            "@odata.etag": "W/\"506070363\"",
-            "bookableresourceid": "76e033fa-e24c-ec11-8f8e-002248151e5b",
-            "name": "Alex Peterson",
-            "resourcetype": 3,
-            "UserId": {
-              "ownerid": "792e7a88-da1d-ec11-b6e7-00224818546f",
-              "systemuserid": "792e7a88-da1d-ec11-b6e7-00224818546f",
-              "photourl": null
-            }
-          },
-          {
-            "@odata.etag": "W/\"81622780\"",
-            "bookableresourceid": "bbb97b20-3b82-eb11-a812-0022481522dc",
-            "name": "Alexander Peterson",
-            "resourcetype": 3,
-            "UserId": {
-              "ownerid": "cb049c54-3438-eb11-bf69-00224814f9a4",
-              "systemuserid": "cb049c54-3438-eb11-bf69-00224814f9a4",
-              "photourl": null
-            }
-          },
-          {
-            "@odata.etag": "W/\"50675095\"",
-            "bookableresourceid": "0b2892be-da71-eb11-a812-002248153009",
-            "name": "Bathsheba Benjesse",
-            "resourcetype": 5,
-            "UserId": null
-          },
-          {
-            "@odata.etag": "W/\"50226239\"",
-            "bookableresourceid": "b8483eda-b6a8-eb11-9442-0022481533e7",
-            "name": "Darrel DCosta",
-            "resourcetype": 3,
-            "UserId": {
-              "ownerid": "bfe696d9-51a2-eb11-b1ac-002248150b30",
-              "systemuserid": "bfe696d9-51a2-eb11-b1ac-002248150b30",
-              "photourl": null
-            }
-          },
-          {
-            "@odata.etag": "W/\"62286762\"",
-            "bookableresourceid": "3d833dcd-9325-ec11-b6e6-002248153b9c",
-            "name": "Mount Everest SSG",
-            "resourcetype": 5,
-            "UserId": null
-          },
-          {
-            "@odata.etag": "W/\"45407753\"",
-            "bookableresourceid": "f1e07e6a-d08d-eb11-b1ac-002248155ce7",
-            "name": "Preety Singh",
-            "resourcetype": 3,
-            "UserId": {
-              "ownerid": "09095b86-e577-eb11-a812-002248145319",
-              "systemuserid": "09095b86-e577-eb11-a812-002248145319",
-              "photourl": null
-            }
-          },
-          {
-            "@odata.etag": "W/\"45407754\"",
-            "bookableresourceid": "ec57b619-068d-eb11-b1ac-002248155d0e",
-            "name": "Grace Boxall",
-            "resourcetype": 3,
-            "UserId": {
-              "ownerid": "35a514e3-058d-eb11-b1ac-002248155ce7",
-              "systemuserid": "35a514e3-058d-eb11-b1ac-002248155ce7",
-              "photourl": null
-            }
-          },
-          {
-            "@odata.etag": "W/\"48533958\"",
-            "bookableresourceid": "8176013b-078d-eb11-b1ac-002248155d0e",
-            "name": "Qiang Zhang",
-            "resourcetype": 3,
-            "UserId": {
-              "ownerid": "0611442c-068d-eb11-b1ac-002248155d0e",
-              "systemuserid": "0611442c-068d-eb11-b1ac-002248155d0e",
-              "photourl": null
-            }
-          },
-          {
-            "@odata.etag": "W/\"506599648\"",
-            "bookableresourceid": "1511e95f-078d-eb11-b1ac-002248155d0e",
-            "name": "Hong Liu",
-            "resourcetype": 3,
-            "UserId": {
-              "ownerid": "b7d31101-068d-eb11-b1ac-002248155d0e",
-              "systemuserid": "b7d31101-068d-eb11-b1ac-002248155d0e",
-              "photourl": null
-            }
-          },
-          {
-            "@odata.etag": "W/\"506599635\"",
-            "bookableresourceid": "7ea72179-078d-eb11-b1ac-002248155d0e",
-            "name": "Hanae Sakuma",
-            "resourcetype": 3,
-            "UserId": {
-              "ownerid": "ef428713-068d-eb11-b1ac-002248155d0e",
-              "systemuserid": "ef428713-068d-eb11-b1ac-002248155d0e",
-              "photourl": null
-            }
-          },
-          {
-            "@odata.etag": "W/\"506599756\"",
-            "bookableresourceid": "3f008f28-0a8d-eb11-b1ac-002248155d0e",
-            "name": "Rafael Santana",
-            "resourcetype": 3,
-            "UserId": {
-              "ownerid": "63895202-3438-eb11-bf69-00224814f9a4",
-              "systemuserid": "63895202-3438-eb11-bf69-00224814f9a4",
-              "photourl": null
-            }
-          },
-          {
-            "@odata.etag": "W/\"564984793\"",
-            "bookableresourceid": "cec4bf85-0a8d-eb11-b1ac-002248155d0e",
-            "name": "Emily Teale",
-            "resourcetype": 3,
-            "UserId": {
-              "ownerid": "f6d424ac-098d-eb11-b1ac-002248155ce7",
-              "systemuserid": "f6d424ac-098d-eb11-b1ac-002248155ce7",
-              "photourl": null
-            }
-          },
-          {
-            "@odata.etag": "W/\"511212754\"",
-            "bookableresourceid": "ad495c22-865c-ec11-8f8f-002248156ca8",
-            "name": "Fabio Phang",
-            "resourcetype": 3,
-            "UserId": {
-              "ownerid": "ff84f3f5-2057-ec11-8f8f-0022481484fb",
-              "systemuserid": "ff84f3f5-2057-ec11-8f8f-0022481484fb",
-              "photourl": null
-            }
-          },
-          {
-            "@odata.etag": "W/\"506599742\"",
-            "bookableresourceid": "ee203627-6b72-ec11-8942-002248158359",
-            "name": "Matthew Mccrorie",
-            "resourcetype": 3,
-            "UserId": {
-              "ownerid": "1971696a-8338-ec11-8c64-0022481567b9",
-              "systemuserid": "1971696a-8338-ec11-8c64-0022481567b9",
-              "photourl": null
-            }
-          },
-          {
-            "@odata.etag": "W/\"73625899\"",
-            "bookableresourceid": "c260b0d3-927d-ec11-8d20-0022481589ab",
-            "name": "Harold's SSG",
-            "resourcetype": 5,
-            "UserId": null
-          },
-          {
-            "@odata.etag": "W/\"60642235\"",
-            "bookableresourceid": "50a3b059-6510-ec11-b6e6-002248158fa3",
-            "name": "Leff's Agency",
-            "resourcetype": 5,
-            "UserId": null
-          },
-          {
-            "@odata.etag": "W/\"506599621\"",
-            "bookableresourceid": "ef98fcf8-df70-ec11-8f8e-002248159071",
-            "name": "Bhupesh Singal",
-            "resourcetype": 3,
-            "UserId": {
-              "ownerid": "21a8c1b1-7f6f-ec11-8f8e-002248159d64",
-              "systemuserid": "21a8c1b1-7f6f-ec11-8f8e-002248159d64",
-              "photourl": null
-            }
-          },
-          {
-            "@odata.etag": "W/\"506599700\"",
-            "bookableresourceid": "66b5019e-e070-ec11-8f8e-002248159071",
-            "name": "Karin Piasevoli",
-            "resourcetype": 3,
-            "UserId": {
-              "ownerid": "3b7801c9-806f-ec11-8f8e-0022481595fb",
-              "systemuserid": "3b7801c9-806f-ec11-8f8e-0022481595fb",
-              "photourl": null
-            }
-          },
-          {
-            "@odata.etag": "W/\"506599727\"",
-            "bookableresourceid": "8d123127-e170-ec11-8f8e-002248159071",
-            "name": "Kylie Dorahy",
-            "resourcetype": 3,
-            "UserId": {
-              "ownerid": "c98657da-806f-ec11-8f8e-002248159d64",
-              "systemuserid": "c98657da-806f-ec11-8f8e-002248159d64",
-              "photourl": null
-            }
-          },
-          {
-            "@odata.etag": "W/\"506599668\"",
-            "bookableresourceid": "61047d85-e170-ec11-8f8e-002248159071",
-            "name": "Jennifer Crowe",
-            "resourcetype": 3,
-            "UserId": {
-              "ownerid": "ab41aee5-806f-ec11-8f8e-0022481596cd",
-              "systemuserid": "ab41aee5-806f-ec11-8f8e-0022481596cd",
-              "photourl": null
-            }
-          },
-          {
-            "@odata.etag": "W/\"72695574\"",
-            "bookableresourceid": "26366cb3-e170-ec11-8f8e-002248159071",
-            "name": "Susan Thornhill",
-            "resourcetype": 3,
-            "UserId": {
-              "ownerid": "d49e83f3-806f-ec11-8f8e-0022481595fb",
-              "systemuserid": "d49e83f3-806f-ec11-8f8e-0022481595fb",
-              "photourl": null
-            }
-          },
-          {
-            "@odata.etag": "W/\"506599537\"",
-            "bookableresourceid": "1254e3ee-e170-ec11-8f8e-002248159071",
-            "name": "Alicia Sandles",
-            "resourcetype": 3,
-            "UserId": {
-              "ownerid": "c36b94fa-806f-ec11-8f8e-0022481595fb",
-              "systemuserid": "c36b94fa-806f-ec11-8f8e-0022481595fb",
-              "photourl": null
-            }
-          },
-          {
-            "@odata.etag": "W/\"549840636\"",
-            "bookableresourceid": "c7d51342-e270-ec11-8f8e-002248159071",
-            "name": "Joanmar Webster-This is added for testing Name field in BMR TABLE - Testing Again to check max BR na",
-            "resourcetype": 3,
-            "UserId": {
-              "ownerid": "c0cd4d06-816f-ec11-8f8e-0022481596cd",
-              "systemuserid": "c0cd4d06-816f-ec11-8f8e-0022481596cd",
-              "photourl": null
-            }
-          },
-          {
-            "@odata.etag": "W/\"135742049\"",
-            "bookableresourceid": "07a266d1-a716-ec11-b6e6-0022481834f0",
-            "name": "Ron Lee - SSG Visit",
-            "resourcetype": 5,
-            "UserId": null
-          },
-          {
-            "@odata.etag": "W/\"46842557\"",
-            "bookableresourceid": "be715d2a-5bc3-eb11-bacc-002248183900",
-            "name": "Medical Staff",
-            "resourcetype": 5,
-            "UserId": null
-          },
-          {
-            "@odata.etag": "W/\"66535164\"",
-            "bookableresourceid": "bd5f9907-602d-ec11-b6e6-002248183e76",
-            "name": "Ronen Tejaya",
-            "resourcetype": 3,
-            "UserId": {
-              "ownerid": "4a0b5d6d-1015-ec11-b6e6-0022481833e5",
-              "systemuserid": "4a0b5d6d-1015-ec11-b6e6-0022481833e5",
-              "photourl": null
-            }
-          },
-          {
-            "@odata.etag": "W/\"61880562\"",
-            "bookableresourceid": "2cbb0945-2a20-ec11-b6e6-002248185149",
-            "name": "Vaucluse SSG",
-            "resourcetype": 5,
-            "UserId": null
-          },
-        ]
-      });
-    }, delayMs);
   });
 }
 
@@ -1749,7 +1739,7 @@ async function handleGetResorces() {
 
 
 async function setLeaveData() {
-  console.log("hereeeeee")
+
   showLoading();
 
   const leaveData = await new Promise((resolve) => {

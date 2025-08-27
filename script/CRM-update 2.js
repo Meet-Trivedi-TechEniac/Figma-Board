@@ -25,6 +25,14 @@ let resorcesState = {
   resourceData: [],
 };
 
+const eventStatus = {
+  isLoading: true,
+  isError: false,
+  eventData: [],
+};
+
+let currentRequestToken = 0; // Global counter
+
 function setIntialData() {
   eventData = [
     {
@@ -1107,14 +1115,21 @@ function renderTooltipContent(arg) {
   return `
     <div class="custom-tooltip-content">
       <p class="event-desc-id">${arg.event.extendedProps.employeeID}</p>
-      <p>12/11/2025 - 18/11/2025</p>
+     
+      <p>${new Date(arg.event.start).toLocaleDateString()} - ${new Date(
+    arg.event.end
+  ).toLocaleDateString()}</p>
       <div class="event-desc-grid">
         <p>Address (Work Order)</p>
         <p>${arg.event.extendedProps.address}</p>
-        <p>Resources</p>
-        <p>${arg.event.extendedProps.eventType}</p>
+        <p>Suburb</p>
+        <p>${arg.event.extendedProps.suburb}</p>
         <p>Booking Status</p>
         <p>${arg.event.extendedProps.bookingStatus}</p>
+        <p>Agreement Booking</p>
+        <p><a href="/agreement-booking/${
+          arg.event.extendedProps.agreementBookingSetupId
+        }" target="_blank">View Agreement</a></p>
       </div>
     </div>
   `;
@@ -1122,7 +1137,7 @@ function renderTooltipContent(arg) {
 
 function renderStatusIcon(status) {
   const icon = {
-    scheduled: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" color="#4F7AB3">
+    Processed: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" color="#4F7AB3">
                 <path
                     d="M15.3437 4.84375L16.5937 3.40625C16.8437 3.125 16.8125 2.65625 16.5313 2.40625C16.1875 2.15625 15.75 2.1875 15.5 2.5L14.1875 4.0625C13.1563 3.46875 11.9687 3.0625 10.7187 2.96875V1.9375H12.7188C13.0938 1.9375 13.4063 1.625 13.4063 1.25C13.4063 0.875 13.0938 0.5625 12.7188 0.5625H7.3125C6.9375 0.5625 6.625 0.875 6.625 1.25C6.625 1.625 6.9375 1.9375 7.3125 1.9375H9.3125V2.9375C5.0625 3.28125 1.71875 6.84375 1.71875 11.1875C1.71875 15.75 5.4375 19.4688 10 19.4688C14.5625 19.4688 18.2812 15.75 18.2812 11.1875C18.2812 8.65625 17.125 6.375 15.3437 4.84375ZM10 18.0625C6.21875 18.0625 3.125 14.9688 3.125 11.1875C3.125 7.40625 6.21875 4.3125 10 4.3125C13.7813 4.3125 16.875 7.40625 16.875 11.1875C16.875 14.9688 13.7813 18.0625 10 18.0625Z"
                     fill="currentColor" />
@@ -1130,7 +1145,7 @@ function renderStatusIcon(status) {
                     d="M10.6875 11.0625V7.4375C10.6875 7.0625 10.375 6.75 10 6.75C9.625 6.75 9.3125 7.0625 9.3125 7.4375V11.3437C9.3125 11.5312 9.375 11.7188 9.53125 11.8438L11.8438 14.1562C11.9688 14.2812 12.1563 14.375 12.3438 14.375C12.5313 14.375 12.7188 14.3125 12.8438 14.1562C13.125 13.875 13.125 13.4375 12.8438 13.1562L10.6875 11.0625Z"
                     fill="currentColor" />
             </svg>`,
-    cancelled: `<svg xmlns="http://www.w3.org/2000/svg" fill="#FA5252" viewBox="0 0 50 50" width="20px" height="20px">
+    Canceled: `<svg xmlns="http://www.w3.org/2000/svg" fill="#FA5252" viewBox="0 0 50 50" width="20px" height="20px">
                   <path d="M 25 2 C 12.309534 2 2 12.309534 2 25 C 2 37.690466 12.309534 48 25 48 C 37.690466 48 48 37.690466 48 25 C 48 12.309534 37.690466 2 25 2 z M 25 4 C 36.609534 4 46 13.390466 46 25 C 46 36.609534 36.609534 46 25 46 C 13.390466 46 4 36.609534 4 25 C 4 13.390466 13.390466 4 25 4 z M 32.990234 15.986328 A 1.0001 1.0001 0 0 0 32.292969 16.292969 L 25 23.585938 L 17.707031 16.292969 A 1.0001 1.0001 0 0 0 16.990234 15.990234 A 1.0001 1.0001 0 0 0 16.292969 17.707031 L 23.585938 25 L 16.292969 32.292969 A 1.0001 1.0001 0 1 0 17.707031 33.707031 L 25 26.414062 L 32.292969 33.707031 A 1.0001 1.0001 0 1 0 33.707031 32.292969 L 26.414062 25 L 33.707031 17.707031 A 1.0001 1.0001 0 0 0 32.990234 15.986328 z"/>
                 </svg>`,
     unscheduled: null,
@@ -1139,7 +1154,35 @@ function renderStatusIcon(status) {
   return icon[status] || " ";
 }
 
+function formatEventTime(date) {
+  // Use Intl.DateTimeFormat for localized formatting
+  const formatter = new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true, // Use 12-hour format
+    // timeZoneName: "short", // Get timezone abbreviation (e.g., "IST", "PST")
+  });
+
+  // Format the date and extract parts
+  const parts = formatter.formatToParts(new Date(date));
+  const formattedDate = parts
+    .map((part) => {
+      if (part.type === "timeZoneName") {
+        return `(${part.value})`; // Wrap timezone in parentheses
+      }
+      return part.value;
+    })
+    .join("")
+    .replace(/,\s/, " "); // Replace comma with space
+
+  return formattedDate;
+}
+
 function renderEventDetails(arg) {
+  console.log("args", arg);
   const start = new Date(arg.event.start);
   const end = new Date(arg.event.end);
   const diffMs = end - start;
@@ -1147,36 +1190,48 @@ function renderEventDetails(arg) {
   const hours = Math.floor(diffMins / 60);
   const minutes = diffMins % 60;
 
+  const nameArray = arg.event.extendedProps.employeeName.split(" ");
+  const firstName = nameArray[0] || "";
+  const lastName = nameArray.slice(1).join(" ") || "";
+
   const durationStr = `${hours}h ${minutes.toString().padStart(2, "0")}m`;
   arg.event.extendedProps.duration = durationStr;
 
   const tooltipHtml = renderTooltipContent(arg)
     .replace(/"/g, "&quot;") // Escape double quotes for title attribute
     .replace(/\n/g, ""); // Remove line breaks
+  console.log(
+    "arg.event.extendedProps.duration",
+    arg.event.extendedProps.duration
+  );
 
   return {
     html: `
-        <div class='event-disp-container' 
-         data-bs-toggle="tooltip"
-         data-bs-html="true" 
-         data-bs-placement="bottom"
-         data-popper-placement="left" 
-         data-bs-custom-class="custom-tooltip" 
-         title="${tooltipHtml}">
+        <div class='event-disp-container'
+        data-bs-toggle="tooltip"
+        data-bs-html="true"
+        data-bs-placement="bottom"
+        data-popper-placement="left"
+        data-bs-custom-class="custom-tooltip"
+        title="${tooltipHtml}">
         <div class="event-disp">
-            <p><span
-                    class="event-emp-id">${
-                      arg.event.extendedProps.employeeID
-                    }</span>${arg.event.extendedProps.employeeName}
-            </p>
-             <p>${arg.event.extendedProps.region}</p>
-            <p>${arg.event.extendedProps.eventType}</p>
-            <p>${arg.event.extendedProps.duration}</p>
+            <p>${firstName} ${lastName}</p> <!-- Display first name and last name -->
+            <p>${
+              arg.event.extendedProps.suburb || "N/A"
+            }</p> <!-- Display suburb -->
+            <!-- Display type of service -->
+            <p>${formatEventTime(start)} - ${
+      arg.event.extendedProps.duration
+    }</p> <!-- Display formatted start time -->
+             
+ 
+             <!-- Display duration -->
         </div>
-         <div class="event-disp-icon">
+        <div class="event-disp-icon">
+       
             ${renderStatusIcon(arg.event.extendedProps.bookingStatus)}
         </div>
-        </div>
+      </div>
     `,
   };
 }
@@ -1752,18 +1807,6 @@ function getTimeOffRequests() {
   );
 }
 
-function mapOverIntialData(response) {
-  return response.entities.map((r) => ({
-    id: r?.bookableresourceid,
-    title: r?.name,
-    extendedProps: {
-      imgUrl: r?.UserId?.photourl ?? "/Assets/profiles/R2.jpg",
-      name: r.name,
-      resourceType: `${r?.resourcetype}`,
-    },
-  }));
-}
-
 function mapOverLeaveData(response) {
   return response.entities.map((r) => ({
     id: r?._msdyn_resource_value,
@@ -1772,6 +1815,18 @@ function mapOverLeaveData(response) {
       imgUrl: r?.UserId?.entityimage_url ?? "/Assets/profiles/R2.jpg",
       name: r?.msdyn_name,
       resourceType: `${r?.resourcetype}` ?? "0",
+    },
+  }));
+}
+
+function mapOverIntialData(response) {
+  return response.entities.map((r) => ({
+    id: r?.bookableresourceid,
+    title: r?.name,
+    extendedProps: {
+      imgUrl: r?.UserId?.photourl ?? "/Assets/profiles/R2.jpg",
+      name: r.name,
+      resourceType: `${r?.resourcetype}`,
     },
   }));
 }
@@ -1807,6 +1862,50 @@ function handleGetResorces(getResources, mapResources) {
       ]);
     })
     .finally(() => refreshCalendarUI());
+}
+
+function handleGetResorces(getResources, mapResources) {
+  const requestToken = ++currentRequestToken; // Create a unique token for this call
+
+  resorcesState.isLoading = true;
+  resorcesState.isError = false;
+  resorcesState.resourceData = [];
+
+  window.ecCalendar.setOption("resources", [
+    { id: "loading", title: "Loading..." },
+  ]);
+
+  getResources()
+    .then((response) => {
+      // If this is not the latest request, ignore the result
+      if (requestToken !== currentRequestToken) return;
+
+      const mappedResources = mapResources(response);
+
+      resorcesState.isLoading = false;
+      resorcesState.resourceData = mappedResources;
+
+      resourceData = mappedResources;
+      window.ecCalendar.setOption("resources", mappedResources);
+    })
+    .catch((error) => {
+      // Ignore error if not latest request
+      if (requestToken !== currentRequestToken) return;
+
+      console.error("Error fetching resources:", error);
+      resorcesState.isLoading = false;
+      resorcesState.isError = true;
+
+      window.ecCalendar.setOption("resources", [
+        { id: "error", title: "Error loading resources" },
+      ]);
+    })
+    .finally(() => {
+      // Refresh UI only for the latest request
+      if (requestToken === currentRequestToken) {
+        refreshCalendarUI();
+      }
+    });
 }
 
 //Event Data
@@ -1866,8 +1965,78 @@ function getAgreementBookingDatesBetween() {
 }
 
 function handleEventFetch() {
-  // IMplemnt this one
-  getAgreementBookingDatesBetween().then().catch();
+  getAgreementBookingDatesBetween()
+    .then((response) => {
+      // Create a Set of valid resource IDs from resourceData
+
+      // Map CRM response to calendar events, only including events with valid resourceId
+      const statusMap = {
+        690970000: "Active",
+        690970001: "Processed",
+        690970002: "Canceled",
+      };
+      const mappedEvents = response.entities.map((event) => {
+        // Parse start date
+        const startDate = new Date(event.msdyn_bookingdate);
+        // Calculate end date by adding estimated duration (in minutes)
+        const durationMinutes =
+          event.msdyn_bookingsetup.msdyn_estimatedduration || 60; // Default to 60 minutes
+        const endDate = new Date(
+          startDate.getTime() + durationMinutes * 60 * 1000
+        );
+        // Construct address string
+        const addressParts = [
+          event?.msdyn_workorder?.msdyn_address1 || " ",
+          event?.msdyn_workorder?.msdyn_address2 || " ",
+          event?.msdyn_workorder?.msdyn_address3 || " ",
+          event?.msdyn_workorder?.msdyn_city || " ",
+          event?.msdyn_workorder?.msdyn_stateorprovince || " ",
+          event?.msdyn_workorder?.msdyn_postalcode || " ",
+          event?.msdyn_workorder?.msdyn_country || " ",
+        ]
+          .filter((part) => part)
+          .join(", ");
+        return {
+          resourceId: event?._msdyn_resource_value,
+          start: startDate,
+          end: endDate,
+          id: event?.msdyn_agreementbookingdateid,
+          type: "Full",
+          slotEventOverlap: true,
+          editable: false,
+          durationEditable: false,
+          eventStartEditable: false,
+          className: ["ec-event-active"],
+          extendedProps: {
+            bookingID: event?._msdyn_agreement_value,
+            employeeID: event?.msdyn_name,
+            employeeName: event?.msdyn_resource?.name || "N/A",
+            address: addressParts,
+            suburb: event?.msdyn_workorder?.msdyn_city || "N/A",
+            serviceType:
+              event?.msdyn_bookingsetup?._ang_incidenttype_value ||
+              "Care Worker",
+            bookingStatus: statusMap[event?.msdyn_status] || "Unknown",
+            region: event?.msdyn_workorder?._msdyn_serviceterritory_value,
+            agreementBookingSetupId:
+              event?.msdyn_bookingsetup?.msdyn_agreementbookingsetupid,
+          },
+        };
+      });
+      eventStatus.isLoading = false;
+      eventStatus.eventData = mappedEvents;
+      eventData = mappedEvents; // Update global eventData
+      console.log("Events fetched successfully:", mappedEvents);
+      // Update calendar with events
+      reRenderEvents();
+    })
+    .catch((error) => {
+      console.error("Error fetching events:", error.message);
+      eventStatus.isLoading = false;
+      eventStatus.isError = true;
+      eventData = [];
+      reRenderEvents(); // Clear events on error
+    });
 }
 
 // --- INIT ---
@@ -1876,6 +2045,7 @@ window.addEventListener("DOMContentLoaded", function () {
   setIntialData();
   handleFilterFetch();
   handleGetResorces(getBookableResources, mapOverIntialData);
+  handleEventFetch();
   chnageActivetab();
   this.window.refreshCalendarUI = refreshCalendarUI;
   this.window.handleEventFetch = handleEventFetch;
