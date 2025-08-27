@@ -12,6 +12,9 @@ let filterState = {
 let eventData = [];
 let resourceData = [];
 
+// Track which tab is active to decide coloring logic during fetches
+let isLeaveTabActive = false;
+
 let filterStatus = {
     isLoading: false,
     isError: false,
@@ -1207,6 +1210,7 @@ async function changeActivetab() {
     const leaveTabBtn = document.getElementById("leave-tab-btn");
 
     initalTabBtn.addEventListener("click", async (el) => {
+        isLeaveTabActive = false;
         // Change UI
         initalTabBtn.children[0].classList.add("active-tab-btn");
         leaveTabBtn.children[0].classList.remove("active-tab-btn");
@@ -1222,6 +1226,7 @@ async function changeActivetab() {
     });
 
     leaveTabBtn.addEventListener("click", async (el) => {
+        isLeaveTabActive = true;
         // Change UI
         leaveTabBtn.children[0].classList.add("active-tab-btn");
         initalTabBtn.children[0].classList.remove("active-tab-btn");
@@ -2755,6 +2760,25 @@ function handleGetResorces(getResources, mapResources) {
 }
 
 
+// Waits until resources have been loaded successfully before continuing
+function waitForResourcesReady(timeoutMs = 5000) {
+    const start = Date.now();
+    return new Promise((resolve, reject) => {
+        function check() {
+            if (!resorcesState.isLoading && resourceData && resourceData.length > 0) {
+                return resolve(true);
+            }
+            if (Date.now() - start > timeoutMs) {
+                // Resolve anyway to avoid blocking forever; downstream will handle empty resources
+                return resolve(false);
+            }
+            setTimeout(check, 50);
+        }
+        check();
+    });
+}
+
+
 function getAdjustedDateRangeFromCalendar() {
     if (!window.ecCalendar) {
         console.warn("Calendar not found.");
@@ -2864,70 +2888,15 @@ function getAgreementBookingDatesBetween() {
 
 
 function handleEventFetch() {
-    getAgreementBookingDatesBetween()
-        .then((response) => {
-            // Create a Set of valid resource IDs from resourceData
-
-            // Map CRM response to calendar events, only including events with valid resourceId
-            const statusMap = {
-                690970000: "Active",
-                690970001: "Processed",
-                690970002: "Canceled",
-            };
-            const mappedEvents = response.entities.map((event) => {
-                // Parse start date
-                const startDate = new Date(event.msdyn_bookingdate);
-                // Calculate end date by adding estimated duration (in minutes)
-                const durationMinutes =
-                    event.msdyn_bookingsetup.msdyn_estimatedduration || 60; // Default to 60 minutes
-                const endDate = new Date(
-                    startDate.getTime() + durationMinutes * 60 * 1000
-                );
-                // Construct address string
-                const addressParts = [
-                    event?.msdyn_workorder?.msdyn_address1 || " ",
-                    event?.msdyn_workorder?.msdyn_address2 || " ",
-                    event?.msdyn_workorder?.msdyn_address3 || " ",
-                    event?.msdyn_workorder?.msdyn_city || " ",
-                    event?.msdyn_workorder?.msdyn_stateorprovince || " ",
-                    event?.msdyn_workorder?.msdyn_postalcode || " ",
-                    event?.msdyn_workorder?.msdyn_country || " ",
-                ]
-                    .filter((part) => part)
-                    .join(", ");
-                return {
-                    resourceId: event?._msdyn_resource_value,
-                    start: startDate,
-                    end: endDate,
-                    id: event?.msdyn_agreementbookingdateid,
-                    type: "Full",
-                    slotEventOverlap: true,
-                    editable: false,
-                    durationEditable: false,
-                    eventStartEditable: false,
-                    className: ["ec-event-active"],
-                    extendedProps: {
-                        bookingID: event?._msdyn_agreement_value,
-                        employeeID: event?.msdyn_name,
-                        employeeName: event?.msdyn_resource?.name || "N/A",
-                        address: addressParts,
-                        suburb: event?.msdyn_workorder?.msdyn_city || "N/A",
-                        serviceType:
-                            event?.msdyn_bookingsetup?._ang_incidenttype_value ||
-                            "Care Worker",
-                        bookingStatus: statusMap[event?.msdyn_status] || "Unknown",
-                        region: event?.msdyn_workorder?._msdyn_serviceterritory_value,
-                        agreementBookingSetupId:
-                            event?.msdyn_bookingsetup?.msdyn_agreementbookingsetupid,
-                    },
-                };
-            });
-            eventStatus.isLoading = false;
-            eventStatus.eventData = mappedEvents;
-            eventData = mappedEvents; // Update global eventData
-            console.log("Events fetched successfully:", mappedEvents);
-            // Update calendar with events
-            reRenderEvents();
+    waitForResourcesReady()
+        .then(() => getAgreementBookingDatesBetween())
+        .then(async (agreementResponse) => {
+            if (isLeaveTabActive) {
+                const timeOffResponse = await getTimeOffRequests();
+                mapEvents(agreementResponse, true, timeOffResponse);
+            } else {
+                mapEvents(agreementResponse, false);
+            }
         })
         .catch((error) => {
             console.error("Error fetching events:", error.message);
@@ -2952,12 +2921,13 @@ window.addEventListener("DOMContentLoaded", function () {
     createCalendar();
     setIntialData();
     handleFilterFetch();
-    handleGetResorces(getBookableResources, mapOverIntialData);
-    handleEventFetch();
+    // Ensure resources are loaded before first event fetch
+    handleGetResorces(getBookableResources, mapOverIntialData)
+        .then(() => handleEventFetch());
     changeActivetab();
     this.window.refreshCalendarUI = refreshCalendarUI;
     this.window.handleEventFetch = handleEventFetch;
-    colorLeave();
+    // Removed initial forced leave-coloring to avoid overriding initial tab colors
 
 
 });
