@@ -6,6 +6,21 @@
     height: 100%;
 }
 
+.loader {
+    width: 100%;
+    font-size: xx-large;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: #3a3a3a88;
+    z-index: 500;
+    backdrop-filter: blur(5px);
+    display: none;
+    justify-content: center;
+    align-items: center;
+}
+
 .tab-container {
     grid-column: 1/-1;
     display: flex;
@@ -490,7 +505,7 @@ select:focus>option:hover {
     font-size: 1.4rem;
     margin-top: 0.5rem;
     color: var(--text-light-2);
-    
+
     ;
 }
 

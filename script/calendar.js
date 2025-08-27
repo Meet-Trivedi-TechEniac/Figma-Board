@@ -21,6 +21,7 @@ let filterState = {
 let eventData = [];
 let resourceData = [];
 let _resourcesReqToken = 0; // prevents stale overwrites
+let leaveEventData = [];
 
 
 let resorcesStatus = {
@@ -43,439 +44,7 @@ let filterStatus = {
   worktype: [],
 };
 
-function setIntialData() {
 
-
-  resourceData = [
-
-  ];
-
-  reRenderEvents();
-}
-
-function setLeaveData() {
-  eventData = [
-    {
-      resourceId: "1",
-      start: new Date("2025-08-13T10:45:00+05:30"),
-      end: new Date("2025-08-13T12:00:00+05:30"),
-      id: "123",
-      type: "Full",
-      editable: false,
-      durationEditable: false,
-      eventStartEditable: false,
-      className: ["ec-event-active"],
-      extendedProps: {
-        employeeID: "100123",
-        employeeName: "Diana Alexiou",
-        address: "12 King Street, Newtown NSW 2042",
-        careerType: "Care Type xyz",
-        bookingStatus: "Scheduled",
-        region: "Bankstown",
-        eventType: "Care Worker",
-      },
-    },
-    {
-      resourceId: "2",
-      start: new Date("2025-08-13T10:00:00+05:30"),
-      end: new Date("2025-08-13T10:00:00+05:30"),
-      editable: false,
-      durationEditable: false,
-      eventStartEditable: false,
-      className: ["ec-event-gray"],
-      extendedProps: {
-        employeeID: "100124",
-        employeeName: "Olivia Clarke",
-        address: "100 Elizabeth St, Sydney NSW",
-        careerType: "Care Type xyz",
-        bookingStatus: "Scheduled",
-        region: "Bankstown",
-        eventType: "Care Worker",
-      },
-    },
-    {
-      resourceId: "3",
-      start: new Date("2025-08-13T13:30:00+05:30"),
-      end: new Date("2025-08-13T15:00:00+05:30"),
-      editable: false,
-      durationEditable: false,
-      eventStartEditable: false,
-      className: ["ec-event-active"],
-      extendedProps: {
-        employeeID: "100125",
-        employeeName: "Liam Bennett",
-        address: "34 Pitt Street, Redfern NSW",
-        careerType: "Care Type xyz",
-        bookingStatus: "Completed",
-        region: "Bowral",
-        eventType: "Care Worker",
-      },
-    },
-    {
-      resourceId: "4",
-      start: new Date("2025-08-13T09:45:00+05:30"),
-      end: new Date("2025-08-13T10:45:00+05:30"),
-      editable: false,
-      durationEditable: false,
-      eventStartEditable: false,
-      className: ["ec-event-pink"],
-      extendedProps: {
-        employeeID: "100126",
-        employeeName: "Mia Walker",
-        address: "77 George St, The Rocks NSW",
-        careerType: "Care Type xyz",
-        bookingStatus: "Completed",
-        region: "Cityeast",
-        eventType: "Care Worker",
-      },
-    },
-    {
-      resourceId: "5",
-      start: new Date("2025-08-13T12:00:00+05:30"),
-      end: new Date("2025-08-13T13:00:00+05:30"),
-      editable: false,
-      durationEditable: false,
-      eventStartEditable: false,
-      className: ["ec-event-yellow"],
-      extendedProps: {
-        employeeID: "100127",
-        employeeName: "Ethan Johnson",
-        address: "22 Oxford St, Darlinghurst NSW",
-        careerType: "Care Type xyz",
-        bookingStatus: "Completed",
-        region: "Dural",
-        eventType: "Care Worker",
-      },
-    },
-    {
-      resourceId: "6",
-      start: new Date("2025-08-13T08:00:00+05:30"),
-      end: new Date("2025-08-13T09:30:00+05:30"),
-      editable: false,
-      durationEditable: false,
-      eventStartEditable: false,
-      className: ["ec-event-gray"],
-      extendedProps: {
-        employeeID: "100128",
-        employeeName: "Chloe Walker",
-        address: "5 High Street, Parramatta NSW",
-        careerType: "Care Type A",
-        bookingStatus: "Scheduled",
-        region: "Hawkesbury",
-        eventType: "Care Worker",
-      },
-    },
-    {
-      resourceId: "7",
-      start: new Date("2025-08-13T10:00:00+05:30"),
-      end: new Date("2025-08-13T11:15:00+05:30"),
-      editable: false,
-      durationEditable: false,
-      eventStartEditable: false,
-      className: ["ec-event-active"],
-      extendedProps: {
-        employeeID: "100129",
-        employeeName: "Noah Carter",
-        address: "88 Victoria Rd, Rydalmere NSW",
-        careerType: "Care Type B",
-        bookingStatus: "Scheduled",
-        region: "Beacon - Blacktown",
-        eventType: "Domestic Assistance Worker",
-      },
-    },
-    {
-      resourceId: "8",
-      start: new Date("2025-08-13T11:30:00+05:30"),
-      end: new Date("2025-08-13T13:00:00+05:30"),
-      editable: false,
-      durationEditable: false,
-      eventStartEditable: false,
-      className: ["ec-event-yellow"],
-      extendedProps: {
-        employeeID: "100130",
-        employeeName: "Grace Foster",
-        address: "33 Norton St, Leichhardt NSW",
-        careerType: "Care Type C",
-        bookingStatus: "Completed",
-        region: "Bowral",
-        eventType: "Domestic Assistance Worker",
-      },
-    },
-    {
-      resourceId: "9",
-      start: new Date("2025-08-13T13:15:00+05:30"),
-      end: new Date("2025-08-13T14:45:00+05:30"),
-      editable: false,
-      durationEditable: false,
-      eventStartEditable: false,
-      className: ["ec-event-pink"],
-      extendedProps: {
-        employeeID: "100131",
-        employeeName: "Oscar Hughes",
-        address: "50 King St, Mascot NSW",
-        careerType: "Care Type D",
-        bookingStatus: "Completed",
-        region: "Cityeast",
-        eventType: "Domestic Assistance Worker",
-      },
-    },
-    {
-      resourceId: "10",
-      start: new Date("2025-08-13T09:00:00+05:30"),
-      end: new Date("2025-08-13T10:30:00+05:30"),
-      editable: false,
-      durationEditable: false,
-      eventStartEditable: false,
-      className: ["ec-event-active"],
-      extendedProps: {
-        employeeID: "100132",
-        employeeName: "Liam Carter",
-        address: "120 George St, Liverpool NSW",
-        careerType: "Care Type A",
-        bookingStatus: "Scheduled",
-        region: "Dural",
-        eventType: "Domestic Assistance Worker",
-      },
-    },
-    {
-      resourceId: "11",
-      start: new Date("2025-08-13T14:00:00+05:30"),
-      end: new Date("2025-08-13T15:00:00+05:30"),
-      editable: false,
-      durationEditable: false,
-      eventStartEditable: false,
-      className: ["ec-event-yellow"],
-      extendedProps: {
-        employeeID: "100133",
-        employeeName: "Ava Reynolds",
-        address: "78 Campbell St, Surry Hills NSW",
-        careerType: "Care Type B",
-        bookingStatus: "Completed",
-        region: "Hawkesbury",
-        eventType: "Domestic Assistance Worker",
-      },
-    },
-    {
-      resourceId: "12",
-      start: new Date("2025-08-13T10:45:00+05:30"),
-      end: new Date("2025-08-13T12:00:00+05:30"),
-      editable: false,
-      durationEditable: false,
-      eventStartEditable: false,
-      className: ["ec-event-pink"],
-      extendedProps: {
-        employeeID: "100134",
-        employeeName: "Freya Dawson",
-        address: "101 Queen St, Beaconsfield NSW",
-        careerType: "Care Type C",
-        bookingStatus: "Scheduled",
-        region: "Hawkesbury",
-        eventType: "Village Care Worker",
-      },
-    },
-    {
-      resourceId: "13",
-      start: new Date("2025-08-13T08:30:00+05:30"),
-      end: new Date("2025-08-13T09:30:00+05:30"),
-      editable: false,
-      durationEditable: false,
-      eventStartEditable: false,
-      className: ["ec-event-gray"],
-      extendedProps: {
-        employeeID: "100135",
-        employeeName: "Sienna Brooks",
-        address: "43 Main St, Zetland NSW",
-        careerType: "Care Type D",
-        bookingStatus: "Scheduled",
-        region: "Dural",
-        eventType: "Village Care Worker",
-      },
-    },
-    {
-      resourceId: "14",
-      start: new Date("2025-08-13T15:00:00+05:30"),
-      end: new Date("2025-08-13T16:30:00+05:30"),
-      editable: false,
-      durationEditable: false,
-      eventStartEditable: false,
-      className: ["ec-event-active"],
-      extendedProps: {
-        employeeID: "100136",
-        employeeName: "Leo Murphy",
-        address: "67 Bridge Rd, Glebe NSW",
-        careerType: "Care Type A",
-        bookingStatus: "Completed",
-        region: "Cityeast",
-        eventType: "Village Care Worker",
-      },
-    },
-    {
-      resourceId: "15",
-      start: new Date("2025-08-13T13:00:00+05:30"),
-      end: new Date("2025-08-13T14:00:00+05:30"),
-      editable: false,
-      durationEditable: false,
-      eventStartEditable: false,
-      className: ["ec-event-yellow"],
-      extendedProps: {
-        employeeID: "100137",
-        employeeName: "Lily Morgan",
-        address: "19 Stanley St, Darlinghurst NSW",
-        careerType: "Care Type B",
-        bookingStatus: "Scheduled",
-        region: "Bowral",
-        eventType: "Village Care Worker",
-      },
-    },
-    {
-      resourceId: "16",
-      start: new Date("2025-08-13T11:15:00+05:30"),
-      end: new Date("2025-08-13T12:45:00+05:30"),
-      editable: false,
-      durationEditable: false,
-      eventStartEditable: false,
-      className: ["ec-event-pink"],
-      extendedProps: {
-        employeeID: "100138",
-        employeeName: "Elliot Brooks",
-        address: "55 Bay St, Botany NSW",
-        careerType: "Care Type C",
-        bookingStatus: "Completed",
-        region: "Beacon - Blacktown",
-        eventType: "Village Care Worker",
-      },
-    },
-    {
-      resourceId: "17",
-      start: new Date("2025-08-13T08:45:00+05:30"),
-      end: new Date("2025-08-13T10:00:00+05:30"),
-      editable: false,
-      durationEditable: false,
-      eventStartEditable: false,
-      className: ["ec-event-gray"],
-      extendedProps: {
-        employeeID: "100139",
-        employeeName: "Mason Green",
-        address: "66 Clarence St, Sydney NSW",
-        careerType: "Care Type D",
-        bookingStatus: "Scheduled",
-        region: "Bankstown",
-        eventType: "Village Care Worker",
-      },
-    },
-    {
-      resourceId: "18",
-      start: new Date("2025-08-13T14:15:00+05:30"),
-      end: new Date("2025-08-13T15:30:00+05:30"),
-      editable: false,
-      durationEditable: false,
-      eventStartEditable: false,
-      className: ["ec-event-active"],
-      extendedProps: {
-        employeeID: "100140",
-        employeeName: "Isla Matthews",
-        address: "20 Regent St, Chippendale NSW",
-        careerType: "Care Type A",
-        bookingStatus: "Completed",
-        region: "Bankstown",
-        eventType: "Domestic Assistance Worker",
-      },
-    },
-  ];
-
-  resourceData = [
-    {
-      id: 8,
-      extendedProps: {
-        name: "Liam Carter",
-        totalTime: "244h 29m ",
-        imgUrl: "Assets/profiles/R4.jpg",
-      },
-    },
-    {
-      id: 3,
-      extendedProps: {
-        name: "Freya Dawson",
-        totalTime: "244h 29m ",
-        imgUrl: "Assets/profiles/R2.jpg",
-      },
-    },
-    {
-      id: 15,
-      extendedProps: {
-        name: "Mason Green",
-        totalTime: "244h 29m ",
-        imgUrl: "Assets/profiles/R1.jpg",
-      },
-    },
-    {
-      id: 1,
-      extendedProps: {
-        name: "Leo Murphy",
-        totalTime: "244h 29m ",
-        imgUrl: "Assets/profiles/R6.jpg",
-      },
-    },
-    {
-      id: 11,
-      extendedProps: {
-        name: "Oscar Hughes",
-        totalTime: "244h 29m ",
-        imgUrl: "Assets/profiles/R9.jpg",
-      },
-    },
-    {
-      id: 6,
-      extendedProps: {
-        name: "Ava Reynolds",
-        totalTime: "244h 29m ",
-        imgUrl: "Assets/profiles/R5.jpg",
-      },
-    },
-    {
-      id: 13,
-      extendedProps: {
-        name: "Sienna Brooks",
-        totalTime: "244h 29m ",
-        imgUrl: "Assets/profiles/R8.jpg",
-      },
-    },
-    {
-      id: 2,
-      extendedProps: {
-        name: "Chloe Walker",
-        totalTime: "244h 29m ",
-        imgUrl: "Assets/profiles/R3.jpg",
-      },
-    },
-    {
-      id: 10,
-      extendedProps: {
-        name: "Elliot Brooks",
-        totalTime: "244h 29m ",
-        imgUrl: "Assets/profiles/R7.jpg",
-      },
-    },
-    {
-      id: 4,
-      extendedProps: {
-        name: "Grace Foster",
-        totalTime: "244h 29m ",
-        imgUrl: "Assets/profiles/R6.jpg",
-      },
-    },
-    {
-      id: 5,
-      extendedProps: {
-        name: "Mia Walker",
-        totalTime: "244h 29m ",
-        imgUrl: "Assets/profiles/R9.jpg",
-      },
-    },
-  ];
-
-  reRenderEvents();
-}
 
 function syncDynamicHeight() {
   const dayContainers = document.querySelectorAll(
@@ -566,15 +135,13 @@ function renderTooltipContent(arg) {
   return `
     <div class="custom-tooltip-content">
       <p class="event-desc-id">${arg.event.extendedProps.employeeID}</p>
-      <p>Booking ID: ${arg.event.extendedProps.bookingID}</p>
+      
       <p>${new Date(arg.event.start).toLocaleDateString()} - ${new Date(arg.event.end).toLocaleDateString()}</p>
       <div class="event-desc-grid">
         <p>Address (Work Order)</p>
         <p>${arg.event.extendedProps.address}</p>
         <p>Suburb</p>
         <p>${arg.event.extendedProps.suburb}</p>
-        <p>Service Type</p>
-        <p>${arg.event.extendedProps.serviceType}</p>
         <p>Booking Status</p>
         <p>${arg.event.extendedProps.bookingStatus}</p>
         <p>Agreement Booking</p>
@@ -668,27 +235,31 @@ function renderStatusIcon(status) {
   return icon[status] || " ";
 }
 
-// Update renderTooltipContent to include suburb and hyperlink
-function renderTooltipContent(arg) {
+function formatEventTime(date) {
+  // Use Intl.DateTimeFormat for localized formatting
+  const formatter = new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true, // Use 24-hour format
+    // timeZoneName: "short", // Get timezone abbreviation (e.g., "IST", "PST")
+  });
 
-  return `
-    <div class="custom-tooltip-content">
-      <p class="event-desc-id">${arg.event.extendedProps.employeeID}</p>
-      <p>${new Date(arg.event.start).toLocaleDateString()} - ${new Date(arg.event.end).toLocaleDateString()}</p>
-      <div class="event-desc-grid">
-        <p>Address (Work Order)</p>
-        <p>${arg.event.extendedProps.address}</p>
-        <p>Suburb</p>
-        <p>${arg.event.extendedProps.suburb}</p>
-        <p>Resources</p>
-        <p>${arg.event.extendedProps.eventType}</p>
-        <p>Booking Status</p>
-        <p>${arg.event.extendedProps.bookingStatus}</p>
-        <p>Agreement Booking</p>
-        <p><a href="/agreement-booking/${arg.event.extendedProps.agreementBookingSetupId}" target="_blank">View Agreement</a></p>
-      </div>
-    </div>
-  `;
+  // Format the date and extract parts
+  const parts = formatter.formatToParts(new Date(date));
+  const formattedDate = parts
+    .map((part) => {
+      if (part.type === "timeZoneName") {
+        return `(${part.value})`; // Wrap timezone in parentheses
+      }
+      return part.value;
+    })
+    .join("")
+    .replace(/,\s/, " "); // Replace comma with space
+
+  return formattedDate;
 }
 
 // Updated renderEventDetails to include serviceType
@@ -726,14 +297,14 @@ function renderEventDetails(arg) {
         <div class="event-disp">
             <p>${firstName} ${lastName}</p> <!-- Display first name and last name -->
             <p>${arg.event.extendedProps.suburb || "N/A"}</p> <!-- Display suburb -->
-            <p>${arg.event.extendedProps.serviceType || "N/A"}</p> <!-- Display type of service -->
-            <p>${start}</p> <!-- Display formatted start time -->
-             <p>helloe</p> 
+            <!-- Display type of service -->
+            <p>${formatEventTime(start)} - ${arg.event.extendedProps.duration}</p> <!-- Display formatted start time -->
+             
 
-            <p>${arg.event.extendedProps.duration}</p> <!-- Display duration -->
+             <!-- Display duration -->
         </div>
         <div class="event-disp-icon">
-        <p>${arg.event.extendedProps.duration}</p> 
+        
             ${renderStatusIcon(arg.event.extendedProps.bookingStatus)}
         </div>
       </div>
@@ -770,7 +341,7 @@ function renderResources(info) {
   }
 
   // Validate required fields
-  if (!props || !props.imgUrl || !props.name || !props.totalTime) {
+  if (!props || !props.imgUrl || !props.name) {
     return {
       html: `<div class="person-details">No Content</div>`,
     };
@@ -789,24 +360,6 @@ function renderResources(info) {
   };
 }
 
-// function renderResourcesFromPromise(info) {
-//   const props = info?.resource?.extendedProps;
-
-//   if (!props) {
-//     return { html: `<div class="person-details">No Content</div>` };
-//   }
-
-//   return {
-//     html: `<div class="person-details">
-//         <div class="profile-img">
-//           <img src="${props.imgUrl}" alt="">
-//         </div>
-//         <div class="person-info">   
-//           <h5>${props.name}</h5>
-//         </div>
-//       </div>`,
-//   };
-// }
 
 function getResources() {
   return typeof resourceData !== "undefined" ? resourceData : [];
@@ -897,47 +450,6 @@ function applyAllFilters() {
   upadateResources(filtered);
 }
 
-// --- DROPDOWN & SEARCH HOOKUP ---
-// function setupFilterDropdownsAndReset() {
-//   // Region
-//   const regionDropdown = document.querySelector(
-//     '.custom-dropdown label[for="region-filter"]'
-//   ).parentElement;
-
-//   const regionOptions = regionDropdown.querySelectorAll(".dropdown-option");
-
-//   regionOptions.forEach((option) => {
-//     option.addEventListener("click", function () {
-//       filterState.region = option.textContent.trim();
-//       applyAllFilters();
-//     });
-//   });
-//   // Worktype
-//   const worktypeDropdown = document.querySelector(
-//     '.custom-dropdown label[for="work-type-filter"]'
-//   ).parentElement;
-//   const worktypeOptions = worktypeDropdown.querySelectorAll(".dropdown-option");
-//   worktypeOptions.forEach((option) => {
-//     option.addEventListener("click", function () {
-//       filterState.worktype = option.textContent.trim();
-//       applyAllFilters();
-//     });
-//   });
-//   // Reset
-//   const resetBtn = document.getElementById("reset");
-//   if (resetBtn) {
-//     resetBtn.addEventListener("click", function () {
-//       filterState.region = null;
-//       filterState.worktype = null;
-//       filterState.search = "";
-//       filterState.sortAsc = true;
-//       // Reset search input
-//       const searchInput = document.querySelector(".search-input");
-//       if (searchInput) searchInput.value = "";
-//       applyAllFilters();
-//     });
-//   }
-// }
 
 function setupFilterDropdownsAndReset() {
   // Initialize as arrays for multi-select
@@ -1169,46 +681,6 @@ function applyObserver() {
   updatePosition();
 }
 
-/**** Centered Version of Time ****/
-// function applyObserver() {
-//   const scrollContainer = document.querySelector(".ec-header");
-//   const dayHeads = document.querySelectorAll(".ec-day-head");
-
-//   function updatePosition() {
-//     const containerRect = scrollContainer.getBoundingClientRect();
-
-//     dayHeads.forEach((head) => {
-//       const labelDiv = head.querySelector("time > div");
-//       if (!labelDiv) return;
-
-//       const headRect = head.getBoundingClientRect();
-//       const visibleLeft = Math.max(containerRect.left, headRect.left);
-//       const visibleRight = Math.min(containerRect.right, headRect.right);
-//       const visibleWidth = Math.max(0, visibleRight - visibleLeft);
-
-//       if (visibleWidth > 0) {
-//         const labelWidth = labelDiv.offsetWidth;
-
-//         // Center in visible part
-//         let targetX =
-//           visibleLeft + visibleWidth / 2 - (headRect.left + labelWidth / 2);
-
-//         // Clamp so it never leaves the day head
-//         const minX = 0; // can't go past left boundary
-//         const maxX = headRect.width - labelWidth; // can't go past right boundary
-//         targetX = Math.max(minX, Math.min(targetX, maxX));
-
-//         labelDiv.style.transform = `translateX(${targetX}px)`;
-//         labelDiv.style.visibility = "visible";
-//       } else {
-//         labelDiv.style.visibility = "hidden";
-//       }
-//     });
-//   }
-
-//   scrollContainer.addEventListener("scroll", updatePosition);
-//   updatePosition();
-// }
 
 function refreshCalendarUI() {
   initializeAllTooltips();
@@ -1259,18 +731,12 @@ function createCalendar() {
     resourceLabelContent: renderResources,
     viewDidMount: renderSearch,
     eventAllUpdated: refreshCalendarUI,
-    slotMinTime: "8:00:00",
-    slotMaxTime: "16:00:00",
+    slotMinTime: "6:00:00",
+    slotMaxTime: "18:00:00",
   });
   window.ecCalendar = ec;
 
-
   // Initialize with loading state and fetch data on DOM load
-  document.addEventListener("DOMContentLoaded", () => {
-    window.ecCalendar.setOption("resources", [{ id: "loading", title: "Loading..." }]);
-    window.ecCalendar.setOption("events", []);
-    handleGetResorces();
-  });
 }
 function fetchFilterOptions(options = {}) {
   const { simulateFailure = false, delayMs = 5000 } = options;
@@ -1337,7 +803,7 @@ function fetchEvents(options = {}) {
             "msdyn_country": "Australia",
             "msdyn_workorderid": "cb5547f4-c541-f011-8779-000d3ad28f5c",
             "msdyn_postalcode": "2795",
-            "msdyn_address2": "MINTO"
+            "msdyn_addres s2": "MINTO"
           }
         },
         {
@@ -1377,6 +843,11 @@ function fetchEvents(options = {}) {
 
 // Updated handleGetEvents to validate resourceId against resourceData
 async function handleGetEvents() {
+
+  const startDate = document.querySelector(".btn date-range");
+  const endDate = document.querySelector(".btn date-range");
+
+  console.log("Fetching events for date range:", startDate, "to", endDate);
 
 
   try {
@@ -1466,6 +937,8 @@ function fetchResources(options = {}) {
         reject(new Error('Failed to fetch resources'));
         return;
       }
+
+
       resolve({
         "@odata.context": "https://aahdevelopment.crm6.dynamics.com/api/data/v9.1/$metadata#bookableresources(name,resourcetype,UserId(photourl))",
         "value": [
@@ -2214,12 +1687,22 @@ function handleFilterFetch() {
 
 }
 
+function showLoading() {
+  const loadingElement = document.getElementById("loader");
+  loadingElement.style.display = "flex";
+}
+
+function hideLoading() {
+  const loadingElement = document.getElementById("loader");
+  loader.style.display = "none";
+  refreshCalendarUI();
+}
+
 async function handleGetResorces() {
+  showLoading();
   resorcesStatus.isLoading = true;
   resorcesStatus.isError = false;
   resorcesStatus.resourceData = [];
-
-
 
   window.ecCalendar.setOption("resources", [
     { id: "loading", title: "Loading..." },
@@ -2241,7 +1724,7 @@ async function handleGetResorces() {
     }));
 
 
-
+    hideLoading();
     resorcesStatus.isLoading = false;
     resorcesStatus.resourceData = mappedResources;
 
@@ -2264,17 +1747,94 @@ async function handleGetResorces() {
   }
 }
 
+
+async function setLeaveData() {
+  console.log("hereeeeee")
+  showLoading();
+
+  const leaveData = await new Promise((resolve) => {
+    const rawLeaveData = [
+      {
+        "@odata.etag": "W/\"443886521\"",
+        "vel_leavetype": 285930021,
+        "msdyn_timeoffrequestid": "24d4c737-e0d5-ee11-904c-000d3aca6924",
+        "msdyn_endtime": "2024-03-31T10:00:00Z",
+        "msdyn_name": "Rafael Santana",
+        "_msdyn_resource_value": "3f008f28-0a8d-eb11-b1ac-002248155d0e",
+        "msdyn_starttime": "2024-02-28T20:00:00Z",
+      },
+      {
+        "@odata.etag": "W/\"531941147\"",
+        "vel_leavetype": 285930004,
+        "msdyn_timeoffrequestid": "76e450ce-df64-ef11-a671-000d3acbd62b",
+        "msdyn_endtime": "2024-08-28T11:00:00Z",
+        "msdyn_name": "Alexander Peterson",
+        "_msdyn_resource_value": "bbb97b20-3b82-eb11-a812-0022481522dc",
+        "msdyn_starttime": "2024-08-27T21:00:00Z",
+      },
+      {
+        "@odata.etag": "W/\"530276456\"",
+        "vel_leavetype": 285930004,
+        "msdyn_timeoffrequestid": "8a9cc9a3-0855-ef11-bfe3-000d3acbd62b",
+        "msdyn_endtime": "2024-08-08T07:00:00Z",
+        "msdyn_name": "Clancy Matthews",
+        "_msdyn_resource_value": "6d616491-a106-ef11-9f89-002248100a21",
+        "msdyn_starttime": "2024-08-07T23:30:00Z",
+      },
+    ];
+
+    setTimeout(() => {
+      hideLoading();
+      resolve(rawLeaveData);
+    }, 500);
+  });
+  reRenderLeaveEvents(leaveData);
+}
+
+
+function reRenderLeaveEvents(leaveData) {
+  // This function should update the calendar or UI for the Leave Conflict tab
+  // Example: If using FullCalendar, pass leaveData to the events source for the Leave Conflict view
+  console.log("Leave data rendered:", leaveData);
+  // window.ecCalendar.setOption("resources", leaveData);
+  // Map API response to calendar resources
+  const mappedResources = leaveData.map((r) => ({
+    id: r._msdyn_resource_value,
+    title: r.msdyn_name,
+    extendedProps: {
+      imgUrl: r.UserId?.photourl ?? "/Assets/profiles/R2.jpg",
+      name: r.msdyn_name,
+      totalTime: r?.resourcetype || null, // example, replace with actual field
+    },
+  }));
+
+
+
+  resorcesStatus.isLoading = false;
+  resorcesStatus.resourceData = mappedResources;
+
+  resourceData = mappedResources;
+  console.log("Resources fetched successfully:", mappedResources);
+  console.log("resorcesStatus", resourceData);
+  window.ecCalendar.setOption("resources", []);
+
+  // Set resources in calendar
+  window.ecCalendar.setOption("resources", mappedResources);
+  setTimeout(() => {
+    refreshCalendarUI();
+  }, 0);
+
+  // Add logic to integrate with your calendar library (e.g., FullCalendar)
+  // Example: calendarRef.current.getApi().addEventSource(leaveData);
+}
 // --- INIT ---
 window.addEventListener("DOMContentLoaded", function () {
   createCalendar();
-  setIntialData();
-  // setupFilterDropdownsAndReset();
   chnageActivetab();
-  this.window.refreshCalendarUI = refreshCalendarUI;
   handleFilterFetch();
   handleGetResorces();
   handleGetEvents();
+  this.window.refreshCalendarUI = refreshCalendarUI;
 });
-
 
 
