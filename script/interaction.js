@@ -237,4 +237,4 @@ $(".time-conatainer img").on("click", function (e) {
   setTimeout(() => {
     $input.focus();
   }, 10);
-}); 
+});

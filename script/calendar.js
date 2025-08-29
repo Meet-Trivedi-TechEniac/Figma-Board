@@ -1133,9 +1133,8 @@ function renderTooltipContent(arg) {
         <p>Booking Status</p>
         <p>${arg.event.extendedProps.bookingStatus}</p>
         <p>Agreement Booking</p>
-        <p><a href="/agreement-booking/${
-          arg.event.extendedProps.agreementBookingSetupId
-        }" target="_blank">View Agreement</a></p>
+        <p><a href="/agreement-booking/${arg.event.extendedProps.agreementBookingSetupId
+    }" target="_blank">View Agreement</a></p>
       </div>
     </div>
   `;
@@ -1228,16 +1227,13 @@ function renderEventDetails(arg) {
         data-bs-custom-class="custom-tooltip"
         title="${tooltipHtml}">
         <div class="event-disp">
-            <p>${
-              arg?.event?.extendedProps?.employeeName
-            }</p> <!-- Display first name and last name -->
-            <p>${
-              arg.event.extendedProps.suburb || "N/A"
-            }</p> <!-- Display suburb -->
+            <p>${arg?.event?.extendedProps?.employeeName
+      }</p> <!-- Display first name and last name -->
+            <p>${arg.event.extendedProps.suburb || "N/A"
+      }</p> <!-- Display suburb -->
             <!-- Display type of service -->
-            <p>${formatEventTime(start)} - ${
-      arg.event.extendedProps.duration
-    }</p> <!-- Display formatted start time -->
+            <p>${formatEventTime(start)} - ${arg.event.extendedProps.duration
+      }</p> <!-- Display formatted start time -->
              
  
              <!-- Display duration -->
@@ -1782,30 +1778,30 @@ function renderDropdowns() {
   });
 }
 
-function handleFilterFetch() {
-  filterStatus.isLoading = true;
-  filterStatus.isError = false;
-  renderDropdowns();
+// function handleFilterFetch() {
+//   filterStatus.isLoading = true;
+//   filterStatus.isError = false;
+//   renderDropdowns();
 
-  Promise.all([getTerritory(), getCareType()])
-    .then(([territoryResults, careTypeResults]) => {
-      filterStatus.isLoading = false;
-      filterStatus.isError = false;
+//   Promise.all([getTerritory(), getCareType()])
+//     .then(([territoryResults, careTypeResults]) => {
+//       filterStatus.isLoading = false;
+//       filterStatus.isError = false;
 
-      filterStatus.region = territoryResults?.entities || [];
-      // Extract the 'value' (or whatever you want) for care types
-      filterStatus.worktype = careTypeResults?.entities || [];
+//       filterStatus.region = territoryResults?.entities || [];
+//       // Extract the 'value' (or whatever you want) for care types
+//       filterStatus.worktype = careTypeResults?.entities || [];
 
-      renderDropdowns();
-      setupFilterDropdownsAndReset();
-    })
-    .catch((err) => {
-      console.error(err);
-      filterStatus.isLoading = false;
-      filterStatus.isError = true;
-      renderDropdowns();
-    });
-}
+//       renderDropdowns();
+//       setupFilterDropdownsAndReset();
+//     })
+//     .catch((err) => {
+//       console.error(err);
+//       filterStatus.isLoading = false;
+//       filterStatus.isError = true;
+//       renderDropdowns();
+//     });
+// }
 
 // Intial Data
 // function getBookableResources() {
@@ -1821,6 +1817,55 @@ function handleFilterFetch() {
 //     "?$select=msdyn_endtime,vel_leavetype,msdyn_name,_msdyn_resource_value,msdyn_starttime"
 //   );
 // }
+
+function handleGetResorces(getResources, mapResources) {
+  const requestToken = ++currentRequestToken; // Create a unique token for this call
+
+  resorcesState.isLoading = true;
+  resorcesState.isError = false;
+  resorcesState.resourceData = [];
+
+  window.ecCalendar.setOption("resources", [
+    { id: "loading", title: "Loading..." },
+  ]);
+
+  return getResources()
+    .then((response) => {
+
+      if (requestToken !== currentRequestToken) return;
+      return mapResources(response);
+    })
+    .then((mappedResources) => {
+      if (requestToken !== currentRequestToken) return;
+
+      console.log("mappedResources", mappedResources);
+
+      resorcesState.isLoading = false;
+      resorcesState.resourceData = mappedResources;
+
+      resourceData = mappedResources;
+      window.ecCalendar.setOption("resources", mappedResources);
+
+
+      return mappedResources;
+    })
+    .catch((error) => {
+      if (requestToken !== currentRequestToken) return;
+
+      console.error("Error fetching resources:", error);
+      resorcesState.isLoading = false;
+      resorcesState.isError = true;
+
+      window.ecCalendar.setOption("resources", [
+        { id: "error", title: "Error loading resources" },
+      ]);
+    })
+    .finally(() => {
+      if (requestToken === currentRequestToken) {
+        refreshCalendarUI();
+      }
+    });
+}
 
 function getBookableResources() {
   return new Promise((resolve, reject) => {
@@ -2543,6 +2588,54 @@ function mapOverIntialData(response) {
   }));
 }
 
+// function handleGetResorces(getResources, mapResources) {
+//   const requestToken = ++currentRequestToken; // Create a unique token for this call
+
+//   resorcesState.isLoading = true;
+//   resorcesState.isError = false;
+//   resorcesState.resourceData = [];
+
+//   window.ecCalendar.setOption("resources", [
+//     { id: "loading", title: "Loading..." },
+//   ]);
+
+//   return getResources()
+//     .then((response) => {
+//       // If this is not the latest request, ignore the result
+//       if (requestToken !== currentRequestToken) return;
+
+//       const mappedResources = mapResources(response);
+//       console.log("mappedResources", mappedResources);
+
+//       resorcesState.isLoading = false;
+//       resorcesState.resourceData = mappedResources;
+
+//       resourceData = mappedResources;
+//       window.ecCalendar.setOption("resources", mappedResources);
+//     })
+//     .catch((error) => {
+//       // Ignore error if not latest request
+//       if (requestToken !== currentRequestToken) return;
+
+//       console.error("Error fetching resources:", error);
+//       resorcesState.isLoading = false;
+//       resorcesState.isError = true;
+
+//       window.ecCalendar.setOption("resources", [
+//         { id: "error", title: "Error loading resources" },
+//       ]);
+//     })
+//     .finally(() => {
+//       // Refresh UI only for the latest request
+//       if (requestToken === currentRequestToken) {
+//         refreshCalendarUI();
+//       }
+//     });
+// }
+
+
+
+
 function handleGetResorces(getResources, mapResources) {
   const requestToken = ++currentRequestToken; // Create a unique token for this call
 
@@ -2554,22 +2647,31 @@ function handleGetResorces(getResources, mapResources) {
     { id: "loading", title: "Loading..." },
   ]);
 
-  getResources()
+  return getResources()
     .then((response) => {
-      // If this is not the latest request, ignore the result
+      // Ignore if outdated request
       if (requestToken !== currentRequestToken) return;
 
-      const mappedResources = mapResources(response);
-      console.log("mappedResources",mappedResources);
+      // 🔹 Only map here
+      return mapResources(response);
+    })
+    .then((mappedResources) => {
+      // Ignore if outdated request
+      if (requestToken !== currentRequestToken) return;
 
+      console.log("mappedResources", mappedResources);
+
+      // 🔹 Set state and calendar here
       resorcesState.isLoading = false;
       resorcesState.resourceData = mappedResources;
 
       resourceData = mappedResources;
       window.ecCalendar.setOption("resources", mappedResources);
+
+      // pass resources further if needed
+      return mappedResources;
     })
     .catch((error) => {
-      // Ignore error if not latest request
       if (requestToken !== currentRequestToken) return;
 
       console.error("Error fetching resources:", error);
@@ -2581,16 +2683,13 @@ function handleGetResorces(getResources, mapResources) {
       ]);
     })
     .finally(() => {
-      // Refresh UI only for the latest request
       if (requestToken === currentRequestToken) {
         refreshCalendarUI();
       }
     });
 }
 
-//Event Data
 
-//THis Function Get the Current Range minimum 10 Dayas From Starting
 function getAdjustedDateRangeFromCalendar() {
   if (!window.ecCalendar) {
     console.warn("Calendar not found.");
@@ -2879,8 +2978,8 @@ window.addEventListener("DOMContentLoaded", function () {
   createCalendar();
   // setIntialData();
   // handleFilterFetch();
-  // handleGetResorces(getBookableResources, mapOverIntialData);
-  handleGetResorces(getTimeOffRequests, mapOverLeaveData);
+  handleGetResorces(getBookableResources, mapOverIntialData);
+  // handleGetResorces(getTimeOffRequests, mapOverLeaveData);
   handleEventFetch();
   chnageActivetab();
   currentTab = "init";
@@ -2951,3 +3050,20 @@ function getEventClassName(eventStart, eventEnd, resourceId) {
 
   return "ec-event-active"; // No overlaps
 }
+
+
+const refreshBtn = document.getElementById('refresh-btn');
+
+refreshBtn.addEventListener("click", (el) => {
+  if (currentTab === "init") {
+    handleGetResorces(getBookableResources, mapOverIntialData)
+      .then(() => handleEventFetch())
+      .then(() => reRenderEvents());
+  } else if (currentTab === "leave") {
+    handleGetResorces(getTimeOffRequests, mapOverLeaveData)
+      .then(() => calculateLookupData())
+      .then(() => handleEventFetch())
+      .then(() => reRenderEvents());
+  }
+})
+
