@@ -1,12 +1,3 @@
-// @ts-nocheck
-
-/**
- * @typedef {Object} EventCalendar
- * @property {Function} create
- */
-/**
- * @type {EventCalendar}
- */
 var EventCalendar = window.EventCalendar;
 
 // --- FILTER/SEARCH STATE ---
@@ -20,31 +11,990 @@ let filterState = {
 //Global Data
 let eventData = [];
 let resourceData = [];
-let _resourcesReqToken = 0; // prevents stale overwrites
-let leaveEventData = [];
-
-
-let resorcesStatus = {
-  isLoading: false,
-  isError: false,
-  resourceData: [],
-
-}
-
-const eventStatus = {
-  isLoading: true,
-  isError: false,
-  eventData: []
-};
+let currentTab = "init";
 
 let filterStatus = {
   isLoading: false,
-  isEror: false,
+  isError: false,
   region: [],
   worktype: [],
 };
 
+let resorcesState = {
+  isLoading: false,
+  isError: false,
+  resourceData: [],
+};
 
+const eventStatus = {
+  isLoading: true,
+  isError: false,
+  eventData: [],
+};
+
+let currentRequestToken = 0; // Global counter
+
+function setIntialData() {
+  eventData = [
+    {
+      resourceId: "1",
+      start: new Date("2025-08-13T11:45:00+05:30"),
+      end: new Date("2025-08-14T13:00:00+05:30"),
+      id: "123",
+      type: "Full",
+      slotEventOverlap: true,
+      editable: false,
+      durationEditable: false,
+      eventStartEditable: false,
+      className: ["ec-event-active"],
+      extendedProps: {
+        employeeID: "100123",
+        employeeName: "Diana Alexiou",
+        address: "12 King Street, Newtown NSW 2042",
+        careerType: "Care Type xyz",
+        bookingStatus: "Scheduled",
+        region: "Bankstown",
+        eventType: "Care Worker",
+      },
+    },
+    {
+      resourceId: "1",
+      start: new Date("2025-08-13T11:55:00+05:30"),
+      end: new Date("2025-08-13T13:00:00+05:30"),
+      id: "123",
+      type: "Full",
+      slotEventOverlap: true,
+      editable: false,
+      durationEditable: false,
+      eventStartEditable: false,
+      className: ["ec-event-active"],
+      extendedProps: {
+        employeeID: "100123",
+        employeeName: "Diana Alexiou",
+        address: "12 King Street, Newtown NSW 2042",
+        careerType: "Care Type xyz",
+        bookingStatus: "Scheduled",
+        region: "Bankstown",
+        eventType: "Care Worker",
+      },
+    },
+    {
+      resourceId: "2",
+      start: new Date("2025-08-13T12:00:00+05:30"),
+      end: new Date("2025-08-13T13:00:00+05:30"),
+      editable: false,
+      durationEditable: false,
+      eventStartEditable: false,
+      className: ["ec-event-active"],
+      extendedProps: {
+        employeeID: "100124",
+        employeeName: "Olivia Clarke",
+        address: "100 Elizabeth St, Sydney NSW",
+        careerType: "Care Type xyz",
+        bookingStatus: "Scheduled",
+        region: "Beacon - Blacktown",
+        eventType: "Care Worker",
+      },
+    },
+    {
+      resourceId: "1",
+      start: new Date("2025-08-13T09:20:00+05:30"),
+      end: new Date("2025-08-13T11:00:00+05:30"),
+      editable: false,
+      durationEditable: false,
+      eventStartEditable: false,
+      className: ["ec-event-active"],
+      extendedProps: {
+        employeeID: "100125",
+        employeeName: "Liam Bennett",
+        address: "34 Pitt Street, Redfern NSW",
+        careerType: "Care Type xyz",
+        bookingStatus: "Completed",
+        region: "Bowral",
+        eventType: "Care Worker",
+      },
+    },
+    {
+      resourceId: "1",
+      start: new Date("2025-08-13T10:35:00+05:30"),
+      end: new Date("2025-08-13T15:00:00+05:30"),
+      editable: false,
+      durationEditable: false,
+      eventStartEditable: false,
+      className: ["ec-event-active"],
+      extendedProps: {
+        employeeID: "100125",
+        employeeName: "Liam Bennett",
+        address: "34 Pitt Street, Redfern NSW",
+        careerType: "Care Type xyz",
+        bookingStatus: "Completed",
+        region: "Bowral",
+        eventType: "Care Worker",
+      },
+    },
+    {
+      resourceId: "18",
+      start: new Date("2025-08-13T13:45:00+05:30"),
+      end: new Date("2025-08-13T15:00:00+05:30"),
+      editable: false,
+      durationEditable: false,
+      eventStartEditable: false,
+      className: ["ec-event-active"],
+      extendedProps: {
+        employeeID: "100125",
+        employeeName: "Liam Bennett",
+        address: "34 Pitt Street, Redfern NSW",
+        careerType: "Care Type xyz",
+        bookingStatus: "Completed",
+        region: "Bowral",
+        eventType: "Care Worker",
+      },
+    },
+    {
+      resourceId: "4",
+      start: new Date("2025-08-13T01:45:00+05:30"),
+      end: new Date("2025-08-13T12:45:00+05:30"),
+      editable: false,
+      durationEditable: false,
+      eventStartEditable: false,
+      className: ["ec-event-active"],
+      extendedProps: {
+        employeeID: "100126",
+        employeeName: "Mia Walker",
+        address: "77 George St, The Rocks NSW",
+        careerType: "Care Type xyz",
+        bookingStatus: "Completed",
+        region: "Cityeast",
+        eventType: "Care Worker",
+      },
+    },
+    {
+      resourceId: "5",
+      start: new Date("2025-08-13T10:00:00+05:30"),
+      end: new Date("2025-08-13T11:00:00+05:30"),
+      editable: false,
+      durationEditable: false,
+      eventStartEditable: false,
+      className: ["ec-event-active"],
+      extendedProps: {
+        employeeID: "100127",
+        employeeName: "Ethan Johnson",
+        address: "22 Oxford St, Darlinghurst NSW",
+        careerType: "Care Type xyz",
+        bookingStatus: "Completed",
+        region: "Dural",
+        eventType: "Care Worker",
+      },
+    },
+    {
+      resourceId: "6",
+      start: new Date("2025-08-13T08:00:00+05:30"),
+      end: new Date("2025-08-13T09:30:00+05:30"),
+      editable: false,
+      durationEditable: false,
+      eventStartEditable: false,
+      className: ["ec-event-active"],
+      extendedProps: {
+        employeeID: "100128",
+        employeeName: "Chloe Walker",
+        address: "5 High Street, Parramatta NSW",
+        careerType: "Care Type A",
+        bookingStatus: "Scheduled",
+        region: "Hawkesbury",
+        eventType: "Care Worker",
+      },
+    },
+    {
+      resourceId: "7",
+      start: new Date("2025-08-13T10:00:00+05:30"),
+      end: new Date("2025-08-13T11:15:00+05:30"),
+      editable: false,
+      durationEditable: false,
+      eventStartEditable: false,
+      className: ["ec-event-active"],
+      extendedProps: {
+        employeeID: "100129",
+        employeeName: "Noah Carter",
+        address: "88 Victoria Rd, Rydalmere NSW",
+        careerType: "Care Type B",
+        bookingStatus: "Scheduled",
+        region: "Beacon - Blacktown",
+        eventType: "Domestic Assistance Worker",
+      },
+    },
+    {
+      resourceId: "8",
+      start: new Date("2025-08-13T11:30:00+05:30"),
+      end: new Date("2025-08-13T13:00:00+05:30"),
+      editable: false,
+      durationEditable: false,
+      eventStartEditable: false,
+      className: ["ec-event-active"],
+      extendedProps: {
+        employeeID: "100130",
+        employeeName: "Grace Foster",
+        address: "33 Norton St, Leichhardt NSW",
+        careerType: "Care Type C",
+        bookingStatus: "Completed",
+        region: "Bowral",
+        eventType: "Domestic Assistance Worker",
+      },
+    },
+    {
+      resourceId: "9",
+      start: new Date("2025-08-13T13:15:00+05:30"),
+      end: new Date("2025-08-13T14:45:00+05:30"),
+      editable: false,
+      durationEditable: false,
+      eventStartEditable: false,
+      className: ["ec-event-active"],
+      extendedProps: {
+        employeeID: "100131",
+        employeeName: "Oscar Hughes",
+        address: "50 King St, Mascot NSW",
+        careerType: "Care Type D",
+        bookingStatus: "Completed",
+        region: "Cityeast",
+        eventType: "Domestic Assistance Worker",
+      },
+    },
+    {
+      resourceId: "10",
+      start: new Date("2025-08-13T09:00:00+05:30"),
+      end: new Date("2025-08-13T10:30:00+05:30"),
+      editable: false,
+      durationEditable: false,
+      eventStartEditable: false,
+      className: ["ec-event-active"],
+      extendedProps: {
+        employeeID: "100132",
+        employeeName: "Liam Carter",
+        address: "120 George St, Liverpool NSW",
+        careerType: "Care Type A",
+        bookingStatus: "Scheduled",
+        region: "Dural",
+        eventType: "Domestic Assistance Worker",
+      },
+    },
+    {
+      resourceId: "11",
+      start: new Date("2025-08-13T14:00:00+05:30"),
+      end: new Date("2025-08-13T15:00:00+05:30"),
+      editable: false,
+      durationEditable: false,
+      eventStartEditable: false,
+      className: ["ec-event-active"],
+      extendedProps: {
+        employeeID: "100133",
+        employeeName: "Ava Reynolds",
+        address: "78 Campbell St, Surry Hills NSW",
+        careerType: "Care Type B",
+        bookingStatus: "Completed",
+        region: "Hawkesbury",
+        eventType: "Domestic Assistance Worker",
+      },
+    },
+    {
+      resourceId: "12",
+      start: new Date("2025-08-13T10:45:00+05:30"),
+      end: new Date("2025-08-13T12:00:00+05:30"),
+      editable: false,
+      durationEditable: false,
+      eventStartEditable: false,
+      className: ["ec-event-active"],
+      extendedProps: {
+        employeeID: "100134",
+        employeeName: "Freya Dawson",
+        address: "101 Queen St, Beaconsfield NSW",
+        careerType: "Care Type C",
+        bookingStatus: "Scheduled",
+        region: "Hawkesbury",
+        eventType: "Village Care Worker",
+      },
+    },
+    {
+      resourceId: "13",
+      start: new Date("2025-08-13T08:30:00+05:30"),
+      end: new Date("2025-08-13T09:30:00+05:30"),
+      editable: false,
+      durationEditable: false,
+      eventStartEditable: false,
+      className: ["ec-event-active"],
+      extendedProps: {
+        employeeID: "100135",
+        employeeName: "Sienna Brooks",
+        address: "43 Main St, Zetland NSW",
+        careerType: "Care Type D",
+        bookingStatus: "Scheduled",
+        region: "Dural",
+        eventType: "Village Care Worker",
+      },
+    },
+    {
+      resourceId: "14",
+      start: new Date("2025-08-13T15:00:00+05:30"),
+      end: new Date("2025-08-13T16:30:00+05:30"),
+      editable: false,
+      durationEditable: false,
+      eventStartEditable: false,
+      className: ["ec-event-active"],
+      extendedProps: {
+        employeeID: "100136",
+        employeeName: "Leo Murphy",
+        address: "67 Bridge Rd, Glebe NSW",
+        careerType: "Care Type A",
+        bookingStatus: "Completed",
+        region: "Cityeast",
+        eventType: "Village Care Worker",
+      },
+    },
+    {
+      resourceId: "15",
+      start: new Date("2025-08-13T13:00:00+05:30"),
+      end: new Date("2025-08-13T14:00:00+05:30"),
+      editable: false,
+      durationEditable: false,
+      eventStartEditable: false,
+      className: ["ec-event-active"],
+      extendedProps: {
+        employeeID: "100137",
+        employeeName: "Lily Morgan",
+        address: "19 Stanley St, Darlinghurst NSW",
+        careerType: "Care Type B",
+        bookingStatus: "Scheduled",
+        region: "Bowral",
+        eventType: "Village Care Worker",
+      },
+    },
+    {
+      resourceId: "16",
+      start: new Date("2025-08-13T11:15:00+05:30"),
+      end: new Date("2025-08-13T12:45:00+05:30"),
+      editable: false,
+      durationEditable: false,
+      eventStartEditable: false,
+      className: ["ec-event-active"],
+      extendedProps: {
+        employeeID: "100138",
+        employeeName: "Elliot Brooks",
+        address: "55 Bay St, Botany NSW",
+        careerType: "Care Type C",
+        bookingStatus: "Completed",
+        region: "Beacon - Blacktown",
+        eventType: "Village Care Worker",
+      },
+    },
+    {
+      resourceId: "17",
+      start: new Date("2025-08-13T08:45:00+05:30"),
+      end: new Date("2025-08-13T10:00:00+05:30"),
+      editable: false,
+      durationEditable: false,
+      eventStartEditable: false,
+      className: ["ec-event-active"],
+      extendedProps: {
+        employeeID: "100139",
+        employeeName: "Mason Green",
+        address: "66 Clarence St, Sydney NSW",
+        careerType: "Care Type D",
+        bookingStatus: "Scheduled",
+        region: "Bankstown",
+        eventType: "Village Care Worker",
+      },
+    },
+    {
+      resourceId: "18",
+      start: new Date("2025-08-13T14:15:00+05:30"),
+      end: new Date("2025-08-13T15:30:00+05:30"),
+      editable: false,
+      durationEditable: false,
+      eventStartEditable: false,
+      className: ["ec-event-active"],
+      extendedProps: {
+        employeeID: "100140",
+        employeeName: "Isla Matthews",
+        address: "20 Regent St, Chippendale NSW",
+        careerType: "Care Type A",
+        bookingStatus: "Completed",
+        region: "Bankstown",
+        eventType: "Domestic Assistance Worker",
+      },
+    },
+  ];
+
+  resourceData = [
+    {
+      id: 1,
+      extendedProps: {
+        name: "Diana Alexiou",
+        totalTime: "244h 29m ",
+        imgUrl: "Assets/profiles/R1.jpg",
+      },
+    },
+    {
+      id: 2,
+      extendedProps: {
+        name: "Olivia Clarke",
+        totalTime: "244h 29m ",
+        imgUrl: "Assets/profiles/R2.jpg",
+      },
+    },
+    {
+      id: 3,
+      extendedProps: {
+        name: "Liam Bennett",
+        totalTime: "244h 29m ",
+        imgUrl: "Assets/profiles/R3.jpg",
+      },
+    },
+    {
+      id: 4,
+      extendedProps: {
+        name: "Mia Walker",
+        totalTime: "244h 29m ",
+        imgUrl: "Assets/profiles/R4.jpg",
+      },
+    },
+    {
+      id: 5,
+      extendedProps: {
+        name: "Ethan Johnson",
+        totalTime: "244h 29m ",
+        imgUrl: "Assets/profiles/R5.jpg",
+      },
+    },
+    {
+      id: 6,
+      extendedProps: {
+        name: "Chloe Walker",
+        totalTime: "244h 29m ",
+        imgUrl: "Assets/profiles/R6.jpg",
+      },
+    },
+    {
+      id: 7,
+      extendedProps: {
+        name: "Noah Carter",
+        totalTime: "244h 29m ",
+        imgUrl: "Assets/profiles/R7.jpg",
+      },
+    },
+    {
+      id: 8,
+      extendedProps: {
+        name: "Grace Foster",
+        totalTime: "244h 29m ",
+        imgUrl: "Assets/profiles/R8.jpg",
+      },
+    },
+    {
+      id: 9,
+      extendedProps: {
+        name: "Oscar Hughes",
+        totalTime: "244h 29m ",
+        imgUrl: "Assets/profiles/R9.jpg",
+      },
+    },
+    {
+      id: 10,
+      extendedProps: {
+        name: "Liam Carter",
+        totalTime: "244h 29m ",
+        imgUrl: "Assets/profiles/R1.jpg",
+      },
+    },
+    {
+      id: 11,
+      extendedProps: {
+        name: "Ava Reynolds",
+        totalTime: "244h 29m ",
+        imgUrl: "Assets/profiles/R2.jpg",
+      },
+    },
+    {
+      id: 12,
+      extendedProps: {
+        name: "Freya Dawson",
+        totalTime: "244h 29m ",
+        imgUrl: "Assets/profiles/R3.jpg",
+      },
+    },
+    {
+      id: 13,
+      extendedProps: {
+        name: "Sienna Brooks",
+        totalTime: "244h 29m ",
+        imgUrl: "Assets/profiles/R4.jpg",
+      },
+    },
+    {
+      id: 14,
+      extendedProps: {
+        name: "Leo Murphy",
+        totalTime: "244h 29m ",
+        imgUrl: "Assets/profiles/R5.jpg",
+      },
+    },
+    {
+      id: 15,
+      extendedProps: {
+        name: "Lily Morgan",
+        totalTime: "244h 29m ",
+        imgUrl: "Assets/profiles/R6.jpg",
+      },
+    },
+    {
+      id: 16,
+      extendedProps: {
+        name: "Elliot Brooks",
+        totalTime: "244h 29m ",
+        imgUrl: "Assets/profiles/R7.jpg",
+      },
+    },
+    {
+      id: 17,
+      extendedProps: {
+        name: "Mason Green",
+        totalTime: "244h 29m ",
+        imgUrl: "Assets/profiles/R8.jpg",
+      },
+    },
+    {
+      id: 18,
+      extendedProps: {
+        name: "Isla Matthews",
+        totalTime: "244h 29m ",
+        imgUrl: "Assets/profiles/R9.jpg",
+      },
+    },
+  ];
+  reRenderResources();
+  reRenderEvents();
+}
+
+function setLeaveData() {
+  eventData = [
+    {
+      resourceId: "1",
+      start: new Date("2025-08-13T10:45:00+05:30"),
+      end: new Date("2025-08-13T12:00:00+05:30"),
+      id: "123",
+      type: "Full",
+      editable: false,
+      durationEditable: false,
+      eventStartEditable: false,
+      className: ["ec-event-active"],
+      extendedProps: {
+        employeeID: "100123",
+        employeeName: "Diana Alexiou",
+        address: "12 King Street, Newtown NSW 2042",
+        careerType: "Care Type xyz",
+        bookingStatus: "Scheduled",
+        region: "Bankstown",
+        eventType: "Care Worker",
+      },
+    },
+    {
+      resourceId: "2",
+      start: new Date("2025-08-13T10:00:00+05:30"),
+      end: new Date("2025-08-13T10:00:00+05:30"),
+      editable: false,
+      durationEditable: false,
+      eventStartEditable: false,
+      className: ["ec-event-gray"],
+      extendedProps: {
+        employeeID: "100124",
+        employeeName: "Olivia Clarke",
+        address: "100 Elizabeth St, Sydney NSW",
+        careerType: "Care Type xyz",
+        bookingStatus: "Scheduled",
+        region: "Bankstown",
+        eventType: "Care Worker",
+      },
+    },
+    {
+      resourceId: "3",
+      start: new Date("2025-08-13T13:30:00+05:30"),
+      end: new Date("2025-08-13T15:00:00+05:30"),
+      editable: false,
+      durationEditable: false,
+      eventStartEditable: false,
+      className: ["ec-event-active"],
+      extendedProps: {
+        employeeID: "100125",
+        employeeName: "Liam Bennett",
+        address: "34 Pitt Street, Redfern NSW",
+        careerType: "Care Type xyz",
+        bookingStatus: "Completed",
+        region: "Bowral",
+        eventType: "Care Worker",
+      },
+    },
+    {
+      resourceId: "4",
+      start: new Date("2025-08-13T09:45:00+05:30"),
+      end: new Date("2025-08-13T10:45:00+05:30"),
+      editable: false,
+      durationEditable: false,
+      eventStartEditable: false,
+      className: ["ec-event-pink"],
+      extendedProps: {
+        employeeID: "100126",
+        employeeName: "Mia Walker",
+        address: "77 George St, The Rocks NSW",
+        careerType: "Care Type xyz",
+        bookingStatus: "Completed",
+        region: "Cityeast",
+        eventType: "Care Worker",
+      },
+    },
+    {
+      resourceId: "5",
+      start: new Date("2025-08-13T12:00:00+05:30"),
+      end: new Date("2025-08-13T13:00:00+05:30"),
+      editable: false,
+      durationEditable: false,
+      eventStartEditable: false,
+      className: ["ec-event-yellow"],
+      extendedProps: {
+        employeeID: "100127",
+        employeeName: "Ethan Johnson",
+        address: "22 Oxford St, Darlinghurst NSW",
+        careerType: "Care Type xyz",
+        bookingStatus: "Completed",
+        region: "Dural",
+        eventType: "Care Worker",
+      },
+    },
+    {
+      resourceId: "6",
+      start: new Date("2025-08-13T08:00:00+05:30"),
+      end: new Date("2025-08-13T09:30:00+05:30"),
+      editable: false,
+      durationEditable: false,
+      eventStartEditable: false,
+      className: ["ec-event-gray"],
+      extendedProps: {
+        employeeID: "100128",
+        employeeName: "Chloe Walker",
+        address: "5 High Street, Parramatta NSW",
+        careerType: "Care Type A",
+        bookingStatus: "Scheduled",
+        region: "Hawkesbury",
+        eventType: "Care Worker",
+      },
+    },
+    {
+      resourceId: "7",
+      start: new Date("2025-08-13T10:00:00+05:30"),
+      end: new Date("2025-08-13T11:15:00+05:30"),
+      editable: false,
+      durationEditable: false,
+      eventStartEditable: false,
+      className: ["ec-event-active"],
+      extendedProps: {
+        employeeID: "100129",
+        employeeName: "Noah Carter",
+        address: "88 Victoria Rd, Rydalmere NSW",
+        careerType: "Care Type B",
+        bookingStatus: "Scheduled",
+        region: "Beacon - Blacktown",
+        eventType: "Domestic Assistance Worker",
+      },
+    },
+    {
+      resourceId: "8",
+      start: new Date("2025-08-13T11:30:00+05:30"),
+      end: new Date("2025-08-13T13:00:00+05:30"),
+      editable: false,
+      durationEditable: false,
+      eventStartEditable: false,
+      className: ["ec-event-yellow"],
+      extendedProps: {
+        employeeID: "100130",
+        employeeName: "Grace Foster",
+        address: "33 Norton St, Leichhardt NSW",
+        careerType: "Care Type C",
+        bookingStatus: "Completed",
+        region: "Bowral",
+        eventType: "Domestic Assistance Worker",
+      },
+    },
+    {
+      resourceId: "9",
+      start: new Date("2025-08-13T13:15:00+05:30"),
+      end: new Date("2025-08-13T14:45:00+05:30"),
+      editable: false,
+      durationEditable: false,
+      eventStartEditable: false,
+      className: ["ec-event-pink"],
+      extendedProps: {
+        employeeID: "100131",
+        employeeName: "Oscar Hughes",
+        address: "50 King St, Mascot NSW",
+        careerType: "Care Type D",
+        bookingStatus: "Completed",
+        region: "Cityeast",
+        eventType: "Domestic Assistance Worker",
+      },
+    },
+    {
+      resourceId: "10",
+      start: new Date("2025-08-13T09:00:00+05:30"),
+      end: new Date("2025-08-13T10:30:00+05:30"),
+      editable: false,
+      durationEditable: false,
+      eventStartEditable: false,
+      className: ["ec-event-active"],
+      extendedProps: {
+        employeeID: "100132",
+        employeeName: "Liam Carter",
+        address: "120 George St, Liverpool NSW",
+        careerType: "Care Type A",
+        bookingStatus: "Scheduled",
+        region: "Dural",
+        eventType: "Domestic Assistance Worker",
+      },
+    },
+    {
+      resourceId: "11",
+      start: new Date("2025-08-13T14:00:00+05:30"),
+      end: new Date("2025-08-13T15:00:00+05:30"),
+      editable: false,
+      durationEditable: false,
+      eventStartEditable: false,
+      className: ["ec-event-yellow"],
+      extendedProps: {
+        employeeID: "100133",
+        employeeName: "Ava Reynolds",
+        address: "78 Campbell St, Surry Hills NSW",
+        careerType: "Care Type B",
+        bookingStatus: "Completed",
+        region: "Hawkesbury",
+        eventType: "Domestic Assistance Worker",
+      },
+    },
+    {
+      resourceId: "12",
+      start: new Date("2025-08-13T10:45:00+05:30"),
+      end: new Date("2025-08-13T12:00:00+05:30"),
+      editable: false,
+      durationEditable: false,
+      eventStartEditable: false,
+      className: ["ec-event-pink"],
+      extendedProps: {
+        employeeID: "100134",
+        employeeName: "Freya Dawson",
+        address: "101 Queen St, Beaconsfield NSW",
+        careerType: "Care Type C",
+        bookingStatus: "Scheduled",
+        region: "Hawkesbury",
+        eventType: "Village Care Worker",
+      },
+    },
+    {
+      resourceId: "13",
+      start: new Date("2025-08-13T08:30:00+05:30"),
+      end: new Date("2025-08-13T09:30:00+05:30"),
+      editable: false,
+      durationEditable: false,
+      eventStartEditable: false,
+      className: ["ec-event-gray"],
+      extendedProps: {
+        employeeID: "100135",
+        employeeName: "Sienna Brooks",
+        address: "43 Main St, Zetland NSW",
+        careerType: "Care Type D",
+        bookingStatus: "Scheduled",
+        region: "Dural",
+        eventType: "Village Care Worker",
+      },
+    },
+    {
+      resourceId: "14",
+      start: new Date("2025-08-13T15:00:00+05:30"),
+      end: new Date("2025-08-13T16:30:00+05:30"),
+      editable: false,
+      durationEditable: false,
+      eventStartEditable: false,
+      className: ["ec-event-active"],
+      extendedProps: {
+        employeeID: "100136",
+        employeeName: "Leo Murphy",
+        address: "67 Bridge Rd, Glebe NSW",
+        careerType: "Care Type A",
+        bookingStatus: "Completed",
+        region: "Cityeast",
+        eventType: "Village Care Worker",
+      },
+    },
+    {
+      resourceId: "15",
+      start: new Date("2025-08-13T13:00:00+05:30"),
+      end: new Date("2025-08-13T14:00:00+05:30"),
+      editable: false,
+      durationEditable: false,
+      eventStartEditable: false,
+      className: ["ec-event-yellow"],
+      extendedProps: {
+        employeeID: "100137",
+        employeeName: "Lily Morgan",
+        address: "19 Stanley St, Darlinghurst NSW",
+        careerType: "Care Type B",
+        bookingStatus: "Scheduled",
+        region: "Bowral",
+        eventType: "Village Care Worker",
+      },
+    },
+    {
+      resourceId: "16",
+      start: new Date("2025-08-13T11:15:00+05:30"),
+      end: new Date("2025-08-13T12:45:00+05:30"),
+      editable: false,
+      durationEditable: false,
+      eventStartEditable: false,
+      className: ["ec-event-pink"],
+      extendedProps: {
+        employeeID: "100138",
+        employeeName: "Elliot Brooks",
+        address: "55 Bay St, Botany NSW",
+        careerType: "Care Type C",
+        bookingStatus: "Completed",
+        region: "Beacon - Blacktown",
+        eventType: "Village Care Worker",
+      },
+    },
+    {
+      resourceId: "17",
+      start: new Date("2025-08-13T08:45:00+05:30"),
+      end: new Date("2025-08-13T10:00:00+05:30"),
+      editable: false,
+      durationEditable: false,
+      eventStartEditable: false,
+      className: ["ec-event-gray"],
+      extendedProps: {
+        employeeID: "100139",
+        employeeName: "Mason Green",
+        address: "66 Clarence St, Sydney NSW",
+        careerType: "Care Type D",
+        bookingStatus: "Scheduled",
+        region: "Bankstown",
+        eventType: "Village Care Worker",
+      },
+    },
+    {
+      resourceId: "18",
+      start: new Date("2025-08-13T14:15:00+05:30"),
+      end: new Date("2025-08-13T15:30:00+05:30"),
+      editable: false,
+      durationEditable: false,
+      eventStartEditable: false,
+      className: ["ec-event-active"],
+      extendedProps: {
+        employeeID: "100140",
+        employeeName: "Isla Matthews",
+        address: "20 Regent St, Chippendale NSW",
+        careerType: "Care Type A",
+        bookingStatus: "Completed",
+        region: "Bankstown",
+        eventType: "Domestic Assistance Worker",
+      },
+    },
+  ];
+
+  resourceData = [
+    {
+      id: 8,
+      extendedProps: {
+        name: "Liam Carter",
+        totalTime: "244h 29m ",
+        imgUrl: "Assets/profiles/R4.jpg",
+      },
+    },
+    {
+      id: 3,
+      extendedProps: {
+        name: "Freya Dawson",
+        totalTime: "244h 29m ",
+        imgUrl: "Assets/profiles/R2.jpg",
+      },
+    },
+    {
+      id: 15,
+      extendedProps: {
+        name: "Mason Green",
+        totalTime: "244h 29m ",
+        imgUrl: "Assets/profiles/R1.jpg",
+      },
+    },
+    {
+      id: 1,
+      extendedProps: {
+        name: "Leo Murphy",
+        totalTime: "244h 29m ",
+        imgUrl: "Assets/profiles/R6.jpg",
+      },
+    },
+    {
+      id: 11,
+      extendedProps: {
+        name: "Oscar Hughes",
+        totalTime: "244h 29m ",
+        imgUrl: "Assets/profiles/R9.jpg",
+      },
+    },
+    {
+      id: 6,
+      extendedProps: {
+        name: "Ava Reynolds",
+        totalTime: "244h 29m ",
+        imgUrl: "Assets/profiles/R5.jpg",
+      },
+    },
+    {
+      id: 13,
+      extendedProps: {
+        name: "Sienna Brooks",
+        totalTime: "244h 29m ",
+        imgUrl: "Assets/profiles/R8.jpg",
+      },
+    },
+    {
+      id: 2,
+      extendedProps: {
+        name: "Chloe Walker",
+        totalTime: "244h 29m ",
+        imgUrl: "Assets/profiles/R3.jpg",
+      },
+    },
+    {
+      id: 10,
+      extendedProps: {
+        name: "Elliot Brooks",
+        totalTime: "244h 29m ",
+        imgUrl: "Assets/profiles/R7.jpg",
+      },
+    },
+    {
+      id: 4,
+      extendedProps: {
+        name: "Grace Foster",
+        totalTime: "244h 29m ",
+        imgUrl: "Assets/profiles/R6.jpg",
+      },
+    },
+    {
+      id: 5,
+      extendedProps: {
+        name: "Mia Walker",
+        totalTime: "244h 29m ",
+        imgUrl: "Assets/profiles/R9.jpg",
+      },
+    },
+  ];
+  reRenderResources();
+  reRenderEvents();
+}
 
 function syncDynamicHeight() {
   const dayContainers = document.querySelectorAll(
@@ -97,83 +1047,35 @@ function disposeAllTooltips() {
   });
 }
 
-// document.getElementById("initial-button").addEventListener("click", () => {
-//   if (resourceData.length === 0) {
-//     handleGetResorces(); // fetch if empty
-//   } else {
-//     window.ecCalendar.setOption("resources", resourceData);
-//     window.ecCalendar.setOption("events", eventData);
-//   }
-// });
-
-// document.getElementById("initial-button").addEventListener("click", () => {
-//   // handleGetResorces();
-//   console.log("data", resourceData);
-//   console.log(resorcesStatus.resourceData)
-//   // Reapply the last known global data
-//   window.ecCalendar.setOption("resources", resorcesStatus.resourceData);
-//   window.ecCalendar.setOption("events", eventData);
-// });
-// Updated reRenderEvents to ensure resources and events are synced
 function reRenderEvents() {
-  if (eventStatus.isLoading || resorcesStatus.isLoading) {
-    window.ecCalendar.setOption("events", []);
-    window.ecCalendar.setOption("resources", [{ id: "loading", title: "Loading..." }]);
-    return;
-  }
-  if (eventStatus.isError || resorcesStatus.isError) {
-    window.ecCalendar.setOption("events", []);
-    window.ecCalendar.setOption("resources", []);
-    return;
-  }
+  //Rerender new Events
   window.ecCalendar.setOption("events", eventData);
+}
+
+function reRenderResources() {
+  //Rerender new Events
   window.ecCalendar.setOption("resources", resourceData);
 }
 
-// Updated renderTooltipContent to include bookingID and serviceType
-function renderTooltipContent(arg) {
-  return `
-    <div class="custom-tooltip-content">
-      <p class="event-desc-id">${arg.event.extendedProps.employeeID}</p>
-      
-      <p>${new Date(arg.event.start).toLocaleDateString()} - ${new Date(arg.event.end).toLocaleDateString()}</p>
-      <div class="event-desc-grid">
-        <p>Address (Work Order)</p>
-        <p>${arg.event.extendedProps.address}</p>
-        <p>Suburb</p>
-        <p>${arg.event.extendedProps.suburb}</p>
-        <p>Booking Status</p>
-        <p>${arg.event.extendedProps.bookingStatus}</p>
-        <p>Agreement Booking</p>
-        <p><a href="/agreement-booking/${arg.event.extendedProps.agreementBookingSetupId}" target="_blank">View Agreement</a></p>
-      </div>
-    </div>
-  `;
-}
 function chnageActivetab() {
-
   const initalTabBtn = document.getElementById("intial-tab-btn");
   const leaveTabBtn = document.getElementById("leave-tab-btn");
 
   initalTabBtn.addEventListener("click", (el) => {
-
-
-    // 🔹 Change UI
+    //Chnage Ui
     initalTabBtn.children[0].classList.add("active-tab-btn");
     leaveTabBtn.children[0].classList.remove("active-tab-btn");
-
-
-    // 🔹 Now fetch fresh resources
-    handleGetResorces();
+    currentTab = "init";
+    handleGetResorces(getBookableResources, mapOverIntialData);
     resetFilters();
   });
 
   leaveTabBtn.addEventListener("click", (el) => {
-
+    //Chnage Ui
     leaveTabBtn.children[0].classList.add("active-tab-btn");
     initalTabBtn.children[0].classList.remove("active-tab-btn");
-
-    setLeaveData();
+    currentTab = "leave";
+    handleGetResorces(getTimeOffRequests, mapOverLeaveData);
     resetFilters();
   });
 }
@@ -203,7 +1105,7 @@ function parseDate(date) {
   let label = `${weekday} - ${day}-${month}-${year} (Week-${parity})`;
 
   const colorMap = {
-    1: "#ff0026ff",
+    1: "#4F7AB3",
     2: "#225f27ff",
   };
 
@@ -215,6 +1117,29 @@ function parseDate(date) {
   };
 }
 
+function renderTooltipContent(arg) {
+  return `
+    <div class="custom-tooltip-content">
+      <p class="event-desc-id">${arg.event.extendedProps.employeeID}</p>
+     
+      <p>${new Date(arg.event.start).toLocaleDateString()} - ${new Date(
+    arg.event.end
+  ).toLocaleDateString()}</p>
+      <div class="event-desc-grid">
+        <p>Address (Work Order)</p>
+        <p>${arg.event.extendedProps.address}</p>
+        <p>Suburb</p>
+        <p>${arg.event.extendedProps.suburb}</p>
+        <p>Booking Status</p>
+        <p>${arg.event.extendedProps.bookingStatus}</p>
+        <p>Agreement Booking</p>
+        <p><a href="/agreement-booking/${
+          arg.event.extendedProps.agreementBookingSetupId
+        }" target="_blank">View Agreement</a></p>
+      </div>
+    </div>
+  `;
+}
 
 function renderStatusIcon(status) {
   const icon = {
@@ -243,7 +1168,7 @@ function formatEventTime(date) {
     year: "numeric",
     hour: "2-digit",
     minute: "2-digit",
-    hour12: true, // Use 24-hour format
+    hour12: true, // Use 12-hour format
     // timeZoneName: "short", // Get timezone abbreviation (e.g., "IST", "PST")
   });
 
@@ -262,9 +1187,8 @@ function formatEventTime(date) {
   return formattedDate;
 }
 
-// Updated renderEventDetails to include serviceType
 function renderEventDetails(arg) {
-  console.log("args", arg)
+  console.log("args", arg);
   const start = new Date(arg.event.start);
   const end = new Date(arg.event.end);
   const diffMs = end - start;
@@ -272,39 +1196,54 @@ function renderEventDetails(arg) {
   const hours = Math.floor(diffMins / 60);
   const minutes = diffMins % 60;
 
-  const nameArray = arg.event.extendedProps.employeeName.split(" ");
-  const firstName = nameArray[0] || "";
-  const lastName = nameArray.slice(1).join(" ") || "";
-
-
   const durationStr = `${hours}h ${minutes.toString().padStart(2, "0")}m`;
   arg.event.extendedProps.duration = durationStr;
 
   const tooltipHtml = renderTooltipContent(arg)
     .replace(/"/g, "&quot;") // Escape double quotes for title attribute
     .replace(/\n/g, ""); // Remove line breaks
-  console.log("arg.event.extendedProps.duration", arg.event.extendedProps.duration)
+  console.log(
+    "arg.event.extendedProps.duration",
+    arg.event.extendedProps.duration
+  );
 
+  let eventClass = "ec-event-active";
+
+  if (currentTab === "leave") {
+    const resourceId = arg?.event?.resourceIds?.[0] ?? arg?.event?.id; // ✅ FIXED
+    console.log("Retrieved Resource ID:", resourceId);
+
+    eventClass = getEventClassName(start, end, resourceId);
+    console.log("Class Name we found:", eventClass);
+  }
+
+  getEventClassName;
   return {
     html: `
-        <div class='event-disp-container' 
+        <div class='event-disp-container ${eventClass}'
         data-bs-toggle="tooltip"
-        data-bs-html="true" 
+        data-bs-html="true"
         data-bs-placement="bottom"
-        data-popper-placement="left" 
-        data-bs-custom-class="custom-tooltip" 
+        data-popper-placement="left"
+        data-bs-custom-class="custom-tooltip"
         title="${tooltipHtml}">
         <div class="event-disp">
-            <p>${firstName} ${lastName}</p> <!-- Display first name and last name -->
-            <p>${arg.event.extendedProps.suburb || "N/A"}</p> <!-- Display suburb -->
+            <p>${
+              arg?.event?.extendedProps?.employeeName
+            }</p> <!-- Display first name and last name -->
+            <p>${
+              arg.event.extendedProps.suburb || "N/A"
+            }</p> <!-- Display suburb -->
             <!-- Display type of service -->
-            <p>${formatEventTime(start)} - ${arg.event.extendedProps.duration}</p> <!-- Display formatted start time -->
+            <p>${formatEventTime(start)} - ${
+      arg.event.extendedProps.duration
+    }</p> <!-- Display formatted start time -->
              
-
+ 
              <!-- Display duration -->
         </div>
         <div class="event-disp-icon">
-        
+       
             ${renderStatusIcon(arg.event.extendedProps.bookingStatus)}
         </div>
       </div>
@@ -316,32 +1255,30 @@ function renderResources(info) {
   const resource = info?.resource;
   const props = info?.resource?.extendedProps;
 
-
   // Handle loading state
   if (resource.id === "loading") {
-
     return {
       html: `<div class="person-details">
                <div class="person-info">
                  <h5>Loading...</h5>
                </div>
-             </div>`
+             </div>`,
     };
   }
 
   // Handle error state
-  if (resource.id === "error") {
+  if (resource?.id === "error") {
     return {
       html: `<div class="person-details">
                <div class="person-info">
                  <h5 style="color:red;">Error loading resources</h5>
                </div>
-             </div>`
+             </div>`,
     };
   }
 
   // Validate required fields
-  if (!props || !props.imgUrl || !props.name) {
+  if (!props || !props?.imgUrl || !props?.name) {
     return {
       html: `<div class="person-details">No Content</div>`,
     };
@@ -350,16 +1287,15 @@ function renderResources(info) {
   return {
     html: `<div class="person-details">
         <div class="profile-img">
-          <img src="${info.resource.extendedProps.imgUrl}" alt="">
+          <img src="${info?.resource?.extendedProps?.imgUrl}" alt="">
         </div>
         <div class="person-info">   
-          <h5>${info.resource.extendedProps.name}</h5>
+          <h5>${info?.resource?.extendedProps?.name}</h5>
          
         </div>
       </div>`,
   };
 }
-
 
 function getResources() {
   return typeof resourceData !== "undefined" ? resourceData : [];
@@ -370,49 +1306,41 @@ function getEvents() {
   return typeof eventData !== "undefined" ? eventData : [];
 }
 
-// --- FILTER/SEARCH CORE LOGIC ---
-function getFilteredEventIds() {
+// New Filters
+// 🔹 FILTER: Only Events by Region
+function getFilteredEventsOnly() {
   const events = getEvents();
-  return events
-    .filter((ev) => {
-      let match = true;
 
-      // Region filter
-      if (Array.isArray(filterState.region) && filterState.region.length > 0) {
-        match = match && filterState.region.includes(ev.extendedProps.region);
-      }
+  if (Array.isArray(filterState.region) && filterState.region.length > 0) {
+    return events.filter((ev) =>
+      filterState.region.includes(ev.extendedProps.region)
+    );
+  }
 
-      // Work type filter
-      if (
-        Array.isArray(filterState.worktype) &&
-        filterState.worktype.length > 0
-      ) {
-        match =
-          match && filterState.worktype.includes(ev.extendedProps.eventType);
-      }
-
-      return match;
-    })
-    .map((ev) => String(ev.resourceId));
+  return events;
 }
 
-function getFilteredAndSearchedResources() {
-  let allResources = getResources();
-  const filteredEventIds = getFilteredEventIds();
+// 🔹 FILTER: Only Resources by WorkType + Search + Sort
+function getFilteredResourcesOnly() {
+  let resources = getResources();
 
-  let filteredResources = allResources.filter((res) =>
-    filteredEventIds.includes(String(res.id))
-  );
+  // WorkType
+  if (Array.isArray(filterState.worktype) && filterState.worktype.length > 0) {
+    resources = resources.filter((res) =>
+      filterState.worktype.includes(res.extendedProps.resourceType)
+    );
+  }
 
   // Search
   if (filterState.search) {
-    filteredResources = filteredResources.filter((res) =>
-      res.extendedProps.name.toLowerCase().includes(filterState.search)
+    const searchLower = filterState.search.toLowerCase();
+    resources = resources.filter((res) =>
+      res.extendedProps.name.toLowerCase().includes(searchLower)
     );
   }
 
   // Sort
-  filteredResources.sort((a, b) => {
+  resources.sort((a, b) => {
     const valA = a.extendedProps.name.toLowerCase();
     const valB = b.extendedProps.name.toLowerCase();
     if (valA < valB) return filterState.sortAsc ? -1 : 1;
@@ -420,36 +1348,89 @@ function getFilteredAndSearchedResources() {
     return 0;
   });
 
-  // If there is a search/filter and no match, show all resources (reset)
-  const anyFilter =
-    (filterState.region && filterState.region !== "Select an option") ||
-    (filterState.worktype && filterState.worktype !== "Select an option") ||
-    filterState.search;
-  if (anyFilter && filteredResources.length === 0) return allResources;
-
-  return filteredResources;
+  return resources;
 }
 
-function upadateResources(data) {
+function updateResources(resources) {
   if (window.ecCalendar) {
     disposeAllTooltips();
-
-    window.ecCalendar.setOption("resources", data);
-
+    window.ecCalendar.setOption("resources", resources);
     setTimeout(() => {
       refreshCalendarUI();
     }, 0);
   }
 }
 
-function applyAllFilters() {
-  const filtered = getFilteredAndSearchedResources();
-  // if (!filtered) {
-  //   return;
-  // }
-  upadateResources(filtered);
+function updateEvents(events) {
+  if (window.ecCalendar) {
+    disposeAllTooltips();
+    window.ecCalendar.setOption("events", events);
+    setTimeout(() => {
+      refreshCalendarUI();
+    }, 0);
+  }
 }
 
+// 🔹 Apply ONLY Resource Filter
+function applyOnlyResourceFilter() {
+  const filteredResources = getFilteredResourcesOnly();
+
+  // Reset if filters applied but no results
+  const anyFilter =
+    (filterState.worktype && filterState.worktype !== "Select an option") ||
+    filterState.search;
+
+  if (anyFilter && filteredResources.length === 0) {
+    updateResources(getResources());
+  } else {
+    updateResources(filteredResources);
+  }
+}
+
+// 🔹 Apply ONLY Event Filter
+function applyOnlyEventFilter() {
+  const filteredEvents = getFilteredEventsOnly();
+
+  const anyFilter =
+    Array.isArray(filterState.region) &&
+    filterState.region.length > 0 &&
+    filterState.region[0] !== "Select an option";
+
+  if (anyFilter && filteredEvents.length === 0) {
+    updateEvents(getEvents());
+  } else {
+    updateEvents(filteredEvents);
+  }
+}
+
+// 🔹 Apply BOTH (reset if needed)
+function applyAllFilters() {
+  const filteredResources = getFilteredResourcesOnly();
+  const filteredEvents = getFilteredEventsOnly();
+
+  const resourceFiltersApplied =
+    (filterState.worktype && filterState.worktype !== "Select an option") ||
+    filterState.search;
+
+  const eventFiltersApplied =
+    Array.isArray(filterState.region) &&
+    filterState.region.length > 0 &&
+    filterState.region[0] !== "Select an option";
+
+  // Reset to all if either has no results and filters are active
+  const finalResources =
+    resourceFiltersApplied && filteredResources.length === 0
+      ? getResources()
+      : filteredResources;
+
+  const finalEvents =
+    eventFiltersApplied && filteredEvents.length === 0
+      ? getEvents()
+      : filteredEvents;
+
+  updateResources(finalResources);
+  updateEvents(finalEvents);
+}
 
 function setupFilterDropdownsAndReset() {
   // Initialize as arrays for multi-select
@@ -485,8 +1466,14 @@ function setupFilterDropdownsAndReset() {
         }
 
         // Update dropdown text
+        // if (filterState[filterKey].length > 0) {
+        //   valueDisplay.textContent = filterState[filterKey].join(", ");
+        // } else {
+        //   valueDisplay.textContent = "Select an option";
+        // }
+
         if (filterState[filterKey].length > 0) {
-          valueDisplay.textContent = filterState[filterKey].join(", ");
+          valueDisplay.textContent = `${filterState[filterKey].length} item(s) selected`;
         } else {
           valueDisplay.textContent = "Select an option";
         }
@@ -516,16 +1503,14 @@ function resetFilters() {
   filterState.search = "";
   filterState.sortAsc = true;
 
-
-
   // Uncheck all checkboxes
   document
     .querySelectorAll(".custom-dropdown input[type='checkbox']")
-    .forEach((cb) => {
-      cb.checked = false;
-      cb.classList.remove("selected-option");
-      console.log(cb.classList);
-    });
+    .forEach((cb) => (cb.checked = false));
+
+  document
+    .querySelectorAll(".dropdown-option")
+    .forEach((cb) => cb.classList.remove("selected-option"));
 
   // Reset displayed text
   document
@@ -536,8 +1521,8 @@ function resetFilters() {
   const searchInput = document.querySelector(".search-input");
   if (searchInput) searchInput.value = "";
 
-  $(".starttime").timepicker("setTime", "8:00 AM");
-  $(".endtime").timepicker("setTime", "4:00 PM");
+  $(".starttime").timepicker("setTime", "6:00 AM");
+  $(".endtime").timepicker("setTime", "6:00 PM");
   applyAllFilters();
 }
 
@@ -615,14 +1600,16 @@ function renderSearch() {
 
   // Create search icon (optional)
   const searchIcon = document.createElement("img");
-  searchIcon.src = "Assets/icons/search.svg";
+  searchIcon.src =
+    "https://aahdevelopment.crm6.dynamics.com/WebResources/sog_search";
   searchIcon.alt = "Search";
   searchIcon.classList.add("search-icon");
 
   // Create sort btn (optional)
   const sortBtn = document.createElement("button");
   const sortIcon = document.createElement("img");
-  sortIcon.src = "Assets/icons/swap.svg";
+  sortIcon.src =
+    "https://aahdevelopment.crm6.dynamics.com/WebResources/sog_swap";
   sortIcon.alt = "Sort";
   sortBtn.classList.add("sort-btn");
   sortBtn.appendChild(sortIcon);
@@ -681,7 +1668,6 @@ function applyObserver() {
   updatePosition();
 }
 
-
 function refreshCalendarUI() {
   initializeAllTooltips();
   syncDynamicHeight();
@@ -697,28 +1683,9 @@ function createCalendar() {
   }
 
   const ec = EventCalendar.create(ecEl, {
-    // view: "resourceTimelineDay",
-    // initialView: "resourceTimelineDay",
-    // slotWidth: "220", //249
-    // slotHeight: "80",
-    // duration: { days: 10 },
-    // headerToolbar: false,
-    // editable: false,
-    // durationEditable: false,
-    // eventStartEditable: false,
-    // slotEventOverlap: true,
-
-    // dayHeaderFormat: parseDate,
-    // eventContent: renderEventDetails,
-    // resourceLabelContent: renderResources,
-    // viewDidMount: renderSearch,
-    // eventAllUpdated: refreshCalendarUI,
-
-    // slotMinTime: "8:00:00",
-    // slotMaxTime: "16:00:00",
     view: "resourceTimelineDay",
     initialView: "resourceTimelineDay",
-    slotWidth: "220",
+    slotWidth: "220", //249
     slotHeight: "80",
     duration: { days: 10 },
     headerToolbar: false,
@@ -726,869 +1693,33 @@ function createCalendar() {
     durationEditable: false,
     eventStartEditable: false,
     slotEventOverlap: true,
+
     dayHeaderFormat: parseDate,
     eventContent: renderEventDetails,
     resourceLabelContent: renderResources,
     viewDidMount: renderSearch,
     eventAllUpdated: refreshCalendarUI,
-    slotMinTime: "6:00:00",
-    slotMaxTime: "18:00:00",
+    datesSet: handleEventFetch,
+
+    slotMinTime: "0:00:00",
+    slotMaxTime: "24:00:00",
   });
   window.ecCalendar = ec;
-
-  // Initialize with loading state and fetch data on DOM load
-}
-function fetchFilterOptions(options = {}) {
-  const { simulateFailure = false, delayMs = 5000 } = options;
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      if (simulateFailure) {
-        reject(new Error('Failed to fetch filter options'));
-        return;
-      }
-      resolve({
-        regions: [
-          'Bankstown',
-          'Beacon - Blacktown',
-          'Bowral',
-          'Cityeast',
-          'Dural',
-          'Hawkesbury',
-        ],
-        workTypes: [
-          'Care Worker',
-          'Domestic Assistance Worker',
-          'Village Care Worker',
-        ],
-      });
-    }, delayMs);
-  });
 }
 
-// Updated fetchEvents with provided event data
-function fetchEvents(options = {}) {
-  const { simulateFailure = false, delayMs = 2000 } = options;
+// function getTerritory() {
+//   return window.parent.Xrm.WebApi.retrieveMultipleRecords(
+//     "territory",
+//     "?$select=territoryid,name"
+//   );
+// }
 
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      if (simulateFailure) {
-        reject(new Error('Failed to fetch events'));
-        return;
-      }
-      resolve([
-        {
-          "@odata.etag": "W/\"562523211\"",
-          "_msdyn_agreement_value": "be8120e7-fd9e-4cce-bb41-4cb5c2409976",
-          "_msdyn_resource_value": "b3141cf1-91e1-ee11-904c-000d3aca6924",
-          "msdyn_status": 690970002,
-          "msdyn_name": "00313",
-          "msdyn_agreementbookingdateid": "58cdee5a-d340-f011-8779-000d3a6a1ca6",
-          "msdyn_bookingdate": "2025-07-20T16:00:00Z",
-          "statecode": 0,
-          "msdyn_resource": {
-            "bookableresourceid": "b3141cf1-91e1-ee11-904c-000d3aca6924",
-            "name": "Jamie Higgins"
-          },
-          "msdyn_bookingsetup": {
-            "msdyn_estimatedduration": 975,
-            "msdyn_agreementbookingsetupid": "98fd7d12-c12f-f011-8c4d-00224894331c",
-            "_ang_incidenttype_value": "33c31285-1332-f011-8c4d-0022481174b1"
-          },
-          "msdyn_workorder": {
-            "msdyn_city": "MOUNT RANKIN",
-            "msdyn_address3": null,
-            "_msdyn_serviceterritory_value": "04c74320-0340-eb11-bf70-000d3a795b83",
-            "msdyn_stateorprovince": "NSW",
-            "msdyn_address1": "16 SPRING CL",
-            "msdyn_country": "Australia",
-            "msdyn_workorderid": "cb5547f4-c541-f011-8779-000d3ad28f5c",
-            "msdyn_postalcode": "2795",
-            "msdyn_addres s2": "MINTO"
-          }
-        },
-        {
-          "@odata.etag": "W/\"563064379\"",
-          "_msdyn_agreement_value": "be8120e7-fd9e-4cce-bb41-4cb5c2409976",
-          "_msdyn_resource_value": "157d1c09-92e1-ee11-904c-000d3aca6924",
-          "msdyn_status": 690970001,
-          "msdyn_name": "00313",
-          "msdyn_agreementbookingdateid": "9dcdee5a-d340-f011-8779-000d3a6a1ca6",
-          "msdyn_bookingdate": "2025-07-27T16:00:00Z",
-          "statecode": 0,
-          "msdyn_resource": {
-            "bookableresourceid": "157d1c09-92e1-ee11-904c-000d3aca6924",
-            "name": "Jamie Higgins"
-          },
-          "msdyn_bookingsetup": {
-            "msdyn_estimatedduration": 975,
-            "msdyn_agreementbookingsetupid": "98fd7d12-c12f-f011-8c4d-00224894331c",
-            "_ang_incidenttype_value": "33c31285-1332-f011-8c4d-0022481174b1"
-          },
-          "msdyn_workorder": {
-            "msdyn_city": "MOUNT RANKIN",
-            "msdyn_address3": null,
-            "_msdyn_serviceterritory_value": "04c74320-0340-eb11-bf70-000d3a795b83",
-            "msdyn_stateorprovince": "NSW",
-            "msdyn_address1": "16 SPRING CL",
-            "msdyn_country": "Australia",
-            "msdyn_workorderid": "3ed39c12-4647-f011-8779-000d3aca5131",
-            "msdyn_postalcode": "2795",
-            "msdyn_address2": "MINTO"
-          }
-        }
-      ]);
-    }, delayMs);
-  });
-}
-
-// Updated handleGetEvents to validate resourceId against resourceData
-async function handleGetEvents() {
-
-  const startDate = document.querySelector(".btn date-range");
-  const endDate = document.querySelector(".btn date-range");
-
-  console.log("Fetching events for date range:", startDate, "to", endDate);
-
-
-  try {
-    const response = await fetchEvents({ simulateFailure: false, delayMs: 2000 });
-
-    // Create a Set of valid resource IDs from resourceData
-    const validResourceIds = new Set(resourceData.map(resource => resource.id));
-
-    // Map API response to calendar events, only including events with valid resourceId
-    const statusMap = {
-      690970000: "Active",
-      690970001: "Processed",
-      690970002: "Canceled"
-    };
-
-    const mappedEvents = response
-      .filter(event => validResourceIds.has(event._msdyn_resource_value)) // Only include events with matching resourceId
-      .map(event => {
-        // Parse start date
-        const startDate = new Date(event.msdyn_bookingdate);
-
-        // Calculate end date by adding estimated duration (in minutes)
-        const durationMinutes = event.msdyn_bookingsetup.msdyn_estimatedduration || 60; // Default to 60 minutes if not provided
-        const endDate = new Date(startDate.getTime() + durationMinutes * 60 * 1000);
-
-        // Construct address string
-        const addressParts = [
-          event.msdyn_workorder.msdyn_address1,
-          event.msdyn_workorder.msdyn_address2,
-          event.msdyn_workorder.msdyn_address3,
-          event.msdyn_workorder.msdyn_city,
-          event.msdyn_workorder.msdyn_stateorprovince,
-          event.msdyn_workorder.msdyn_postalcode,
-          event.msdyn_workorder.msdyn_country
-        ].filter(part => part).join(", ");
-
-        return {
-          resourceId: event._msdyn_resource_value,
-          start: startDate,
-          end: endDate,
-          id: event.msdyn_agreementbookingdateid,
-          type: "Full",
-          slotEventOverlap: true,
-          editable: false,
-          durationEditable: false,
-          eventStartEditable: false,
-          className: ["ec-event-active"],
-          extendedProps: {
-            bookingID: event._msdyn_agreement_value,
-            employeeID: event.msdyn_name,
-            employeeName: event.msdyn_resource.name,
-            address: addressParts,
-            suburb: event.msdyn_workorder.msdyn_city,
-            serviceType: event.msdyn_bookingsetup._ang_incidenttype_value || "Care Worker",
-            bookingStatus: statusMap[event.msdyn_status] || "Unknown",
-            region: event.msdyn_workorder._msdyn_serviceterritory_value,
-            agreementBookingSetupId: event.msdyn_bookingsetup.msdyn_agreementbookingsetupid
-          }
-        };
-      });
-
-    eventStatus.isLoading = false;
-    eventStatus.eventData = mappedEvents;
-    eventData = mappedEvents; // Update global eventData
-    console.log("Events fetched successfully:", mappedEvents);
-
-    // Update calendar with events
-    reRenderEvents();
-
-  } catch (error) {
-    console.error("Error fetching events:", error);
-    eventStatus.isLoading = false;
-    eventStatus.isError = true;
-    eventData = [];
-    reRenderEvents(); // Clear events on error
-  }
-}
-
-
-function fetchResources(options = {}) {
-  return new Promise((resolve, reject) => {
-    resolve({
-      "@odata.context": "https://aahdevelopment.crm6.dynamics.com/api/data/v9.1/$metadata#bookableresources(name,resourcetype,UserId(photourl))",
-      "value": [
-        {
-          "@odata.etag": "W/\"566454569\"",
-          "bookableresourceid": "b3141cf1-91e1-ee11-904c-000d3aca6924",
-          "name": "Jamie Higgins",
-          "resourcetype": 3,
-          "UserId": {
-            "ownerid": "cc428a1d-ac0b-ed11-b83d-00224891bbb1",
-            "systemuserid": "cc428a1d-ac0b-ed11-b83d-00224891bbb1",
-            "photourl": null
-          }
-        },
-        {
-          "@odata.etag": "W/\"480193957\"",
-          "bookableresourceid": "157d1c09-92e1-ee11-904c-000d3aca6924",
-          "name": "Jonathan Stacey",
-          "resourcetype": 3,
-          "UserId": {
-            "ownerid": "353c0984-c780-ed11-81ad-00224893b533",
-            "systemuserid": "353c0984-c780-ed11-81ad-00224893b533",
-            "photourl": null
-          }
-        },
-        {
-          "@odata.etag": "W/\"511212808\"",
-          "bookableresourceid": "c21bd34a-a606-ef11-9f89-000d3acb40a4",
-          "name": "Kerrie Ristau",
-          "resourcetype": 3,
-          "UserId": {
-            "ownerid": "c5ed65c6-2a49-ed11-bba2-00224893be4a",
-            "systemuserid": "c5ed65c6-2a49-ed11-bba2-00224893be4a",
-            "photourl": null
-          }
-        },
-        {
-          "@odata.etag": "W/\"564961242\"",
-          "bookableresourceid": "e12cbc88-a606-ef11-9f89-000d3acb40a4",
-          "name": "Edward Lo",
-          "resourcetype": 3,
-          "UserId": {
-            "ownerid": "284848dc-fc54-ed11-9562-00224893b1c0",
-            "systemuserid": "284848dc-fc54-ed11-9562-00224893b1c0",
-            "photourl": null
-          }
-        },
-        {
-          "@odata.etag": "W/\"480195234\"",
-          "bookableresourceid": "f3dc76b9-a606-ef11-9f89-000d3acb40a4",
-          "name": "Sacha Crick",
-          "resourcetype": 3,
-          "UserId": {
-            "ownerid": "fba9324c-a60c-ed11-b83d-002248128c80",
-            "systemuserid": "fba9324c-a60c-ed11-b83d-002248128c80",
-            "photourl": null
-          }
-        },
-        {
-          "@odata.etag": "W/\"525968845\"",
-          "bookableresourceid": "4b425a52-c244-ef11-a316-000d3acbd62b",
-          "name": "Alan Dunn",
-          "resourcetype": 3,
-          "UserId": {
-            "ownerid": "bc0ad1ed-b371-ed11-81ac-00224893b82f",
-            "systemuserid": "bc0ad1ed-b371-ed11-81ac-00224893b82f",
-            "photourl": null
-          }
-        },
-        {
-          "@odata.etag": "W/\"554373331\"",
-          "bookableresourceid": "027b0c5c-fa6f-ef11-a671-000d3acbd62b",
-          "name": "Adam Richards",
-          "resourcetype": 3,
-          "UserId": {
-            "ownerid": "5710d3db-87d9-ed11-a7c7-00224893b6c3",
-            "systemuserid": "5710d3db-87d9-ed11-a7c7-00224893b6c3",
-            "photourl": null
-          }
-        },
-        {
-          "@odata.etag": "W/\"533197331\"",
-          "bookableresourceid": "8607eb57-fb6f-ef11-a671-000d3acbd62b",
-          "name": "A STEP AHEAD IN FOOTCARE PTY LIMITED",
-          "resourcetype": 5,
-          "UserId": null
-        },
-        {
-          "@odata.etag": "W/\"536697240\"",
-          "bookableresourceid": "59034803-2397-ef11-8a69-000d3ad23c5b",
-          "name": "\tIKLEAN SERVICES (NORTH-WEST) PTY LTD",
-          "resourcetype": 5,
-          "UserId": null
-        },
-        {
-          "@odata.etag": "W/\"45407734\"",
-          "bookableresourceid": "331eca6a-5a51-eb11-a812-000d3ae11ff1",
-          "name": "Nathan Gouldberg",
-          "resourcetype": 5,
-          "UserId": null
-        },
-        {
-          "@odata.etag": "W/\"566754433\"",
-          "bookableresourceid": "6d616491-a106-ef11-9f89-002248100a21",
-          "name": "Clancy",
-          "resourcetype": 3,
-          "UserId": {
-            "ownerid": "c2f43a16-fbe1-ec11-bb3d-00224892f217",
-            "systemuserid": "c2f43a16-fbe1-ec11-bb3d-00224892f217",
-            "photourl": null
-          }
-        },
-        {
-          "@odata.etag": "W/\"480193942\"",
-          "bookableresourceid": "e7c99055-f2ea-ee11-a1fd-00224810de46",
-          "name": "Balaji Mariappan",
-          "resourcetype": 3,
-          "UserId": {
-            "ownerid": "9ceffa77-4878-ee11-8179-00224898a6e5",
-            "systemuserid": "9ceffa77-4878-ee11-8179-00224898a6e5",
-            "photourl": null
-          }
-        },
-        {
-          "@odata.etag": "W/\"83294117\"",
-          "bookableresourceid": "0f5729ba-9409-ed11-82e5-002248112e98",
-          "name": "Felix Yu",
-          "resourcetype": 3,
-          "UserId": {
-            "ownerid": "234f263c-63fb-ec11-82e6-002248112e98",
-            "systemuserid": "234f263c-63fb-ec11-82e6-002248112e98",
-            "photourl": null
-          }
-        },
-        {
-          "@odata.etag": "W/\"87370982\"",
-          "bookableresourceid": "ccac2631-aff6-ec11-82e7-002248112e98",
-          "name": "Heolle Olleres",
-          "resourcetype": 3,
-          "UserId": {
-            "ownerid": "3828dfb0-81dd-ec11-bb3c-002248951320",
-            "systemuserid": "3828dfb0-81dd-ec11-bb3c-002248951320",
-            "photourl": null
-          }
-        },
-        {
-          "@odata.etag": "W/\"571064529\"",
-          "bookableresourceid": "481ef7cb-3a56-f011-bec2-002248129443",
-          "name": "Aachal Shrestha",
-          "resourcetype": 3,
-          "UserId": {
-            "ownerid": "5cd87cda-529a-ee11-be37-00224898a934",
-            "systemuserid": "5cd87cda-529a-ee11-be37-00224898a934",
-            "photourl": null
-          }
-        },
-        {
-          "@odata.etag": "W/\"45407735\"",
-          "bookableresourceid": "f5a2a1dd-3077-eb11-a812-002248145e5a",
-          "name": "Qwerty Allied Health",
-          "resourcetype": 5,
-          "UserId": null
-        },
-        {
-          "@odata.etag": "W/\"45407736\"",
-          "bookableresourceid": "7adb98e6-bb69-eb11-a812-00224814616c",
-          "name": "Sehar Suleman",
-          "resourcetype": 3,
-          "UserId": {
-            "ownerid": "1df2c953-3038-eb11-bf69-00224814f9a4",
-            "systemuserid": "1df2c953-3038-eb11-bf69-00224814f9a4",
-            "photourl": null
-          }
-        },
-        {
-          "@odata.etag": "W/\"45407737\"",
-          "bookableresourceid": "68c5a7f8-bb69-eb11-a812-00224814616c",
-          "name": "Noah Gillham",
-          "resourcetype": 3,
-          "UserId": {
-            "ownerid": "1a5f1471-3338-eb11-bf69-00224814f9a4",
-            "systemuserid": "1a5f1471-3338-eb11-bf69-00224814f9a4",
-            "photourl": null
-          }
-        },
-        {
-          "@odata.etag": "W/\"45407738\"",
-          "bookableresourceid": "6005d80a-bc69-eb11-a812-00224814616c",
-          "name": "Kthryn Bondoc",
-          "resourcetype": 3,
-          "UserId": {
-            "ownerid": "0c995e4e-3438-eb11-bf69-00224814f9a4",
-            "systemuserid": "0c995e4e-3438-eb11-bf69-00224814f9a4",
-            "photourl": null
-          }
-        },
-        {
-          "@odata.etag": "W/\"45407739\"",
-          "bookableresourceid": "2870db59-1e90-eb11-b1ac-00224814651e",
-          "name": "Chadi Tannous",
-          "resourcetype": 3,
-          "UserId": {
-            "ownerid": "641ab393-5160-eb11-89f5-000d3a791111",
-            "systemuserid": "641ab393-5160-eb11-89f5-000d3a791111",
-            "photourl": null
-          }
-        },
-        {
-          "@odata.etag": "W/\"45407740\"",
-          "bookableresourceid": "05e98dde-1f90-eb11-b1ac-00224814651e",
-          "name": "John Brown",
-          "resourcetype": 5,
-          "UserId": null
-        },
-        {
-          "@odata.etag": "W/\"45407741\"",
-          "bookableresourceid": "ad78810c-2090-eb11-b1ac-00224814651e",
-          "name": "David Brown",
-          "resourcetype": 5,
-          "UserId": null
-        },
-        {
-          "@odata.etag": "W/\"50945828\"",
-          "bookableresourceid": "c565246b-1aec-eb11-bacb-00224814b19c",
-          "name": "Sue Sweeney",
-          "resourcetype": 3,
-          "UserId": {
-            "ownerid": "1495ca18-fb4a-eb11-bb23-000d3a797a6f",
-            "systemuserid": "1495ca18-fb4a-eb11-bb23-000d3a797a6f",
-            "photourl": null
-          }
-        },
-        {
-          "@odata.etag": "W/\"45419806\"",
-          "bookableresourceid": "b8bbfd6d-f3b1-eb11-8236-00224814b363",
-          "name": "Old Mate's Agency",
-          "resourcetype": 1,
-          "UserId": null
-        },
-        {
-          "@odata.etag": "W/\"51339408\"",
-          "bookableresourceid": "b03dab72-30e8-eb11-bacb-00224814b853",
-          "name": "Nilanthie Sivasubramaniam",
-          "resourcetype": 3,
-          "UserId": {
-            "ownerid": "778a4c7a-3038-eb11-bf69-00224814f9a4",
-            "systemuserid": "778a4c7a-3038-eb11-bf69-00224814f9a4",
-            "photourl": null
-          }
-        },
-        {
-          "@odata.etag": "W/\"564985542\"",
-          "bookableresourceid": "402fd944-4555-eb11-a812-00224814c8e9",
-          "name": "Ali Khan",
-          "resourcetype": 3,
-          "UserId": {
-            "ownerid": "cbd09f56-3238-eb11-a813-000d3ae11ff1",
-            "systemuserid": "cbd09f56-3238-eb11-a813-000d3ae11ff1",
-            "photourl": null
-          }
-        },
-        {
-          "@odata.etag": "W/\"45407743\"",
-          "bookableresourceid": "7a3c8a1d-bd53-eb11-a812-00224814ccfa",
-          "name": "Daniel",
-          "resourcetype": 3,
-          "UserId": {
-            "ownerid": "339646e9-3038-eb11-bf69-00224814f9a4",
-            "systemuserid": "339646e9-3038-eb11-bf69-00224814f9a4",
-            "photourl": null
-          }
-        },
-        {
-          "@odata.etag": "W/\"51865511\"",
-          "bookableresourceid": "df7e8147-1b56-eb11-a812-00224814ccfa",
-          "name": "Lovely Care Agency",
-          "resourcetype": 2,
-          "UserId": null
-        },
-        {
-          "@odata.etag": "W/\"51508754\"",
-          "bookableresourceid": "66c14257-e8f0-eb11-94ef-00224814e316",
-          "name": "Malachi Mashiah",
-          "resourcetype": 3,
-          "UserId": {
-            "ownerid": "1d1ab3ce-0d40-eb11-bf70-000d3a795b83",
-            "systemuserid": "1d1ab3ce-0d40-eb11-bf70-000d3a795b83",
-            "photourl": null
-          }
-        },
-        {
-          "@odata.etag": "W/\"70175959\"",
-          "bookableresourceid": "e2605644-02f1-eb11-94ef-00224814e316",
-          "name": "Philip Blow",
-          "resourcetype": 3,
-          "UserId": {
-            "ownerid": "c4218bef-3038-eb11-bf69-00224814f9a4",
-            "systemuserid": "c4218bef-3038-eb11-bf69-00224814f9a4",
-            "photourl": null
-          }
-        },
-        {
-          "@odata.etag": "W/\"51412234\"",
-          "bookableresourceid": "66a0d795-7def-eb11-94ef-00224814e3f2",
-          "name": "Juliana Teoh",
-          "resourcetype": 3,
-          "UserId": {
-            "ownerid": "51fa7ae4-098d-eb11-b1ac-002248155ce7",
-            "systemuserid": "51fa7ae4-098d-eb11-b1ac-002248155ce7",
-            "photourl": null
-          }
-        },
-        {
-          "@odata.etag": "W/\"48400580\"",
-          "bookableresourceid": "18b5397a-caa3-eb11-b1ac-0022481508c4",
-          "name": "Jeffrey Wonger",
-          "resourcetype": 3,
-          "UserId": {
-            "ownerid": "d1ad2b4c-3038-eb11-bf69-00224814f9a4",
-            "systemuserid": "d1ad2b4c-3038-eb11-bf69-00224814f9a4",
-            "photourl": null
-          }
-        },
-        {
-          "@odata.etag": "W/\"80265779\"",
-          "bookableresourceid": "41506cb7-8e60-eb11-a812-00224815157c",
-          "name": "Caroline Olminkhof",
-          "resourcetype": 3,
-          "UserId": {
-            "ownerid": "6899e557-3138-eb11-a813-000d3ae11ff1",
-            "systemuserid": "6899e557-3138-eb11-a813-000d3ae11ff1",
-            "photourl": null
-          }
-        },
-        {
-          "@odata.etag": "W/\"45407747\"",
-          "bookableresourceid": "f30360c9-8e60-eb11-a812-00224815157c",
-          "name": "Steven Sellen",
-          "resourcetype": 3,
-          "UserId": {
-            "ownerid": "1971814f-3338-eb11-bf69-00224814f9a4",
-            "systemuserid": "1971814f-3338-eb11-bf69-00224814f9a4",
-            "photourl": null
-          }
-        },
-        {
-          "@odata.etag": "W/\"564987038\"",
-          "bookableresourceid": "a5ba7ae1-8e60-eb11-a812-00224815157c",
-          "name": "Stephen Pocknall",
-          "resourcetype": 3,
-          "UserId": {
-            "ownerid": "1cb57a21-3138-eb11-a813-000d3ae11ff1",
-            "systemuserid": "1cb57a21-3138-eb11-a813-000d3ae11ff1",
-            "photourl": null
-          }
-        },
-        {
-          "@odata.etag": "W/\"564627980\"",
-          "bookableresourceid": "9659b5e8-2343-eb11-a812-002248151e02",
-          "name": "Joel Yeo",
-          "resourcetype": 3,
-          "UserId": {
-            "ownerid": "89d9dd7d-3338-eb11-bf69-00224814f9a4",
-            "systemuserid": "89d9dd7d-3338-eb11-bf69-00224814f9a4",
-            "photourl": null
-          }
-        },
-        {
-          "@odata.etag": "W/\"45407750\"",
-          "bookableresourceid": "b39bc4c4-6851-eb11-a812-002248151e02",
-          "name": "Raymond Lesmana",
-          "resourcetype": 3,
-          "UserId": {
-            "ownerid": "2bfc1d32-2c37-eb11-bf72-000d3a7970eb",
-            "systemuserid": "2bfc1d32-2c37-eb11-bf72-000d3a7970eb",
-            "photourl": null
-          }
-        },
-        {
-          "@odata.etag": "W/\"68821505\"",
-          "bookableresourceid": "30c5589a-9f4c-ec11-8f8e-002248151e5b",
-          "name": "Anglicare Health Centre Castle Hill",
-          "resourcetype": 5,
-          "UserId": null
-        },
-        {
-          "@odata.etag": "W/\"506070363\"",
-          "bookableresourceid": "76e033fa-e24c-ec11-8f8e-002248151e5b",
-          "name": "Alex Peterson",
-          "resourcetype": 3,
-          "UserId": {
-            "ownerid": "792e7a88-da1d-ec11-b6e7-00224818546f",
-            "systemuserid": "792e7a88-da1d-ec11-b6e7-00224818546f",
-            "photourl": null
-          }
-        },
-        {
-          "@odata.etag": "W/\"81622780\"",
-          "bookableresourceid": "bbb97b20-3b82-eb11-a812-0022481522dc",
-          "name": "Alexander Peterson",
-          "resourcetype": 3,
-          "UserId": {
-            "ownerid": "cb049c54-3438-eb11-bf69-00224814f9a4",
-            "systemuserid": "cb049c54-3438-eb11-bf69-00224814f9a4",
-            "photourl": null
-          }
-        },
-        {
-          "@odata.etag": "W/\"50675095\"",
-          "bookableresourceid": "0b2892be-da71-eb11-a812-002248153009",
-          "name": "Bathsheba Benjesse",
-          "resourcetype": 5,
-          "UserId": null
-        },
-        {
-          "@odata.etag": "W/\"50226239\"",
-          "bookableresourceid": "b8483eda-b6a8-eb11-9442-0022481533e7",
-          "name": "Darrel DCosta",
-          "resourcetype": 3,
-          "UserId": {
-            "ownerid": "bfe696d9-51a2-eb11-b1ac-002248150b30",
-            "systemuserid": "bfe696d9-51a2-eb11-b1ac-002248150b30",
-            "photourl": null
-          }
-        },
-        {
-          "@odata.etag": "W/\"62286762\"",
-          "bookableresourceid": "3d833dcd-9325-ec11-b6e6-002248153b9c",
-          "name": "Mount Everest SSG",
-          "resourcetype": 5,
-          "UserId": null
-        },
-        {
-          "@odata.etag": "W/\"45407753\"",
-          "bookableresourceid": "f1e07e6a-d08d-eb11-b1ac-002248155ce7",
-          "name": "Preety Singh",
-          "resourcetype": 3,
-          "UserId": {
-            "ownerid": "09095b86-e577-eb11-a812-002248145319",
-            "systemuserid": "09095b86-e577-eb11-a812-002248145319",
-            "photourl": null
-          }
-        },
-        {
-          "@odata.etag": "W/\"45407754\"",
-          "bookableresourceid": "ec57b619-068d-eb11-b1ac-002248155d0e",
-          "name": "Grace Boxall",
-          "resourcetype": 3,
-          "UserId": {
-            "ownerid": "35a514e3-058d-eb11-b1ac-002248155ce7",
-            "systemuserid": "35a514e3-058d-eb11-b1ac-002248155ce7",
-            "photourl": null
-          }
-        },
-        {
-          "@odata.etag": "W/\"48533958\"",
-          "bookableresourceid": "8176013b-078d-eb11-b1ac-002248155d0e",
-          "name": "Qiang Zhang",
-          "resourcetype": 3,
-          "UserId": {
-            "ownerid": "0611442c-068d-eb11-b1ac-002248155d0e",
-            "systemuserid": "0611442c-068d-eb11-b1ac-002248155d0e",
-            "photourl": null
-          }
-        },
-        {
-          "@odata.etag": "W/\"506599648\"",
-          "bookableresourceid": "1511e95f-078d-eb11-b1ac-002248155d0e",
-          "name": "Hong Liu",
-          "resourcetype": 3,
-          "UserId": {
-            "ownerid": "b7d31101-068d-eb11-b1ac-002248155d0e",
-            "systemuserid": "b7d31101-068d-eb11-b1ac-002248155d0e",
-            "photourl": null
-          }
-        },
-        {
-          "@odata.etag": "W/\"506599635\"",
-          "bookableresourceid": "7ea72179-078d-eb11-b1ac-002248155d0e",
-          "name": "Hanae Sakuma",
-          "resourcetype": 3,
-          "UserId": {
-            "ownerid": "ef428713-068d-eb11-b1ac-002248155d0e",
-            "systemuserid": "ef428713-068d-eb11-b1ac-002248155d0e",
-            "photourl": null
-          }
-        },
-        {
-          "@odata.etag": "W/\"506599756\"",
-          "bookableresourceid": "3f008f28-0a8d-eb11-b1ac-002248155d0e",
-          "name": "Rafael Santana",
-          "resourcetype": 3,
-          "UserId": {
-            "ownerid": "63895202-3438-eb11-bf69-00224814f9a4",
-            "systemuserid": "63895202-3438-eb11-bf69-00224814f9a4",
-            "photourl": null
-          }
-        },
-        {
-          "@odata.etag": "W/\"564984793\"",
-          "bookableresourceid": "cec4bf85-0a8d-eb11-b1ac-002248155d0e",
-          "name": "Emily Teale",
-          "resourcetype": 3,
-          "UserId": {
-            "ownerid": "f6d424ac-098d-eb11-b1ac-002248155ce7",
-            "systemuserid": "f6d424ac-098d-eb11-b1ac-002248155ce7",
-            "photourl": null
-          }
-        },
-        {
-          "@odata.etag": "W/\"511212754\"",
-          "bookableresourceid": "ad495c22-865c-ec11-8f8f-002248156ca8",
-          "name": "Fabio Phang",
-          "resourcetype": 3,
-          "UserId": {
-            "ownerid": "ff84f3f5-2057-ec11-8f8f-0022481484fb",
-            "systemuserid": "ff84f3f5-2057-ec11-8f8f-0022481484fb",
-            "photourl": null
-          }
-        },
-        {
-          "@odata.etag": "W/\"506599742\"",
-          "bookableresourceid": "ee203627-6b72-ec11-8942-002248158359",
-          "name": "Matthew Mccrorie",
-          "resourcetype": 3,
-          "UserId": {
-            "ownerid": "1971696a-8338-ec11-8c64-0022481567b9",
-            "systemuserid": "1971696a-8338-ec11-8c64-0022481567b9",
-            "photourl": null
-          }
-        },
-        {
-          "@odata.etag": "W/\"73625899\"",
-          "bookableresourceid": "c260b0d3-927d-ec11-8d20-0022481589ab",
-          "name": "Harold's SSG",
-          "resourcetype": 5,
-          "UserId": null
-        },
-        {
-          "@odata.etag": "W/\"60642235\"",
-          "bookableresourceid": "50a3b059-6510-ec11-b6e6-002248158fa3",
-          "name": "Leff's Agency",
-          "resourcetype": 5,
-          "UserId": null
-        },
-        {
-          "@odata.etag": "W/\"506599621\"",
-          "bookableresourceid": "ef98fcf8-df70-ec11-8f8e-002248159071",
-          "name": "Bhupesh Singal",
-          "resourcetype": 3,
-          "UserId": {
-            "ownerid": "21a8c1b1-7f6f-ec11-8f8e-002248159d64",
-            "systemuserid": "21a8c1b1-7f6f-ec11-8f8e-002248159d64",
-            "photourl": null
-          }
-        },
-        {
-          "@odata.etag": "W/\"506599700\"",
-          "bookableresourceid": "66b5019e-e070-ec11-8f8e-002248159071",
-          "name": "Karin Piasevoli",
-          "resourcetype": 3,
-          "UserId": {
-            "ownerid": "3b7801c9-806f-ec11-8f8e-0022481595fb",
-            "systemuserid": "3b7801c9-806f-ec11-8f8e-0022481595fb",
-            "photourl": null
-          }
-        },
-        {
-          "@odata.etag": "W/\"506599727\"",
-          "bookableresourceid": "8d123127-e170-ec11-8f8e-002248159071",
-          "name": "Kylie Dorahy",
-          "resourcetype": 3,
-          "UserId": {
-            "ownerid": "c98657da-806f-ec11-8f8e-002248159d64",
-            "systemuserid": "c98657da-806f-ec11-8f8e-002248159d64",
-            "photourl": null
-          }
-        },
-        {
-          "@odata.etag": "W/\"506599668\"",
-          "bookableresourceid": "61047d85-e170-ec11-8f8e-002248159071",
-          "name": "Jennifer Crowe",
-          "resourcetype": 3,
-          "UserId": {
-            "ownerid": "ab41aee5-806f-ec11-8f8e-0022481596cd",
-            "systemuserid": "ab41aee5-806f-ec11-8f8e-0022481596cd",
-            "photourl": null
-          }
-        },
-        {
-          "@odata.etag": "W/\"72695574\"",
-          "bookableresourceid": "26366cb3-e170-ec11-8f8e-002248159071",
-          "name": "Susan Thornhill",
-          "resourcetype": 3,
-          "UserId": {
-            "ownerid": "d49e83f3-806f-ec11-8f8e-0022481595fb",
-            "systemuserid": "d49e83f3-806f-ec11-8f8e-0022481595fb",
-            "photourl": null
-          }
-        },
-        {
-          "@odata.etag": "W/\"506599537\"",
-          "bookableresourceid": "1254e3ee-e170-ec11-8f8e-002248159071",
-          "name": "Alicia Sandles",
-          "resourcetype": 3,
-          "UserId": {
-            "ownerid": "c36b94fa-806f-ec11-8f8e-0022481595fb",
-            "systemuserid": "c36b94fa-806f-ec11-8f8e-0022481595fb",
-            "photourl": null
-          }
-        },
-        {
-          "@odata.etag": "W/\"549840636\"",
-          "bookableresourceid": "c7d51342-e270-ec11-8f8e-002248159071",
-          "name": "Joanmar Webster-This is added for testing Name field in BMR TABLE - Testing Again to check max BR na",
-          "resourcetype": 3,
-          "UserId": {
-            "ownerid": "c0cd4d06-816f-ec11-8f8e-0022481596cd",
-            "systemuserid": "c0cd4d06-816f-ec11-8f8e-0022481596cd",
-            "photourl": null
-          }
-        },
-        {
-          "@odata.etag": "W/\"135742049\"",
-          "bookableresourceid": "07a266d1-a716-ec11-b6e6-0022481834f0",
-          "name": "Ron Lee - SSG Visit",
-          "resourcetype": 5,
-          "UserId": null
-        },
-        {
-          "@odata.etag": "W/\"46842557\"",
-          "bookableresourceid": "be715d2a-5bc3-eb11-bacc-002248183900",
-          "name": "Medical Staff",
-          "resourcetype": 5,
-          "UserId": null
-        },
-        {
-          "@odata.etag": "W/\"66535164\"",
-          "bookableresourceid": "bd5f9907-602d-ec11-b6e6-002248183e76",
-          "name": "Ronen Tejaya",
-          "resourcetype": 3,
-          "UserId": {
-            "ownerid": "4a0b5d6d-1015-ec11-b6e6-0022481833e5",
-            "systemuserid": "4a0b5d6d-1015-ec11-b6e6-0022481833e5",
-            "photourl": null
-          }
-        },
-        {
-          "@odata.etag": "W/\"61880562\"",
-          "bookableresourceid": "2cbb0945-2a20-ec11-b6e6-002248185149",
-          "name": "Vaucluse SSG",
-          "resourcetype": 5,
-          "UserId": null
-        },
-      ]
-    });
-
-  });
-}
-
+// function getCareType() {
+//   return window.parent.Xrm.WebApi.retrieveMultipleRecords(
+//     "stringmap",
+//     "?$select=attributename,attributevalue,value&$filter=attributename eq 'msdyn_resourcetype'"
+//   );
+// }
 
 function renderDropdowns() {
   const regionLabel = document.querySelector(
@@ -1614,40 +1745,39 @@ function renderDropdowns() {
   if (filterStatus.isLoading) {
     regionLabel.textContent = "Loading...";
     worktypeLabel.textContent = "Loading...";
-
     return;
   }
 
   if (filterStatus.isError) {
     regionLabel.textContent = "Error loading options";
     worktypeLabel.textContent = "Error loading options";
-
-
     return;
   }
 
-  // ✅ Success case
-  regionLabel.textContent = "Select an option";
-  worktypeLabel.textContent = "Select an option";
+  // Success case
+  regionLabel.textContent = filterStatus?.region?.length
+    ? "Select an option"
+    : "Options not found";
 
-  // clear static <li> first
+  worktypeLabel.textContent = filterStatus?.worktype?.length
+    ? "Select an option"
+    : "Options not found";
+
+  // Clear and render region dropdown
   regionDropdown.innerHTML = "";
-  worktypeDropdown.innerHTML = "";
-
-  console.log("filterStatus", filterStatus);
-
-  // append new <li> from API
   filterStatus.region.forEach((r) => {
     regionDropdown.insertAdjacentHTML(
       "beforeend",
-      `<li class="dropdown-option"><input type="checkbox" value="${r}" /> ${r}</li>`
+      `<li class="dropdown-option"><input type="checkbox" value="${r?.territoryid}" /> ${r?.name}</li>`
     );
   });
 
+  // Clear and render worktype dropdown
+  worktypeDropdown.innerHTML = "";
   filterStatus.worktype.forEach((w) => {
     worktypeDropdown.insertAdjacentHTML(
       "beforeend",
-      `<li class="dropdown-option"><input type="checkbox" value="${w}" /> ${w}</li>`
+      `<li class="dropdown-option"><input type="checkbox" value="${w.attributevalue}" /> ${w.value}</li>`
     );
   });
 }
@@ -1657,174 +1787,1167 @@ function handleFilterFetch() {
   filterStatus.isError = false;
   renderDropdowns();
 
-  fetchFilterOptions({ simulateFailure: false, delayMs: 2000 })
-    .then(data => {
+  Promise.all([getTerritory(), getCareType()])
+    .then(([territoryResults, careTypeResults]) => {
       filterStatus.isLoading = false;
-      filterStatus.region = data.regions;
-      filterStatus.worktype = data.workTypes;
+      filterStatus.isError = false;
+
+      filterStatus.region = territoryResults?.entities || [];
+      // Extract the 'value' (or whatever you want) for care types
+      filterStatus.worktype = careTypeResults?.entities || [];
+
       renderDropdowns();
       setupFilterDropdownsAndReset();
     })
-    .catch(err => {
+    .catch((err) => {
       console.error(err);
       filterStatus.isLoading = false;
       filterStatus.isError = true;
       renderDropdowns();
-
     });
-
-  console.log(filterStatus.region)
-
 }
 
-function showLoading() {
-  const loadingElement = document.getElementById("loader");
-  loadingElement.style.display = "flex";
+// Intial Data
+// function getBookableResources() {
+//   return window.parent.Xrm.WebApi.retrieveMultipleRecords(
+//     "bookableresource",
+//     "?$select=name,resourcetype&$expand=UserId($select=entityimage_url)"
+//   );
+// }
+
+// function getTimeOffRequests() {
+//   return window.parent.Xrm.WebApi.retrieveMultipleRecords(
+//     "msdyn_timeoffrequest",
+//     "?$select=msdyn_endtime,vel_leavetype,msdyn_name,_msdyn_resource_value,msdyn_starttime"
+//   );
+// }
+
+function getBookableResources() {
+  return new Promise((resolve, reject) => {
+    resolve({
+      entities: [
+        {
+          "@odata.context":
+            "https://aahdevelopment.crm6.dynamics.com/api/data/v9.1/$metadata#bookableresources(name,resourcetype,UserId(photourl))",
+        },
+
+        {
+          "@odata.etag": 'W/"566454569"',
+          bookableresourceid: "b3141cf1-91e1-ee11-904c-000d3aca6924",
+          name: "Jamie Higgins",
+          resourcetype: 3,
+          UserId: {
+            ownerid: "cc428a1d-ac0b-ed11-b83d-00224891bbb1",
+            systemuserid: "cc428a1d-ac0b-ed11-b83d-00224891bbb1",
+            photourl: null,
+          },
+        },
+        {
+          "@odata.etag": 'W/"480193957"',
+          bookableresourceid: "157d1c09-92e1-ee11-904c-000d3aca6924",
+          name: "Jonathan Stacey",
+          resourcetype: 3,
+          UserId: {
+            ownerid: "353c0984-c780-ed11-81ad-00224893b533",
+            systemuserid: "353c0984-c780-ed11-81ad-00224893b533",
+            photourl: null,
+          },
+        },
+        {
+          "@odata.etag": 'W/"511212808"',
+          bookableresourceid: "c21bd34a-a606-ef11-9f89-000d3acb40a4",
+          name: "Kerrie Ristau",
+          resourcetype: 3,
+          UserId: {
+            ownerid: "c5ed65c6-2a49-ed11-bba2-00224893be4a",
+            systemuserid: "c5ed65c6-2a49-ed11-bba2-00224893be4a",
+            photourl: null,
+          },
+        },
+        {
+          "@odata.etag": 'W/"564961242"',
+          bookableresourceid: "e12cbc88-a606-ef11-9f89-000d3acb40a4",
+          name: "Edward Lo",
+          resourcetype: 3,
+          UserId: {
+            ownerid: "284848dc-fc54-ed11-9562-00224893b1c0",
+            systemuserid: "284848dc-fc54-ed11-9562-00224893b1c0",
+            photourl: null,
+          },
+        },
+        {
+          "@odata.etag": 'W/"480195234"',
+          bookableresourceid: "f3dc76b9-a606-ef11-9f89-000d3acb40a4",
+          name: "Sacha Crick",
+          resourcetype: 3,
+          UserId: {
+            ownerid: "fba9324c-a60c-ed11-b83d-002248128c80",
+            systemuserid: "fba9324c-a60c-ed11-b83d-002248128c80",
+            photourl: null,
+          },
+        },
+        {
+          "@odata.etag": 'W/"525968845"',
+          bookableresourceid: "4b425a52-c244-ef11-a316-000d3acbd62b",
+          name: "Alan Dunn",
+          resourcetype: 3,
+          UserId: {
+            ownerid: "bc0ad1ed-b371-ed11-81ac-00224893b82f",
+            systemuserid: "bc0ad1ed-b371-ed11-81ac-00224893b82f",
+            photourl: null,
+          },
+        },
+        {
+          "@odata.etag": 'W/"554373331"',
+          bookableresourceid: "027b0c5c-fa6f-ef11-a671-000d3acbd62b",
+          name: "Adam Richards",
+          resourcetype: 3,
+          UserId: {
+            ownerid: "5710d3db-87d9-ed11-a7c7-00224893b6c3",
+            systemuserid: "5710d3db-87d9-ed11-a7c7-00224893b6c3",
+            photourl: null,
+          },
+        },
+        {
+          "@odata.etag": 'W/"533197331"',
+          bookableresourceid: "8607eb57-fb6f-ef11-a671-000d3acbd62b",
+          name: "A STEP AHEAD IN FOOTCARE PTY LIMITED",
+          resourcetype: 5,
+          UserId: null,
+        },
+        {
+          "@odata.etag": 'W/"536697240"',
+          bookableresourceid: "59034803-2397-ef11-8a69-000d3ad23c5b",
+          name: "\tIKLEAN SERVICES (NORTH-WEST) PTY LTD",
+          resourcetype: 5,
+          UserId: null,
+        },
+        {
+          "@odata.etag": 'W/"45407734"',
+          bookableresourceid: "331eca6a-5a51-eb11-a812-000d3ae11ff1",
+          name: "Nathan Gouldberg",
+          resourcetype: 5,
+          UserId: null,
+        },
+        {
+          "@odata.etag": 'W/"566754433"',
+          bookableresourceid: "6d616491-a106-ef11-9f89-002248100a21",
+          name: "Clancy",
+          resourcetype: 3,
+          UserId: {
+            ownerid: "c2f43a16-fbe1-ec11-bb3d-00224892f217",
+            systemuserid: "c2f43a16-fbe1-ec11-bb3d-00224892f217",
+            photourl: null,
+          },
+        },
+        {
+          "@odata.etag": 'W/"480193942"',
+          bookableresourceid: "e7c99055-f2ea-ee11-a1fd-00224810de46",
+          name: "Balaji Mariappan",
+          resourcetype: 3,
+          UserId: {
+            ownerid: "9ceffa77-4878-ee11-8179-00224898a6e5",
+            systemuserid: "9ceffa77-4878-ee11-8179-00224898a6e5",
+            photourl: null,
+          },
+        },
+        {
+          "@odata.etag": 'W/"83294117"',
+          bookableresourceid: "0f5729ba-9409-ed11-82e5-002248112e98",
+          name: "Felix Yu",
+          resourcetype: 3,
+          UserId: {
+            ownerid: "234f263c-63fb-ec11-82e6-002248112e98",
+            systemuserid: "234f263c-63fb-ec11-82e6-002248112e98",
+            photourl: null,
+          },
+        },
+        {
+          "@odata.etag": 'W/"87370982"',
+          bookableresourceid: "ccac2631-aff6-ec11-82e7-002248112e98",
+          name: "Heolle Olleres",
+          resourcetype: 3,
+          UserId: {
+            ownerid: "3828dfb0-81dd-ec11-bb3c-002248951320",
+            systemuserid: "3828dfb0-81dd-ec11-bb3c-002248951320",
+            photourl: null,
+          },
+        },
+        {
+          "@odata.etag": 'W/"571064529"',
+          bookableresourceid: "481ef7cb-3a56-f011-bec2-002248129443",
+          name: "Aachal Shrestha",
+          resourcetype: 3,
+          UserId: {
+            ownerid: "5cd87cda-529a-ee11-be37-00224898a934",
+            systemuserid: "5cd87cda-529a-ee11-be37-00224898a934",
+            photourl: null,
+          },
+        },
+        {
+          "@odata.etag": 'W/"45407735"',
+          bookableresourceid: "f5a2a1dd-3077-eb11-a812-002248145e5a",
+          name: "Qwerty Allied Health",
+          resourcetype: 5,
+          UserId: null,
+        },
+        {
+          "@odata.etag": 'W/"45407736"',
+          bookableresourceid: "7adb98e6-bb69-eb11-a812-00224814616c",
+          name: "Sehar Suleman",
+          resourcetype: 3,
+          UserId: {
+            ownerid: "1df2c953-3038-eb11-bf69-00224814f9a4",
+            systemuserid: "1df2c953-3038-eb11-bf69-00224814f9a4",
+            photourl: null,
+          },
+        },
+        {
+          "@odata.etag": 'W/"45407737"',
+          bookableresourceid: "68c5a7f8-bb69-eb11-a812-00224814616c",
+          name: "Noah Gillham",
+          resourcetype: 3,
+          UserId: {
+            ownerid: "1a5f1471-3338-eb11-bf69-00224814f9a4",
+            systemuserid: "1a5f1471-3338-eb11-bf69-00224814f9a4",
+            photourl: null,
+          },
+        },
+        {
+          "@odata.etag": 'W/"45407738"',
+          bookableresourceid: "6005d80a-bc69-eb11-a812-00224814616c",
+          name: "Kthryn Bondoc",
+          resourcetype: 3,
+          UserId: {
+            ownerid: "0c995e4e-3438-eb11-bf69-00224814f9a4",
+            systemuserid: "0c995e4e-3438-eb11-bf69-00224814f9a4",
+            photourl: null,
+          },
+        },
+        {
+          "@odata.etag": 'W/"45407739"',
+          bookableresourceid: "2870db59-1e90-eb11-b1ac-00224814651e",
+          name: "Chadi Tannous",
+          resourcetype: 3,
+          UserId: {
+            ownerid: "641ab393-5160-eb11-89f5-000d3a791111",
+            systemuserid: "641ab393-5160-eb11-89f5-000d3a791111",
+            photourl: null,
+          },
+        },
+        {
+          "@odata.etag": 'W/"45407740"',
+          bookableresourceid: "05e98dde-1f90-eb11-b1ac-00224814651e",
+          name: "John Brown",
+          resourcetype: 5,
+          UserId: null,
+        },
+        {
+          "@odata.etag": 'W/"45407741"',
+          bookableresourceid: "ad78810c-2090-eb11-b1ac-00224814651e",
+          name: "David Brown",
+          resourcetype: 5,
+          UserId: null,
+        },
+        {
+          "@odata.etag": 'W/"50945828"',
+          bookableresourceid: "c565246b-1aec-eb11-bacb-00224814b19c",
+          name: "Sue Sweeney",
+          resourcetype: 3,
+          UserId: {
+            ownerid: "1495ca18-fb4a-eb11-bb23-000d3a797a6f",
+            systemuserid: "1495ca18-fb4a-eb11-bb23-000d3a797a6f",
+            photourl: null,
+          },
+        },
+        {
+          "@odata.etag": 'W/"45419806"',
+          bookableresourceid: "b8bbfd6d-f3b1-eb11-8236-00224814b363",
+          name: "Old Mate's Agency",
+          resourcetype: 1,
+          UserId: null,
+        },
+        {
+          "@odata.etag": 'W/"51339408"',
+          bookableresourceid: "b03dab72-30e8-eb11-bacb-00224814b853",
+          name: "Nilanthie Sivasubramaniam",
+          resourcetype: 3,
+          UserId: {
+            ownerid: "778a4c7a-3038-eb11-bf69-00224814f9a4",
+            systemuserid: "778a4c7a-3038-eb11-bf69-00224814f9a4",
+            photourl: null,
+          },
+        },
+        {
+          "@odata.etag": 'W/"564985542"',
+          bookableresourceid: "402fd944-4555-eb11-a812-00224814c8e9",
+          name: "Ali Khan",
+          resourcetype: 3,
+          UserId: {
+            ownerid: "cbd09f56-3238-eb11-a813-000d3ae11ff1",
+            systemuserid: "cbd09f56-3238-eb11-a813-000d3ae11ff1",
+            photourl: null,
+          },
+        },
+        {
+          "@odata.etag": 'W/"45407743"',
+          bookableresourceid: "7a3c8a1d-bd53-eb11-a812-00224814ccfa",
+          name: "Daniel",
+          resourcetype: 3,
+          UserId: {
+            ownerid: "339646e9-3038-eb11-bf69-00224814f9a4",
+            systemuserid: "339646e9-3038-eb11-bf69-00224814f9a4",
+            photourl: null,
+          },
+        },
+        {
+          "@odata.etag": 'W/"51865511"',
+          bookableresourceid: "df7e8147-1b56-eb11-a812-00224814ccfa",
+          name: "Lovely Care Agency",
+          resourcetype: 2,
+          UserId: null,
+        },
+        {
+          "@odata.etag": 'W/"51508754"',
+          bookableresourceid: "66c14257-e8f0-eb11-94ef-00224814e316",
+          name: "Malachi Mashiah",
+          resourcetype: 3,
+          UserId: {
+            ownerid: "1d1ab3ce-0d40-eb11-bf70-000d3a795b83",
+            systemuserid: "1d1ab3ce-0d40-eb11-bf70-000d3a795b83",
+            photourl: null,
+          },
+        },
+        {
+          "@odata.etag": 'W/"70175959"',
+          bookableresourceid: "e2605644-02f1-eb11-94ef-00224814e316",
+          name: "Philip Blow",
+          resourcetype: 3,
+          UserId: {
+            ownerid: "c4218bef-3038-eb11-bf69-00224814f9a4",
+            systemuserid: "c4218bef-3038-eb11-bf69-00224814f9a4",
+            photourl: null,
+          },
+        },
+        {
+          "@odata.etag": 'W/"51412234"',
+          bookableresourceid: "66a0d795-7def-eb11-94ef-00224814e3f2",
+          name: "Juliana Teoh",
+          resourcetype: 3,
+          UserId: {
+            ownerid: "51fa7ae4-098d-eb11-b1ac-002248155ce7",
+            systemuserid: "51fa7ae4-098d-eb11-b1ac-002248155ce7",
+            photourl: null,
+          },
+        },
+        {
+          "@odata.etag": 'W/"48400580"',
+          bookableresourceid: "18b5397a-caa3-eb11-b1ac-0022481508c4",
+          name: "Jeffrey Wonger",
+          resourcetype: 3,
+          UserId: {
+            ownerid: "d1ad2b4c-3038-eb11-bf69-00224814f9a4",
+            systemuserid: "d1ad2b4c-3038-eb11-bf69-00224814f9a4",
+            photourl: null,
+          },
+        },
+        {
+          "@odata.etag": 'W/"80265779"',
+          bookableresourceid: "41506cb7-8e60-eb11-a812-00224815157c",
+          name: "Caroline Olminkhof",
+          resourcetype: 3,
+          UserId: {
+            ownerid: "6899e557-3138-eb11-a813-000d3ae11ff1",
+            systemuserid: "6899e557-3138-eb11-a813-000d3ae11ff1",
+            photourl: null,
+          },
+        },
+        {
+          "@odata.etag": 'W/"45407747"',
+          bookableresourceid: "f30360c9-8e60-eb11-a812-00224815157c",
+          name: "Steven Sellen",
+          resourcetype: 3,
+          UserId: {
+            ownerid: "1971814f-3338-eb11-bf69-00224814f9a4",
+            systemuserid: "1971814f-3338-eb11-bf69-00224814f9a4",
+            photourl: null,
+          },
+        },
+        {
+          "@odata.etag": 'W/"564987038"',
+          bookableresourceid: "a5ba7ae1-8e60-eb11-a812-00224815157c",
+          name: "Stephen Pocknall",
+          resourcetype: 3,
+          UserId: {
+            ownerid: "1cb57a21-3138-eb11-a813-000d3ae11ff1",
+            systemuserid: "1cb57a21-3138-eb11-a813-000d3ae11ff1",
+            photourl: null,
+          },
+        },
+        {
+          "@odata.etag": 'W/"564627980"',
+          bookableresourceid: "9659b5e8-2343-eb11-a812-002248151e02",
+          name: "Joel Yeo",
+          resourcetype: 3,
+          UserId: {
+            ownerid: "89d9dd7d-3338-eb11-bf69-00224814f9a4",
+            systemuserid: "89d9dd7d-3338-eb11-bf69-00224814f9a4",
+            photourl: null,
+          },
+        },
+        {
+          "@odata.etag": 'W/"45407750"',
+          bookableresourceid: "b39bc4c4-6851-eb11-a812-002248151e02",
+          name: "Raymond Lesmana",
+          resourcetype: 3,
+          UserId: {
+            ownerid: "2bfc1d32-2c37-eb11-bf72-000d3a7970eb",
+            systemuserid: "2bfc1d32-2c37-eb11-bf72-000d3a7970eb",
+            photourl: null,
+          },
+        },
+        {
+          "@odata.etag": 'W/"68821505"',
+          bookableresourceid: "30c5589a-9f4c-ec11-8f8e-002248151e5b",
+          name: "Anglicare Health Centre Castle Hill",
+          resourcetype: 5,
+          UserId: null,
+        },
+        {
+          "@odata.etag": 'W/"506070363"',
+          bookableresourceid: "76e033fa-e24c-ec11-8f8e-002248151e5b",
+          name: "Alex Peterson",
+          resourcetype: 3,
+          UserId: {
+            ownerid: "792e7a88-da1d-ec11-b6e7-00224818546f",
+            systemuserid: "792e7a88-da1d-ec11-b6e7-00224818546f",
+            photourl: null,
+          },
+        },
+        {
+          "@odata.etag": 'W/"81622780"',
+          bookableresourceid: "bbb97b20-3b82-eb11-a812-0022481522dc",
+          name: "Alexander Peterson",
+          resourcetype: 3,
+          UserId: {
+            ownerid: "cb049c54-3438-eb11-bf69-00224814f9a4",
+            systemuserid: "cb049c54-3438-eb11-bf69-00224814f9a4",
+            photourl: null,
+          },
+        },
+        {
+          "@odata.etag": 'W/"50675095"',
+          bookableresourceid: "0b2892be-da71-eb11-a812-002248153009",
+          name: "Bathsheba Benjesse",
+          resourcetype: 5,
+          UserId: null,
+        },
+        {
+          "@odata.etag": 'W/"50226239"',
+          bookableresourceid: "b8483eda-b6a8-eb11-9442-0022481533e7",
+          name: "Darrel DCosta",
+          resourcetype: 3,
+          UserId: {
+            ownerid: "bfe696d9-51a2-eb11-b1ac-002248150b30",
+            systemuserid: "bfe696d9-51a2-eb11-b1ac-002248150b30",
+            photourl: null,
+          },
+        },
+        {
+          "@odata.etag": 'W/"62286762"',
+          bookableresourceid: "3d833dcd-9325-ec11-b6e6-002248153b9c",
+          name: "Mount Everest SSG",
+          resourcetype: 5,
+          UserId: null,
+        },
+        {
+          "@odata.etag": 'W/"45407753"',
+          bookableresourceid: "f1e07e6a-d08d-eb11-b1ac-002248155ce7",
+          name: "Preety Singh",
+          resourcetype: 3,
+          UserId: {
+            ownerid: "09095b86-e577-eb11-a812-002248145319",
+            systemuserid: "09095b86-e577-eb11-a812-002248145319",
+            photourl: null,
+          },
+        },
+        {
+          "@odata.etag": 'W/"45407754"',
+          bookableresourceid: "ec57b619-068d-eb11-b1ac-002248155d0e",
+          name: "Grace Boxall",
+          resourcetype: 3,
+          UserId: {
+            ownerid: "35a514e3-058d-eb11-b1ac-002248155ce7",
+            systemuserid: "35a514e3-058d-eb11-b1ac-002248155ce7",
+            photourl: null,
+          },
+        },
+        {
+          "@odata.etag": 'W/"48533958"',
+          bookableresourceid: "8176013b-078d-eb11-b1ac-002248155d0e",
+          name: "Qiang Zhang",
+          resourcetype: 3,
+          UserId: {
+            ownerid: "0611442c-068d-eb11-b1ac-002248155d0e",
+            systemuserid: "0611442c-068d-eb11-b1ac-002248155d0e",
+            photourl: null,
+          },
+        },
+        {
+          "@odata.etag": 'W/"506599648"',
+          bookableresourceid: "1511e95f-078d-eb11-b1ac-002248155d0e",
+          name: "Hong Liu",
+          resourcetype: 3,
+          UserId: {
+            ownerid: "b7d31101-068d-eb11-b1ac-002248155d0e",
+            systemuserid: "b7d31101-068d-eb11-b1ac-002248155d0e",
+            photourl: null,
+          },
+        },
+        {
+          "@odata.etag": 'W/"506599635"',
+          bookableresourceid: "7ea72179-078d-eb11-b1ac-002248155d0e",
+          name: "Hanae Sakuma",
+          resourcetype: 3,
+          UserId: {
+            ownerid: "ef428713-068d-eb11-b1ac-002248155d0e",
+            systemuserid: "ef428713-068d-eb11-b1ac-002248155d0e",
+            photourl: null,
+          },
+        },
+        {
+          "@odata.etag": 'W/"506599756"',
+          bookableresourceid: "3f008f28-0a8d-eb11-b1ac-002248155d0e",
+          name: "Rafael Santana",
+          resourcetype: 3,
+          UserId: {
+            ownerid: "63895202-3438-eb11-bf69-00224814f9a4",
+            systemuserid: "63895202-3438-eb11-bf69-00224814f9a4",
+            photourl: null,
+          },
+        },
+        {
+          "@odata.etag": 'W/"564984793"',
+          bookableresourceid: "cec4bf85-0a8d-eb11-b1ac-002248155d0e",
+          name: "Emily Teale",
+          resourcetype: 3,
+          UserId: {
+            ownerid: "f6d424ac-098d-eb11-b1ac-002248155ce7",
+            systemuserid: "f6d424ac-098d-eb11-b1ac-002248155ce7",
+            photourl: null,
+          },
+        },
+        {
+          "@odata.etag": 'W/"511212754"',
+          bookableresourceid: "ad495c22-865c-ec11-8f8f-002248156ca8",
+          name: "Fabio Phang",
+          resourcetype: 3,
+          UserId: {
+            ownerid: "ff84f3f5-2057-ec11-8f8f-0022481484fb",
+            systemuserid: "ff84f3f5-2057-ec11-8f8f-0022481484fb",
+            photourl: null,
+          },
+        },
+        {
+          "@odata.etag": 'W/"506599742"',
+          bookableresourceid: "ee203627-6b72-ec11-8942-002248158359",
+          name: "Matthew Mccrorie",
+          resourcetype: 3,
+          UserId: {
+            ownerid: "1971696a-8338-ec11-8c64-0022481567b9",
+            systemuserid: "1971696a-8338-ec11-8c64-0022481567b9",
+            photourl: null,
+          },
+        },
+        {
+          "@odata.etag": 'W/"73625899"',
+          bookableresourceid: "c260b0d3-927d-ec11-8d20-0022481589ab",
+          name: "Harold's SSG",
+          resourcetype: 5,
+          UserId: null,
+        },
+        {
+          "@odata.etag": 'W/"60642235"',
+          bookableresourceid: "50a3b059-6510-ec11-b6e6-002248158fa3",
+          name: "Leff's Agency",
+          resourcetype: 5,
+          UserId: null,
+        },
+        {
+          "@odata.etag": 'W/"506599621"',
+          bookableresourceid: "ef98fcf8-df70-ec11-8f8e-002248159071",
+          name: "Bhupesh Singal",
+          resourcetype: 3,
+          UserId: {
+            ownerid: "21a8c1b1-7f6f-ec11-8f8e-002248159d64",
+            systemuserid: "21a8c1b1-7f6f-ec11-8f8e-002248159d64",
+            photourl: null,
+          },
+        },
+        {
+          "@odata.etag": 'W/"506599700"',
+          bookableresourceid: "66b5019e-e070-ec11-8f8e-002248159071",
+          name: "Karin Piasevoli",
+          resourcetype: 3,
+          UserId: {
+            ownerid: "3b7801c9-806f-ec11-8f8e-0022481595fb",
+            systemuserid: "3b7801c9-806f-ec11-8f8e-0022481595fb",
+            photourl: null,
+          },
+        },
+        {
+          "@odata.etag": 'W/"506599727"',
+          bookableresourceid: "8d123127-e170-ec11-8f8e-002248159071",
+          name: "Kylie Dorahy",
+          resourcetype: 3,
+          UserId: {
+            ownerid: "c98657da-806f-ec11-8f8e-002248159d64",
+            systemuserid: "c98657da-806f-ec11-8f8e-002248159d64",
+            photourl: null,
+          },
+        },
+        {
+          "@odata.etag": 'W/"506599668"',
+          bookableresourceid: "61047d85-e170-ec11-8f8e-002248159071",
+          name: "Jennifer Crowe",
+          resourcetype: 3,
+          UserId: {
+            ownerid: "ab41aee5-806f-ec11-8f8e-0022481596cd",
+            systemuserid: "ab41aee5-806f-ec11-8f8e-0022481596cd",
+            photourl: null,
+          },
+        },
+        {
+          "@odata.etag": 'W/"72695574"',
+          bookableresourceid: "26366cb3-e170-ec11-8f8e-002248159071",
+          name: "Susan Thornhill",
+          resourcetype: 3,
+          UserId: {
+            ownerid: "d49e83f3-806f-ec11-8f8e-0022481595fb",
+            systemuserid: "d49e83f3-806f-ec11-8f8e-0022481595fb",
+            photourl: null,
+          },
+        },
+        {
+          "@odata.etag": 'W/"506599537"',
+          bookableresourceid: "1254e3ee-e170-ec11-8f8e-002248159071",
+          name: "Alicia Sandles",
+          resourcetype: 3,
+          UserId: {
+            ownerid: "c36b94fa-806f-ec11-8f8e-0022481595fb",
+            systemuserid: "c36b94fa-806f-ec11-8f8e-0022481595fb",
+            photourl: null,
+          },
+        },
+        {
+          "@odata.etag": 'W/"549840636"',
+          bookableresourceid: "c7d51342-e270-ec11-8f8e-002248159071",
+          name: "Joanmar Webster-This is added for testing Name field in BMR TABLE - Testing Again to check max BR na",
+          resourcetype: 3,
+          UserId: {
+            ownerid: "c0cd4d06-816f-ec11-8f8e-0022481596cd",
+            systemuserid: "c0cd4d06-816f-ec11-8f8e-0022481596cd",
+            photourl: null,
+          },
+        },
+        {
+          "@odata.etag": 'W/"135742049"',
+          bookableresourceid: "07a266d1-a716-ec11-b6e6-0022481834f0",
+          name: "Ron Lee - SSG Visit",
+          resourcetype: 5,
+          UserId: null,
+        },
+        {
+          "@odata.etag": 'W/"46842557"',
+          bookableresourceid: "be715d2a-5bc3-eb11-bacc-002248183900",
+          name: "Medical Staff",
+          resourcetype: 5,
+          UserId: null,
+        },
+        {
+          "@odata.etag": 'W/"66535164"',
+          bookableresourceid: "bd5f9907-602d-ec11-b6e6-002248183e76",
+          name: "Ronen Tejaya",
+          resourcetype: 3,
+          UserId: {
+            ownerid: "4a0b5d6d-1015-ec11-b6e6-0022481833e5",
+            systemuserid: "4a0b5d6d-1015-ec11-b6e6-0022481833e5",
+            photourl: null,
+          },
+        },
+        {
+          "@odata.etag": 'W/"61880562"',
+          bookableresourceid: "2cbb0945-2a20-ec11-b6e6-002248185149",
+          name: "Vaucluse SSG",
+          resourcetype: 5,
+          UserId: null,
+        },
+      ],
+    });
+  });
 }
 
-function hideLoading() {
-  const loadingElement = document.getElementById("loader");
-  loader.style.display = "none";
-  refreshCalendarUI();
+function getTimeOffRequests() {
+  return new Promise((resolve, reject) => {
+    resolve({
+      entities: [
+        // Resource 1: Pink leave (Sick Leave)
+        {
+          "@odata.etag": 'W/"443886521"',
+          vel_leavetype: 285930003, // Pink
+          msdyn_timeoffrequestid: "leave1",
+          msdyn_starttime: "2025-08-28T00:00:00Z",
+          msdyn_endtime: "2025-08-30T00:00:00Z",
+          msdyn_name: "Rafael Santana",
+          _msdyn_resource_value: "b3141cf1-91e1-ee11-904c-000d3aca6924",
+        },
+        // Resource 2: Yellow leave (Long Service Leave)
+        {
+          "@odata.etag": 'W/"443886522"',
+          vel_leavetype: 285930012, // Yellow
+          msdyn_timeoffrequestid: "leave2",
+          msdyn_starttime: "2025-08-27T00:00:00Z",
+          msdyn_endtime: "2025-08-29T23:59:00Z",
+          msdyn_name: "Janet Black",
+          _msdyn_resource_value: "aaa1234f-22e1-ee11-904c-000d3aca1234",
+        },
+      ],
+    });
+  });
 }
 
-async function handleGetResorces() {
-  showLoading();
-  resorcesStatus.isLoading = true;
-  resorcesStatus.isError = false;
-  resorcesStatus.resourceData = [];
+function mapOverLeaveData(response) {
+  return response.entities.map((r) => ({
+    id: r?._msdyn_resource_value,
+    title: r?.msdyn_name,
+    extendedProps: {
+      imgUrl: r?.UserId?.entityimage_url ?? "/Assets/profiles/R2.jpg",
+      name: r?.msdyn_name,
+      resourceType: `${r?.resourcetype}` ?? "0",
+      startTime: r?.msdyn_starttime,
+      endTime: r?.msdyn_endtime,
+      leaveType: r?.vel_leavetype,
+    },
+  }));
+}
+
+function mapOverIntialData(response) {
+  return response.entities.map((r) => ({
+    id: r?.bookableresourceid,
+    title: r?.name,
+    extendedProps: {
+      imgUrl: r?.UserId?.photourl ?? "/Assets/profiles/R2.jpg",
+      name: r.name,
+      resourceType: `${r?.resourcetype}`,
+    },
+  }));
+}
+
+function handleGetResorces(getResources, mapResources) {
+  const requestToken = ++currentRequestToken; // Create a unique token for this call
+
+  resorcesState.isLoading = true;
+  resorcesState.isError = false;
+  resorcesState.resourceData = [];
 
   window.ecCalendar.setOption("resources", [
     { id: "loading", title: "Loading..." },
   ]);
 
-  try {
+  getResources()
+    .then((response) => {
+      // If this is not the latest request, ignore the result
+      if (requestToken !== currentRequestToken) return;
 
-    const response = await fetchResources({ simulateFailure: false, delayMs: 2000 });
+      const mappedResources = mapResources(response);
+      console.log("mappedResources",mappedResources);
 
-    // Map API response to calendar resources
-    const mappedResources = response.value.map((r) => ({
-      id: r.bookableresourceid,
-      title: r.name,
-      extendedProps: {
-        imgUrl: r.UserId?.photourl ?? "/Assets/profiles/R2.jpg",
-        name: r.name,
-        totalTime: r.resourcetype, // example, replace with actual field
-      },
-    }));
+      resorcesState.isLoading = false;
+      resorcesState.resourceData = mappedResources;
 
+      resourceData = mappedResources;
+      window.ecCalendar.setOption("resources", mappedResources);
+    })
+    .catch((error) => {
+      // Ignore error if not latest request
+      if (requestToken !== currentRequestToken) return;
 
-    hideLoading();
-    resorcesStatus.isLoading = false;
-    resorcesStatus.resourceData = mappedResources;
+      console.error("Error fetching resources:", error);
+      resorcesState.isLoading = false;
+      resorcesState.isError = true;
 
-    resourceData = mappedResources;
-    console.log("Resources fetched successfully:", mappedResources);
-    console.log("resorcesStatus", resourceData);
+      window.ecCalendar.setOption("resources", [
+        { id: "error", title: "Error loading resources" },
+      ]);
+    })
+    .finally(() => {
+      // Refresh UI only for the latest request
+      if (requestToken === currentRequestToken) {
+        refreshCalendarUI();
+      }
+    });
+}
 
-    // Set resources in calendar
-    window.ecCalendar.setOption("resources", mappedResources);
+//Event Data
 
-  } catch (error) {
-    console.error("Error fetching resources:", error);
-    resorcesStatus.isLoading = false;
-    resorcesStatus.isError = true;
-
-    // Show error message in calendar
-    window.ecCalendar.setOption("resources", [
-      { id: "error", title: "Error loading resources" },
-    ]);
+//THis Function Get the Current Range minimum 10 Dayas From Starting
+function getAdjustedDateRangeFromCalendar() {
+  if (!window.ecCalendar) {
+    console.warn("Calendar not found.");
+    return null;
   }
+
+  // 1. Get visible start and end from calendar
+  const calendarView = window.ecCalendar.view || window.ecCalendar.getView();
+  const viewStart = new Date(calendarView.currentStart);
+  const viewEnd = new Date(calendarView.currentEnd);
+
+  // 2. Calculate the difference in days
+  const msPerDay = 24 * 60 * 60 * 1000;
+  const dayDiff = Math.round((viewEnd - viewStart) / msPerDay);
+
+  let startDate = new Date(viewStart);
+  let endDate;
+
+  if (dayDiff >= 10) {
+    // Use current range
+    endDate = new Date(viewEnd);
+  } else {
+    // Expand to 10 days from start
+    endDate = new Date(startDate.getTime() + 9 * msPerDay);
+  }
+
+  // Return in ISO string format
+  return {
+    startDate: startDate.toISOString().split("T")[0] + "T00:00:00Z",
+    endDate: endDate.toISOString().split("T")[0] + "T23:59:59Z",
+  };
 }
 
+// function getAgreementBookingDatesBetween() {
+//   const { startDate, endDate } = getAdjustedDateRangeFromCalendar();
+//   const query = [
+//     "?$select=msdyn_agreementbookingdateid,_msdyn_agreement_value,msdyn_bookingdate,msdyn_name,_msdyn_resource_value,msdyn_status,statecode",
+//     "&$filter=msdyn_bookingdate ge " +
+//       startDate +
+//       " and msdyn_bookingdate le " +
+//       endDate,
+//     "&$expand=",
+//     "msdyn_resource($select=name),",
+//     "msdyn_bookingsetup($select=msdyn_agreementbookingsetupid,msdyn_estimatedduration,_ang_incidenttype_value),",
+//     "msdyn_workorder($select=msdyn_workorderid,msdyn_city,msdyn_country,msdyn_postalcode,_msdyn_serviceterritory_value,msdyn_stateorprovince,msdyn_address1,msdyn_address2,msdyn_address3)",
+//   ].join("");
 
-async function setLeaveData() {
+//   return window.parent.Xrm.WebApi.retrieveMultipleRecords(
+//     "msdyn_agreementbookingdate",
+//     query
+//   );
+// }
 
-  showLoading();
+function getAgreementBookingDatesBetween() {
+  return new Promise((resolve, reject) => {
+    resolve({
+      entities: [
+        {
+          "@odata.etag": 'W/"562523211"',
+          _msdyn_agreement_value: "be8120e7-fd9e-4cce-bb41-4cb5c2409976",
+          _msdyn_resource_value: "1",
+          msdyn_status: 285930015,
+          msdyn_name: "00313",
+          msdyn_agreementbookingdateid: "58cdee5a-d340-f011-8779-000d3a6a1ca6",
+          msdyn_bookingdate: "2025-08-28T16:00:00Z",
+          statecode: 0,
+          msdyn_resource: {
+            bookableresourceid: "b3141cf1-91e1-ee11-904c-000d3aca6924",
+            name: "Jamie Higgins",
+          },
+          msdyn_bookingsetup: {
+            msdyn_estimatedduration: 975,
+            msdyn_agreementbookingsetupid:
+              "98fd7d12-c12f-f011-8c4d-00224894331c",
+            _ang_incidenttype_value: "33c31285-1332-f011-8c4d-0022481174b1",
+          },
+          msdyn_workorder: {
+            msdyn_city: "MOUNT RANKIN",
+            msdyn_address3: null,
+            _msdyn_serviceterritory_value:
+              "04c74320-0340-eb11-bf70-000d3a795b83",
+            msdyn_stateorprovince: "NSW",
+            msdyn_address1: "16 SPRING CL",
+            msdyn_country: "Australia",
+            msdyn_workorderid: "cb5547f4-c541-f011-8779-000d3ad28f5c",
+            msdyn_postalcode: "2795",
+            "msdyn_addres s2": "MINTO",
+          },
+        },
 
-  const leaveData = await new Promise((resolve) => {
-    const rawLeaveData = [
-      {
-        "@odata.etag": "W/\"443886521\"",
-        "vel_leavetype": 285930021,
-        "msdyn_timeoffrequestid": "24d4c737-e0d5-ee11-904c-000d3aca6924",
-        "msdyn_endtime": "2024-03-31T10:00:00Z",
-        "msdyn_name": "Rafael Santana",
-        "_msdyn_resource_value": "3f008f28-0a8d-eb11-b1ac-002248155d0e",
-        "msdyn_starttime": "2024-02-28T20:00:00Z",
-      },
-      {
-        "@odata.etag": "W/\"531941147\"",
-        "vel_leavetype": 285930004,
-        "msdyn_timeoffrequestid": "76e450ce-df64-ef11-a671-000d3acbd62b",
-        "msdyn_endtime": "2024-08-28T11:00:00Z",
-        "msdyn_name": "Alexander Peterson",
-        "_msdyn_resource_value": "bbb97b20-3b82-eb11-a812-0022481522dc",
-        "msdyn_starttime": "2024-08-27T21:00:00Z",
-      },
-      {
-        "@odata.etag": "W/\"530276456\"",
-        "vel_leavetype": 285930004,
-        "msdyn_timeoffrequestid": "8a9cc9a3-0855-ef11-bfe3-000d3acbd62b",
-        "msdyn_endtime": "2024-08-08T07:00:00Z",
-        "msdyn_name": "Clancy Matthews",
-        "_msdyn_resource_value": "6d616491-a106-ef11-9f89-002248100a21",
-        "msdyn_starttime": "2024-08-07T23:30:00Z",
-      },
-    ];
+        // Case 1: Fully inside leave (Resource 1)
+        {
+          msdyn_bookingdate: "2025-08-28T04:00:00Z",
+          msdyn_bookingsetup: { msdyn_estimatedduration: 120 },
+          _msdyn_resource_value: "b3141cf1-91e1-ee11-904c-000d3aca6924",
+          msdyn_agreementbookingdateid: "event1",
+          msdyn_name: "E1",
+          msdyn_resource: { name: "Rafael Santana" },
+          msdyn_status: 285930015,
+          msdyn_workorder: { msdyn_city: "Sydney" },
+        },
 
-    setTimeout(() => {
-      hideLoading();
-      resolve(rawLeaveData);
-    }, 500);
+        // Case 2: Starts inside leave, ends after (Resource 1)
+        {
+          msdyn_bookingdate: "2025-08-28T22:30:00Z",
+          msdyn_bookingsetup: { msdyn_estimatedduration: 180 },
+          _msdyn_resource_value: "b3141cf1-91e1-ee11-904c-000d3aca6924",
+          msdyn_agreementbookingdateid: "event2",
+          msdyn_name: "E2",
+          msdyn_resource: { name: "Rafael Santana" },
+          msdyn_status: 285930015,
+          msdyn_workorder: { msdyn_city: "Sydney" },
+        },
+
+        // Case 3: Starts before leave, ends inside (Resource 1)
+        {
+          msdyn_bookingdate: "2025-08-28T00:00:00Z",
+          msdyn_bookingsetup: { msdyn_estimatedduration: 180 },
+          _msdyn_resource_value: "b3141cf1-91e1-ee11-904c-000d3aca6924",
+          msdyn_agreementbookingdateid: "event3",
+          msdyn_name: "E3",
+          msdyn_resource: { name: "Rafael Santana" },
+          msdyn_status: 285930015,
+          msdyn_workorder: { msdyn_city: "Sydney" },
+        },
+
+        // Case 4: Spans entire leave (Resource 1)
+        {
+          msdyn_bookingdate: "2025-08-28T00:00:00Z",
+          msdyn_bookingsetup: { msdyn_estimatedduration: 80 },
+          _msdyn_resource_value: "b3141cf1-91e1-ee11-904c-000d3aca6924",
+          msdyn_agreementbookingdateid: "event4",
+          msdyn_name: "E4",
+          msdyn_resource: { name: "Rafael Santana" },
+          msdyn_status: 285930015,
+          msdyn_workorder: { msdyn_city: "Sydney" },
+        },
+
+        // Case 5: 10-minute event inside leave (Resource 1)
+        {
+          msdyn_bookingdate: "2025-08-28T13:50:00Z",
+          msdyn_bookingsetup: { msdyn_estimatedduration: 10 },
+          _msdyn_resource_value: "b3141cf1-91e1-ee11-904c-000d3aca6924",
+          msdyn_agreementbookingdateid: "event5",
+          msdyn_name: "E5",
+          msdyn_resource: { name: "Rafael Santana" },
+          msdyn_status: 285930015,
+          msdyn_workorder: { msdyn_city: "Sydney" },
+        },
+
+        // Case 6: Event before leave (Resource 1)
+        {
+          msdyn_bookingdate: "2025-08-27T17:00:00Z",
+          msdyn_bookingsetup: { msdyn_estimatedduration: 180 },
+          _msdyn_resource_value: "b3141cf1-91e1-ee11-904c-000d3aca6924",
+          msdyn_agreementbookingdateid: "event6",
+          msdyn_name: "E6",
+          msdyn_resource: { name: "Rafael Santana" },
+          msdyn_status: 285930015,
+          msdyn_workorder: { msdyn_city: "Sydney" },
+        },
+
+        // Case 7: Event after leave (Resource 1)
+        {
+          msdyn_bookingdate: "2025-08-30T08:00:00Z",
+          msdyn_bookingsetup: { msdyn_estimatedduration: 60 },
+          _msdyn_resource_value: "b3141cf1-91e1-ee11-904c-000d3aca6924",
+          msdyn_agreementbookingdateid: "event7",
+          msdyn_name: "E7",
+          msdyn_resource: { name: "Rafael Santana" },
+          msdyn_status: 285930015,
+          msdyn_workorder: { msdyn_city: "Sydney" },
+        },
+
+        // Case 8: Event starts at exact leave start (Resource 2)
+        {
+          msdyn_bookingdate: "2025-08-27T00:00:00Z",
+          msdyn_bookingsetup: { msdyn_estimatedduration: 120 },
+          _msdyn_resource_value: "aaa1234f-22e1-ee11-904c-000d3aca1234",
+          msdyn_agreementbookingdateid: "event8",
+          msdyn_name: "E8",
+          msdyn_resource: { name: "Janet Black" },
+          msdyn_status: 285930015,
+          msdyn_workorder: { msdyn_city: "Canberra" },
+        },
+
+        // Case 9: Event ends at exact leave end (Resource 2)
+        {
+          msdyn_bookingdate: "2025-08-29T22:00:00Z",
+          msdyn_bookingsetup: { msdyn_estimatedduration: 120 },
+          _msdyn_resource_value: "aaa1234f-22e1-ee11-904c-000d3aca1234",
+          msdyn_agreementbookingdateid: "event9",
+          msdyn_name: "E9",
+          msdyn_resource: { name: "Janet Black" },
+          msdyn_status: 285930015,
+          msdyn_workorder: { msdyn_city: "Canberra" },
+        },
+      ],
+    });
   });
-  reRenderLeaveEvents(leaveData);
 }
 
+function handleEventFetch() {
+  getAgreementBookingDatesBetween()
+    .then((response) => {
+      // Create a Set of valid resource IDs from resourceData
 
-function reRenderLeaveEvents(leaveData) {
-  // This function should update the calendar or UI for the Leave Conflict tab
-  // Example: If using FullCalendar, pass leaveData to the events source for the Leave Conflict view
-  console.log("Leave data rendered:", leaveData);
-  // window.ecCalendar.setOption("resources", leaveData);
-  // Map API response to calendar resources
-  const mappedResources = leaveData.map((r) => ({
-    id: r._msdyn_resource_value,
-    title: r.msdyn_name,
-    extendedProps: {
-      imgUrl: r.UserId?.photourl ?? "/Assets/profiles/R2.jpg",
-      name: r.msdyn_name,
-      totalTime: r?.resourcetype || null, // example, replace with actual field
-    },
-  }));
-
-
-
-  resorcesStatus.isLoading = false;
-  resorcesStatus.resourceData = mappedResources;
-
-  resourceData = mappedResources;
-  console.log("Resources fetched successfully:", mappedResources);
-  console.log("resorcesStatus", resourceData);
-  window.ecCalendar.setOption("resources", []);
-
-  // Set resources in calendar
-  window.ecCalendar.setOption("resources", mappedResources);
-  setTimeout(() => {
-    refreshCalendarUI();
-  }, 0);
-
-  // Add logic to integrate with your calendar library (e.g., FullCalendar)
-  // Example: calendarRef.current.getApi().addEventSource(leaveData);
+      // Map CRM response to calendar events, only including events with valid resourceId
+      const statusMap = {
+        690970000: "Active",
+        690970001: "Processed",
+        690970002: "Canceled",
+      };
+      const mappedEvents = response.entities.map((event) => {
+        // Parse start date
+        const startDate = new Date(event.msdyn_bookingdate);
+        // Calculate end date by adding estimated duration (in minutes)
+        const durationMinutes =
+          event.msdyn_bookingsetup.msdyn_estimatedduration || 60; // Default to 60 minutes
+        const endDate = new Date(
+          startDate.getTime() + durationMinutes * 60 * 1000
+        );
+        // Construct address string
+        const addressParts = [
+          event?.msdyn_workorder?.msdyn_address1 || " ",
+          event?.msdyn_workorder?.msdyn_address2 || " ",
+          event?.msdyn_workorder?.msdyn_address3 || " ",
+          event?.msdyn_workorder?.msdyn_city || " ",
+          event?.msdyn_workorder?.msdyn_stateorprovince || " ",
+          event?.msdyn_workorder?.msdyn_postalcode || " ",
+          event?.msdyn_workorder?.msdyn_country || " ",
+        ]
+          .filter((part) => part)
+          .join(", ");
+        return {
+          resourceId: event?._msdyn_resource_value,
+          start: startDate,
+          end: endDate,
+          id: event?.msdyn_agreementbookingdateid,
+          type: "Full",
+          slotEventOverlap: true,
+          editable: false,
+          durationEditable: false,
+          eventStartEditable: false,
+          // className: ["ec-event-active"],
+          extendedProps: {
+            bookingID: event?._msdyn_agreement_value,
+            employeeID: event?.msdyn_name,
+            employeeName: event?.msdyn_resource?.name || "N/A",
+            address: addressParts,
+            suburb: event?.msdyn_workorder?.msdyn_city || "N/A",
+            serviceType:
+              event?.msdyn_bookingsetup?._ang_incidenttype_value ||
+              "Care Worker",
+            bookingStatus: statusMap[event?.msdyn_status] || "Unknown",
+            region: event?.msdyn_workorder?._msdyn_serviceterritory_value,
+            agreementBookingSetupId:
+              event?.msdyn_bookingsetup?.msdyn_agreementbookingsetupid,
+          },
+        };
+      });
+      eventStatus.isLoading = false;
+      eventStatus.eventData = mappedEvents;
+      eventData = mappedEvents; // Update global eventData
+      // console.log("Events fetched successfully:", mappedEvents);
+      // // Update calendar with events
+      // reRenderEvents();
+    })
+    .then(() => {
+      if (currentTab === "leave") {
+        calculateLookupData();
+      }
+      reRenderEvents();
+    })
+    .catch((error) => {
+      console.error("Error fetching events:", error.message);
+      eventStatus.isLoading = false;
+      eventStatus.isError = true;
+      eventData = [];
+      reRenderEvents(); // Clear events on error
+    });
 }
+
 // --- INIT ---
 window.addEventListener("DOMContentLoaded", function () {
   createCalendar();
+  // setIntialData();
+  // handleFilterFetch();
+  // handleGetResorces(getBookableResources, mapOverIntialData);
+  handleGetResorces(getTimeOffRequests, mapOverLeaveData);
+  handleEventFetch();
   chnageActivetab();
-  handleFilterFetch();
-  handleGetResorces();
-  handleGetEvents();
+  currentTab = "init";
   this.window.refreshCalendarUI = refreshCalendarUI;
+  this.window.handleEventFetch = handleEventFetch;
 });
 
+let timeOffLookup = {};
 
+const leaveTypeClassMap = {
+  // Yellow class for Long Service Leave and related types
+  285930012: "ec-event-yellow", // Long Service Leave
+  285930013: "ec-event-yellow", // Mat. Leave - Full
+  285930014: "ec-event-yellow", // Mat. Leave - Half
+  285930015: "ec-event-yellow", // Mat. Leave - No Pay
+  285930027: "ec-event-yellow", // Workers Comp
+  285930028: "ec-event-yellow", // Workers Comp (ARV)
+
+  // Pink class for Other leave types
+  285930003: "ec-event-pink", // Sick Leave
+  285930023: "ec-event-pink", // Sick Leave - Unpaid
+  285930024: "ec-event-pink", // Sick Leave(w / Cert)
+  285930004: "ec-event-pink", // Annual Leave
+  285930005: "ec-event-pink", // Carers Leave
+  285930029: "ec-event-pink", // Casual Worker - Leave
+  285930006: "ec-event-pink", // Compassionate Leave
+  285930007: "ec-event-pink", // Disaster Leave
+  285930008: "ec-event-pink", // Staff Not Available
+  285930010: "ec-event-pink", // Jury Leave
+  285930011: "ec-event-pink", // Leave Without Pay
+  285930016: "ec-event-pink", // Parental Leave
+  285930018: "ec-event-pink", // Pub Hol - Not Worked
+  285930017: "ec-event-pink", // Pub Hol - Worked Block Shift
+  285930019: "ec-event-pink", // Purchased Leave
+  285930020: "ec-event-pink", // Refused Work
+  285930021: "ec-event-pink", // Rehab
+  285930000: "ec-event-pink", // Special Paid Leave
+  285930025: "ec-event-pink", // Study Leave
+  285930026: "ec-event-pink", // Sun.Pub.Hol.Leave
+};
+
+function calculateLookupData() {
+  // Create a map: resourceId => array of time-off entries
+  resourceData.forEach((leave) => {
+    console.log("Printing Data", leave);
+    const resourceId = leave?.id;
+    if (!timeOffLookup[resourceId]) {
+      timeOffLookup[resourceId] = [];
+    }
+    timeOffLookup[resourceId].push({
+      start: new Date(leave?.extendedProps?.startTime),
+      end: new Date(leave?.extendedProps?.endTime),
+      leaveType: leave?.extendedProps?.leaveType,
+    });
+  });
+}
+
+function getEventClassName(eventStart, eventEnd, resourceId) {
+  const leaves = timeOffLookup[resourceId];
+  if (!leaves) return "ec-event-active"; // No leaves for this resource
+
+  for (const leave of leaves) {
+    if (leave.start <= eventEnd || leave.end >= eventStart) {
+      // Overlap found
+      return leaveTypeClassMap[leave?.leaveType] || "ec-event-yellow";
+    }
+  }
+
+  return "ec-event-active"; // No overlaps
+}

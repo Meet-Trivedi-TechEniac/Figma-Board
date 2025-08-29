@@ -4,7 +4,6 @@ function getElement(id) {
 
 // Custom Dropdown
 var dropdowns = document.querySelectorAll(".custom-dropdown");
-console.log("dropdowns", dropdowns)
 if (dropdowns.length) {
   // Only one global click listener for closing dropdowns
   document.addEventListener("click", function (e) {
@@ -194,9 +193,7 @@ function formatTo24HourTime(dateObj) {
 $(".starttime").timepicker({
   timeFormat: "h:mm p",
   interval: 30,
-  startTime: "08:00",
-  maxTime: "4:00pm",
-  defaultTime: "08",
+  defaultTime: "06",
   dynamic: false,
   dropdown: true,
   scrollbar: false,
@@ -216,9 +213,7 @@ $(".starttime").timepicker({
 $(".endtime").timepicker({
   timeFormat: "h:mm p",
   interval: 30,
-  startTime: "09:00",
-  maxTime: "4:00pm",
-  defaultTime: "16",
+  defaultTime: "18",
   dynamic: false,
   dropdown: true,
   scrollbar: false,
@@ -242,5 +237,4 @@ $(".time-conatainer img").on("click", function (e) {
   setTimeout(() => {
     $input.focus();
   }, 10);
-});
-
+}); 
