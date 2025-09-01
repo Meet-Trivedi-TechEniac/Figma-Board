@@ -351,18 +351,6 @@ select:focus>option:hover {
     overflow-y: hidden;
 }
 
-.ec-content {
-    width: 300px;
-    /* initial width */
-    min-width: 220px;
-    /* minimum width */
-    max-width: 440px;
-    /* maximum width */
-    border: 1px solid #ccc;
-    position: relative;
-    display: inline-block;
-}
-
 .ec-container {
     min-width: 100% !important;
     display: flex;
@@ -704,6 +692,7 @@ select:focus>option:hover {
     pointer-events: auto !important;
 }
 
+
 .tooltip.custom-tooltip .tooltip-inner {
     background-color: #ffffff !important;
     color: #000000 !important;
@@ -881,13 +870,3 @@ select:focus>option:hover {
 /* .popover {
     pointer-events: auto;
 } */
-
-.resizer {
-    width: 8px;
-    height: 100%;
-    background: #aaa;
-    cursor: ew-resize;
-    position: absolute;
-    right: 0;
-    top: 0;
-}
