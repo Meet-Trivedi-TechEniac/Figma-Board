@@ -166,9 +166,9 @@
     background-color: transparent !important;
 }
 
-.ec-highlight {
+/* .ec-highlight {
     background-color: #f0f8ff !important;
-}
+} */
 
 
 .filter-action {
@@ -848,3 +848,16 @@ select:focus>option:hover {
     white-space: nowrap;
     font-size: small;
 }
+
+.ec-highlight {
+    background-color: #edcaee !important;
+    /* Example yellow */
+}
+
+/* .ec-highlight {
+    background-color: #f0f8ff !important;
+} */
+
+/* .popover {
+    pointer-events: auto;
+} */

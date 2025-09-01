@@ -1222,7 +1222,7 @@ function renderEventDetails(arg) {
   return {
     html: `
         <div class='event-disp-container ${eventClass}'
-        data-bs-toggle="tooltip"
+        data-bs-toggle="popover"
         data-bs-html="true"
         data-bs-placement="bottom"
         data-popper-placement="left"
@@ -1248,6 +1248,16 @@ function renderEventDetails(arg) {
     `,
   };
 }
+
+document.querySelectorAll('[data-bs-toggle="popover"]').forEach(el => {
+  new bootstrap.Popover(el, {
+    html: true,
+    sanitize: false, // allow your <a> link
+    trigger: "hover focus", // stays open when hovering
+    placement: "bottom"
+  });
+});
+
 
 function renderResources(info) {
   const resource = info?.resource;

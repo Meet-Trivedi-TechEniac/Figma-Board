@@ -1689,6 +1689,7 @@ function createCalendar() {
     durationEditable: false,
     eventStartEditable: false,
     slotEventOverlap: true,
+    highlightedDates: ['2025-09-01', '2025-09-03', '2025-09-07'],
 
     dayHeaderFormat: parseDate,
     eventContent: renderEventDetails,
