@@ -1117,9 +1117,35 @@ function parseDate(date) {
   };
 }
 
+// function renderTooltipContent(arg) {
+//   return `
+//     <div class="custom-tooltip-content">
+//       <p class="event-desc-id">${arg.event.extendedProps.employeeID}</p>
+
+//       <p>${new Date(arg.event.start).toLocaleDateString()} - ${new Date(
+//     arg.event.end
+//   ).toLocaleDateString()}</p>
+//       <div class="event-desc-grid">
+//         <p>Address (Work Order)</p>
+//         <p>${arg.event.extendedProps.address}</p>
+//         <p>Suburb</p>
+//         <p>${arg.event.extendedProps.suburb}</p>
+//         <p>Booking Status</p>
+//         <p>${arg.event.extendedProps.bookingStatus}</p>
+//         <p>Agreement Booking</p>
+//         <p><a href="/agreement-booking/${arg.event.extendedProps.agreementBookingSetupId
+//     }" target="_blank">View Agreement</a></p>
+//       </div>
+//     </div>
+//   `;
+// }
+
 function renderTooltipContent(arg) {
+
+  console.log("hereee", arg.event.extendedProps);
   return `
     <div class="custom-tooltip-content">
+    <span class="tooltip-text">
       <p class="event-desc-id">${arg.event.extendedProps.employeeID}</p>
      
       <p>${new Date(arg.event.start).toLocaleDateString()} - ${new Date(
@@ -1128,14 +1154,15 @@ function renderTooltipContent(arg) {
       <div class="event-desc-grid">
         <p>Address (Work Order)</p>
         <p>${arg.event.extendedProps.address}</p>
-        <p>Suburb</p>
-        <p>${arg.event.extendedProps.suburb}</p>
-        <p>Booking Status</p>
+        <p>serviceType</p>
+        <p>${arg.event.extendedProps.serviceType}</p>
+        <p>Booking Status</p> 
         <p>${arg.event.extendedProps.bookingStatus}</p>
         <p>Agreement Booking</p>
         <p><a href="/agreement-booking/${arg.event.extendedProps.agreementBookingSetupId
     }" target="_blank">View Agreement</a></p>
       </div>
+      <span/>
     </div>
   `;
 }
@@ -1186,6 +1213,67 @@ function formatEventTime(date) {
   return formattedDate;
 }
 
+// function renderEventDetails(arg) {
+//   console.log("args", arg);
+//   const start = new Date(arg.event.start);
+//   const end = new Date(arg.event.end);
+//   const diffMs = end - start;
+//   const diffMins = Math.floor(diffMs / (1000 * 60));
+//   const hours = Math.floor(diffMins / 60);
+//   const minutes = diffMins % 60;
+
+//   const durationStr = `${hours}h ${minutes.toString().padStart(2, "0")}m`;
+//   arg.event.extendedProps.duration = durationStr;
+
+//   const tooltipHtml = renderTooltipContent(arg)
+//     .replace(/"/g, "&quot;") // Escape double quotes for title attribute
+//     .replace(/\n/g, ""); // Remove line breaks
+//   console.log(
+//     "arg.event.extendedProps.duration",
+//     arg.event.extendedProps.duration
+//   );
+
+//   let eventClass = "ec-event-active";
+
+//   if (currentTab === "leave") {
+//     const resourceId = arg?.event?.resourceIds?.[0] ?? arg?.event?.id; // ✅ FIXED
+//     console.log("Retrieved Resource ID:", resourceId);
+
+//     eventClass = getEventClassName(start, end, resourceId);
+//     console.log("Class Name we found:", eventClass);
+//   }
+
+//   getEventClassName;
+//   return {
+//     html: `
+//         <div class='event-disp-container ${eventClass}'
+//         data-bs-toggle="tooltip"
+//         data-bs-html="true"
+//         data-bs-placement="bottom"
+//         data-popper-placement="left"
+//         data-bs-custom-class="custom-tooltip"
+//         title="${tooltipHtml}">
+//         <div class="event-disp">
+//             <p>${arg?.event?.extendedProps?.employeeName
+//       }</p> <!-- Display first name and last name -->
+//             <p>${arg.event.extendedProps.suburb || "N/A"
+//       }</p> <!-- Display suburb -->
+//             <!-- Display type of service -->
+//             <p>${formatEventTime(start)} - ${arg.event.extendedProps.duration
+//       }</p> <!-- Display formatted start time -->
+
+
+//              <!-- Display duration -->
+//         </div>
+//         <div class="event-disp-icon">
+
+//             ${renderStatusIcon(arg.event.extendedProps.bookingStatus)}
+//         </div>
+//       </div>
+//     `,
+//   };
+// }
+
 function renderEventDetails(arg) {
   console.log("args", arg);
   const start = new Date(arg.event.start);
@@ -1194,10 +1282,8 @@ function renderEventDetails(arg) {
   const diffMins = Math.floor(diffMs / (1000 * 60));
   const hours = Math.floor(diffMins / 60);
   const minutes = diffMins % 60;
-
   const durationStr = `${hours}h ${minutes.toString().padStart(2, "0")}m`;
   arg.event.extendedProps.duration = durationStr;
-
   const tooltipHtml = renderTooltipContent(arg)
     .replace(/"/g, "&quot;") // Escape double quotes for title attribute
     .replace(/\n/g, ""); // Remove line breaks
@@ -1205,26 +1291,23 @@ function renderEventDetails(arg) {
     "arg.event.extendedProps.duration",
     arg.event.extendedProps.duration
   );
-
   let eventClass = "ec-event-active";
-
   if (currentTab === "leave") {
     const resourceId = arg?.event?.resourceIds?.[0] ?? arg?.event?.id; // ✅ FIXED
     console.log("Retrieved Resource ID:", resourceId);
-
     eventClass = getEventClassName(start, end, resourceId);
     console.log("Class Name we found:", eventClass);
   }
-
   getEventClassName;
   return {
     html: `
         <div class='event-disp-container ${eventClass}'
-        data-bs-toggle="tooltip"
-        data-bs-html="true"
-        data-bs-placement="bottom"
-        data-popper-placement="left"
-        data-bs-custom-class="custom-tooltip"
+      data-bs-toggle="tooltip" 
+      data-bs-html="true" 
+      data-bs-placement="top" 
+      data-popper-placement="left"
+       data-bs-custom-class="custom-tooltip"
+        data-bs-trigger="manual" 
         title="${tooltipHtml}">
         <div class="event-disp">
             <p>${arg?.event?.extendedProps?.employeeName
@@ -1246,6 +1329,7 @@ function renderEventDetails(arg) {
     `,
   };
 }
+
 
 function renderResources(info) {
   const resource = info?.resource;
@@ -1818,6 +1902,41 @@ function renderDropdowns() {
 //     "?$select=msdyn_endtime,vel_leavetype,msdyn_name,_msdyn_resource_value,msdyn_starttime"
 //   );
 // }
+
+function handleGetTimeoffWithoutSet(getResources, mapResources) {
+  const requestToken = ++currentRequestToken; // Create a unique token for this call
+
+  resorcesState.isLoading = true;
+  resorcesState.isError = false;
+  resorcesState.resourceData = [];
+
+  window.ecCalendar.setOption("resources", [
+    { id: "loading", title: "Loading..." },
+  ]);
+
+  return getResources()
+    .then((response) => {
+
+      if (requestToken !== currentRequestToken) return;
+      return mapResources(response);
+    })
+    .catch((error) => {
+      if (requestToken !== currentRequestToken) return;
+
+      console.error("Error fetching resources:", error);
+      resorcesState.isLoading = false;
+      resorcesState.isError = true;
+
+      window.ecCalendar.setOption("resources", [
+        { id: "error", title: "Error loading resources" },
+      ]);
+    })
+    .finally(() => {
+      if (requestToken === currentRequestToken) {
+        refreshCalendarUI();
+      }
+    });
+}
 
 function handleGetResorces(getResources, mapResources) {
   const requestToken = ++currentRequestToken; // Create a unique token for this call
@@ -2976,6 +3095,7 @@ function handleEventFetch() {
 
 // --- INIT ---
 window.addEventListener("DOMContentLoaded", function () {
+  console.log("heer1")
   createCalendar();
   // setIntialData();
   // handleFilterFetch();
@@ -2986,7 +3106,94 @@ window.addEventListener("DOMContentLoaded", function () {
   currentTab = "init";
   this.window.refreshCalendarUI = refreshCalendarUI;
   this.window.handleEventFetch = handleEventFetch;
+
+  let tooltipTimer;
+
+  // Initialize tooltips and add event listeners
+  document.addEventListener('mouseenter', function (e) {
+    if (!(e.target instanceof Element)) return;
+    // Check if hovering over any part of the event box
+    const tooltipElement = e.target.closest('[data-bs-toggle="tooltip"]') ||
+      e.target.closest('.event-disp-container') ||
+      (e.target.classList && e.target.classList.contains('event-disp-container'));
+
+    if (tooltipElement) {
+      // Find the actual tooltip trigger element
+      const triggerElement = (tooltipElement instanceof Element && tooltipElement.hasAttribute('data-bs-toggle')) ?
+        tooltipElement :
+        (tooltipElement instanceof Element && tooltipElement.querySelector('[data-bs-toggle="tooltip"]')) ?
+          tooltipElement.querySelector('[data-bs-toggle="tooltip"]') :
+          (tooltipElement instanceof Element && tooltipElement.closest('[data-bs-toggle="tooltip"]')) ?
+            tooltipElement.closest('[data-bs-toggle="tooltip"]') :
+            null;
+
+      if (triggerElement) {
+        clearTimeout(tooltipTimer);
+        const tooltip = bootstrap.Tooltip.getInstance(triggerElement) || new bootstrap.Tooltip(triggerElement);
+        tooltip.show();
+      }
+    }
+  }, true);
+
+  document.addEventListener('mouseleave', function (e) {
+    if (!(e.target instanceof Element)) return;
+    // Check if leaving any part of the event box
+    const tooltipElement = e.target.closest('[data-bs-toggle="tooltip"]') ||
+      e.target.closest('.event-disp-container') ||
+      (e.target.classList && e.target.classList.contains('event-disp-container'));
+
+    if (tooltipElement) {
+      // Find the actual tooltip trigger element
+      const triggerElement = tooltipElement.hasAttribute('data-bs-toggle') ?
+        tooltipElement :
+        tooltipElement.querySelector('[data-bs-toggle="tooltip"]') ||
+        tooltipElement.closest('[data-bs-toggle="tooltip"]');
+
+      if (triggerElement) {
+        tooltipTimer = setTimeout(() => {
+          const tooltip = bootstrap.Tooltip.getInstance(triggerElement);
+          if (tooltip) {
+            // Check if mouse is over the tooltip itself
+            const tooltipEl = document.querySelector('.tooltip');
+            if (!tooltipEl || !tooltipEl.matches(':hover')) {
+              tooltip.hide();
+            }
+          }
+        }, 100);
+      }
+    }
+  }, true);
+
+  // Keep tooltip visible when hovering over the tooltip itself
+  document.addEventListener('mouseenter', function (e) {
+    if (!(e.target instanceof Element)) return;
+    if (e.target.closest('.tooltip')) {
+      clearTimeout(tooltipTimer);
+    }
+  }, true);
+
+  document.addEventListener('mouseleave', function (e) {
+    if (!(e.target instanceof Element)) return;
+    if (e.target.closest('.tooltip')) {
+      tooltipTimer = setTimeout(() => {
+        const tooltips = document.querySelectorAll('.tooltip');
+        tooltips.forEach(tooltipEl => {
+          if (!tooltipEl.matches(':hover')) {
+            const triggerElement = document.querySelector(`[aria-describedby="${tooltipEl.id}"]`);
+            if (triggerElement) {
+              const tooltip = bootstrap.Tooltip.getInstance(triggerElement);
+              if (tooltip) tooltip.hide();
+            }
+          }
+        });
+      }, 150);
+    }
+  }, true);
+
 });
+
+
+
 
 let timeOffLookup = {};
 
@@ -3023,6 +3230,7 @@ const leaveTypeClassMap = {
 };
 
 function calculateLookupData() {
+  // console.log("timeeee", timeOffData)
   // Create a map: resourceId => array of time-off entries
   resourceData.forEach((leave) => {
     console.log("Printing Data", leave);
