@@ -15,6 +15,7 @@ let currentTab = "init";
 let holidayDates = [];
 
 let workOrderStatusMap = {};
+let serviceType = {};
 
 let filterStatus = {
   isLoading: false,
@@ -1363,7 +1364,7 @@ function renderEventDetails(arg) {
 
 
   let id = arg.event.resourceIds[0].toString();
-  console.log("args", workOrderStatusMap[arg?.event.resourceIds[0]] || "empty");
+  console.log("args", arg);
   const start = new Date(arg.event.start);
   const end = new Date(arg.event.end);
   const diffMs = end - start;
@@ -1403,7 +1404,7 @@ function renderEventDetails(arg) {
             <p>${arg?.event.extendedProps.suburb || "N/A"
       }</p> <!-- Display suburb -->
             <!-- Display type of service -->
-             <p>${arg?.event?.extendedProps?.serviceType || "N/A"}
+             <p>${serviceType[arg?.event?.extendedProps?.service_id] ?? "N/A"}
             <p>${formatEventTime(start)} - ${arg.event.extendedProps.duration
       }</p> <!-- Display formatted start time -->
              
@@ -2124,6 +2125,66 @@ function loadWorkOrderStatus() {
 
     console.log("work order", workOrderStatusMap);
     return workOrderStatusMap;
+  });
+}
+
+
+function getServiceType() {
+  return new Promise((resoleve, reject) => {
+    resoleve(
+      {
+        entities: [
+          {
+            "@odata.etag": "W/\"568631216\"",
+            "msdyn_name": "CHSP - ATSI",
+            "msdyn_incidenttypeid": "33c31285-1332-f011-8c4d-0022481174b1"
+          },
+          {
+            "@odata.etag": "W/\"568631219\"",
+            "msdyn_name": "CHSP - Care and Support ",
+            "msdyn_incidenttypeid": "6a146cab-1432-f011-8c4d-000d3a6a9a9b"
+          },
+          {
+            "@odata.etag": "W/\"560954111\"",
+            "msdyn_name": "CHSP - Care Coordination",
+            "msdyn_incidenttypeid": "6c146cab-1432-f011-8c4d-000d3a6a9a9b"
+          },
+          {
+            "@odata.etag": "W/\"568631223\"",
+            "msdyn_name": "CHSP - Dementia Advisory",
+            "msdyn_incidenttypeid": "6e146cab-1432-f011-8c4d-000d3a6a9a9b"
+          },
+          {
+            "@odata.etag": "W/\"568631225\"",
+            "msdyn_name": "CHSP - Products",
+            "msdyn_incidenttypeid": "70146cab-1432-f011-8c4d-000d3a6a9a9b"
+          },
+          {
+            "@odata.etag": "W/\"568631229\"",
+            "msdyn_name": "CHSP - SSG",
+            "msdyn_incidenttypeid": "74146cab-1432-f011-8c4d-000d3a6a9a9b"
+          },
+          {
+            "@odata.etag": "W/\"561415355\"",
+            "msdyn_name": "Private - SSG",
+            "msdyn_incidenttypeid": "c574587d-c439-f011-b4cc-000d3a6aef3a"
+          },
+
+        ]
+      }
+    )
+  })
+}
+
+function mapServiceType() {
+  return getServiceType().then((data) => {
+    serviceType = data.entities.reduce((acc, item) => {
+      acc[item.msdyn_incidenttypeid] = item.msdyn_name;
+      return acc;
+    }, {});
+
+    console.log("Serviceee", serviceType);
+    return serviceType;
   });
 }
 
@@ -3091,6 +3152,8 @@ function getAgreementBookingDatesBetween() {
   return new Promise((resolve, reject) => {
     resolve({
       entities: [
+
+
         {
           "@odata.etag": 'W/"562523211"',
           _msdyn_agreement_value: "be8120e7-fd9e-4cce-bb41-4cb5c2409976",
@@ -3098,7 +3161,7 @@ function getAgreementBookingDatesBetween() {
           msdyn_status: 285930015,
           msdyn_name: "00313",
           msdyn_agreementbookingdateid: "58cdee5a-d340-f011-8779-000d3a6a1ca6",
-          msdyn_bookingdate: "2025-08-28T16:00:00Z",
+          msdyn_bookingdate: "2025-09-02T16:00:00Z",
           statecode: 0,
           msdyn_resource: {
             bookableresourceid: "b3141cf1-91e1-ee11-904c-000d3aca6924",
@@ -3127,13 +3190,14 @@ function getAgreementBookingDatesBetween() {
         // Case 1: Fully inside leave (Resource 1)
         {
           msdyn_bookingdate: "2025-08-28T04:00:00Z",
-          msdyn_bookingsetup: { msdyn_estimatedduration: 120 },
+          msdyn_bookingsetup: { msdyn_estimatedduration: 120, _ang_incidenttype_value: "33c31285-1332-f011-8c4d-0022481174b1", },
           _msdyn_resource_value: "b3141cf1-91e1-ee11-904c-000d3aca6924",
           msdyn_agreementbookingdateid: "event1",
           msdyn_name: "E1",
           msdyn_resource: { name: "Rafael Santana" },
           msdyn_status: 285930015,
           msdyn_workorder: { msdyn_city: "Sydney" },
+
         },
 
         // Case 2: Starts inside leave, ends after (Resource 1)
@@ -3148,89 +3212,89 @@ function getAgreementBookingDatesBetween() {
           msdyn_workorder: { msdyn_city: "Sydney" },
         },
 
-        // Case 3: Starts before leave, ends inside (Resource 1)
-        {
-          msdyn_bookingdate: "2025-08-28T00:00:00Z",
-          msdyn_bookingsetup: { msdyn_estimatedduration: 180 },
-          _msdyn_resource_value: "b3141cf1-91e1-ee11-904c-000d3aca6924",
-          msdyn_agreementbookingdateid: "event3",
-          msdyn_name: "E3",
-          msdyn_resource: { name: "Rafael Santana" },
-          msdyn_status: 285930015,
-          msdyn_workorder: { msdyn_city: "Sydney" },
-        },
+        // // Case 3: Starts before leave, ends inside (Resource 1)
+        // {
+        //   msdyn_bookingdate: "2025-08-28T00:00:00Z",
+        //   msdyn_bookingsetup: { msdyn_estimatedduration: 180 },
+        //   _msdyn_resource_value: "b3141cf1-91e1-ee11-904c-000d3aca6924",
+        //   msdyn_agreementbookingdateid: "event3",
+        //   msdyn_name: "E3",
+        //   msdyn_resource: { name: "Rafael Santana" },
+        //   msdyn_status: 285930015,
+        //   msdyn_workorder: { msdyn_city: "Sydney" },
+        // },
 
-        // Case 4: Spans entire leave (Resource 1)
-        {
-          msdyn_bookingdate: "2025-08-28T00:00:00Z",
-          msdyn_bookingsetup: { msdyn_estimatedduration: 80 },
-          _msdyn_resource_value: "b3141cf1-91e1-ee11-904c-000d3aca6924",
-          msdyn_agreementbookingdateid: "event4",
-          msdyn_name: "E4",
-          msdyn_resource: { name: "Rafael Santana" },
-          msdyn_status: 285930015,
-          msdyn_workorder: { msdyn_city: "Sydney" },
-        },
+        // // Case 4: Spans entire leave (Resource 1)
+        // {
+        //   msdyn_bookingdate: "2025-08-28T00:00:00Z",
+        //   msdyn_bookingsetup: { msdyn_estimatedduration: 80 },
+        //   _msdyn_resource_value: "b3141cf1-91e1-ee11-904c-000d3aca6924",
+        //   msdyn_agreementbookingdateid: "event4",
+        //   msdyn_name: "E4",
+        //   msdyn_resource: { name: "Rafael Santana" },
+        //   msdyn_status: 285930015,
+        //   msdyn_workorder: { msdyn_city: "Sydney" },
+        // },
 
-        // Case 5: 10-minute event inside leave (Resource 1)
-        {
-          msdyn_bookingdate: "2025-08-28T13:50:00Z",
-          msdyn_bookingsetup: { msdyn_estimatedduration: 10 },
-          _msdyn_resource_value: "b3141cf1-91e1-ee11-904c-000d3aca6924",
-          msdyn_agreementbookingdateid: "event5",
-          msdyn_name: "E5",
-          msdyn_resource: { name: "Rafael Santana" },
-          msdyn_status: 285930015,
-          msdyn_workorder: { msdyn_city: "Sydney" },
-        },
+        // // Case 5: 10-minute event inside leave (Resource 1)
+        // {
+        //   msdyn_bookingdate: "2025-08-28T13:50:00Z",
+        //   msdyn_bookingsetup: { msdyn_estimatedduration: 10 },
+        //   _msdyn_resource_value: "b3141cf1-91e1-ee11-904c-000d3aca6924",
+        //   msdyn_agreementbookingdateid: "event5",
+        //   msdyn_name: "E5",
+        //   msdyn_resource: { name: "Rafael Santana" },
+        //   msdyn_status: 285930015,
+        //   msdyn_workorder: { msdyn_city: "Sydney" },
+        // },
 
-        // Case 6: Event before leave (Resource 1)
-        {
-          msdyn_bookingdate: "2025-08-27T17:00:00Z",
-          msdyn_bookingsetup: { msdyn_estimatedduration: 180 },
-          _msdyn_resource_value: "b3141cf1-91e1-ee11-904c-000d3aca6924",
-          msdyn_agreementbookingdateid: "event6",
-          msdyn_name: "E6",
-          msdyn_resource: { name: "Rafael Santana" },
-          msdyn_status: 285930015,
-          msdyn_workorder: { msdyn_city: "Sydney" },
-        },
+        // // Case 6: Event before leave (Resource 1)
+        // {
+        //   msdyn_bookingdate: "2025-08-27T17:00:00Z",
+        //   msdyn_bookingsetup: { msdyn_estimatedduration: 180 },
+        //   _msdyn_resource_value: "b3141cf1-91e1-ee11-904c-000d3aca6924",
+        //   msdyn_agreementbookingdateid: "event6",
+        //   msdyn_name: "E6",
+        //   msdyn_resource: { name: "Rafael Santana" },
+        //   msdyn_status: 285930015,
+        //   msdyn_workorder: { msdyn_city: "Sydney" },
+        // },
 
-        // Case 7: Event after leave (Resource 1)
-        {
-          msdyn_bookingdate: "2025-08-30T08:00:00Z",
-          msdyn_bookingsetup: { msdyn_estimatedduration: 60 },
-          _msdyn_resource_value: "b3141cf1-91e1-ee11-904c-000d3aca6924",
-          msdyn_agreementbookingdateid: "event7",
-          msdyn_name: "E7",
-          msdyn_resource: { name: "Rafael Santana" },
-          msdyn_status: 285930015,
-          msdyn_workorder: { msdyn_city: "Sydney" },
-        },
+        // // Case 7: Event after leave (Resource 1)
+        // {
+        //   msdyn_bookingdate: "2025-08-30T08:00:00Z",
+        //   msdyn_bookingsetup: { msdyn_estimatedduration: 60 },
+        //   _msdyn_resource_value: "b3141cf1-91e1-ee11-904c-000d3aca6924",
+        //   msdyn_agreementbookingdateid: "event7",
+        //   msdyn_name: "E7",
+        //   msdyn_resource: { name: "Rafael Santana" },
+        //   msdyn_status: 285930015,
+        //   msdyn_workorder: { msdyn_city: "Sydney" },
+        // },
 
-        // Case 8: Event starts at exact leave start (Resource 2)
-        {
-          msdyn_bookingdate: "2025-08-27T00:00:00Z",
-          msdyn_bookingsetup: { msdyn_estimatedduration: 120 },
-          _msdyn_resource_value: "aaa1234f-22e1-ee11-904c-000d3aca1234",
-          msdyn_agreementbookingdateid: "event8",
-          msdyn_name: "E8",
-          msdyn_resource: { name: "Janet Black" },
-          msdyn_status: 285930015,
-          msdyn_workorder: { msdyn_city: "Canberra" },
-        },
+        // // Case 8: Event starts at exact leave start (Resource 2)
+        // {
+        //   msdyn_bookingdate: "2025-08-27T00:00:00Z",
+        //   msdyn_bookingsetup: { msdyn_estimatedduration: 120 },
+        //   _msdyn_resource_value: "aaa1234f-22e1-ee11-904c-000d3aca1234",
+        //   msdyn_agreementbookingdateid: "event8",
+        //   msdyn_name: "E8",
+        //   msdyn_resource: { name: "Janet Black" },
+        //   msdyn_status: 285930015,
+        //   msdyn_workorder: { msdyn_city: "Canberra" },
+        // },
 
-        // Case 9: Event ends at exact leave end (Resource 2)
-        {
-          msdyn_bookingdate: "2025-08-29T22:00:00Z",
-          msdyn_bookingsetup: { msdyn_estimatedduration: 120 },
-          _msdyn_resource_value: "aaa1234f-22e1-ee11-904c-000d3aca1234",
-          msdyn_agreementbookingdateid: "event9",
-          msdyn_name: "E9",
-          msdyn_resource: { name: "Janet Black" },
-          msdyn_status: 285930015,
-          msdyn_workorder: { msdyn_city: "Canberra" },
-        },
+        // // Case 9: Event ends at exact leave end (Resource 2)
+        // {
+        //   msdyn_bookingdate: "2025-08-29T22:00:00Z",
+        //   msdyn_bookingsetup: { msdyn_estimatedduration: 120 },
+        //   _msdyn_resource_value: "aaa1234f-22e1-ee11-904c-000d3aca1234",
+        //   msdyn_agreementbookingdateid: "event9",
+        //   msdyn_name: "E9",
+        //   msdyn_resource: { name: "Janet Black" },
+        //   msdyn_status: 285930015,
+        //   msdyn_workorder: { msdyn_city: "Canberra" },
+        // },
       ],
     });
   });
@@ -3239,6 +3303,7 @@ function getAgreementBookingDatesBetween() {
 function handleEventFetch() {
   getAgreementBookingDatesBetween()
     .then((response) => {
+      console.log("responce of event", response)
       // Create a Set of valid resource IDs from resourceData
 
       // Map CRM response to calendar events, only including events with valid resourceId
@@ -3247,7 +3312,12 @@ function handleEventFetch() {
         690970001: "Processed",
         690970002: "Canceled",
       };
+
+
       const mappedEvents = response.entities.map((event) => {
+
+
+        console.log("event?.msdyn_bookingsetup?._ang_incidenttype_value", event?.msdyn_bookingsetup?._ang_incidenttype_value)
         // Parse start date
         const startDate = new Date(event.msdyn_bookingdate);
         // Calculate end date by adding estimated duration (in minutes)
@@ -3268,6 +3338,8 @@ function handleEventFetch() {
         ]
           .filter((part) => part)
           .join(", ");
+
+
         return {
           resourceId: event?._msdyn_resource_value,
           start: startDate,
@@ -3285,14 +3357,15 @@ function handleEventFetch() {
             employeeName: event?.msdyn_resource?.name || "N/A",
             address: addressParts,
             suburb: event?.msdyn_workorder?.msdyn_city || "N/A",
-            serviceType:
-              event?.msdyn_bookingsetup?._ang_incidenttype_value ||
-              "Care Worker",
+            // serviceType:
+            //   event?.msdyn_bookingsetup?._ang_incidenttype_value ||
+            //   "Care Worker",
 
             bookingStatus: statusMap[event?.msdyn_status] || "Unknown",
             region: event?.msdyn_workorder?._msdyn_serviceterritory_value,
             agreementBookingSetupId:
               event?.msdyn_bookingsetup?.msdyn_agreementbookingsetupid,
+            service_id: event?.msdyn_bookingsetup?._ang_incidenttype_value,
           },
         };
       });
@@ -3328,6 +3401,7 @@ window.addEventListener("DOMContentLoaded", function () {
 
   loadHolidayDates().then(() => {
     loadWorkOrderStatus();
+    mapServiceType();
     createCalendar(); // now holidayDates is ready
 
     // the rest of your init calls
@@ -3391,6 +3465,9 @@ window.addEventListener("DOMContentLoaded", function () {
 
   let hideTimer;
   let activeTooltip = null;
+
+
+
 
   // Show tooltip on event box hover
   $(document).on('mouseenter', '.event-disp-container', function () {
