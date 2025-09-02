@@ -12,6 +12,9 @@ let filterState = {
 let eventData = [];
 let resourceData = [];
 let currentTab = "init";
+let holidayDates = [];
+
+let workOrderStatusMap = {};
 
 let filterStatus = {
   isLoading: false,
@@ -1075,7 +1078,13 @@ function chnageActivetab() {
     leaveTabBtn.children[0].classList.add("active-tab-btn");
     initalTabBtn.children[0].classList.remove("active-tab-btn");
     currentTab = "leave";
-    handleGetResorces(getTimeOffRequests, mapOverLeaveData);
+    // handleGetResorces(getTimeOffRequests, mapOverLeaveData);
+    handleGetResorces(getBookableResources, mapOverIntialData)
+      .then(() => handleGetTimeoffWithoutSet(getTimeOffRequests, mapOverLeaveData))
+      .then((res) => {
+        console.log("resss111", res);
+        calculateLookupData(res);
+      })
     resetFilters();
   });
 }
@@ -1187,8 +1196,9 @@ function renderTooltipContent(arg) {
 }
 
 function renderStatusIcon(status) {
+  console.log("statusss", status);
   const icon = {
-    Processed: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" color="#4F7AB3">
+    690970000: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" color="#4F7AB3">
                 <path
                     d="M15.3437 4.84375L16.5937 3.40625C16.8437 3.125 16.8125 2.65625 16.5313 2.40625C16.1875 2.15625 15.75 2.1875 15.5 2.5L14.1875 4.0625C13.1563 3.46875 11.9687 3.0625 10.7187 2.96875V1.9375H12.7188C13.0938 1.9375 13.4063 1.625 13.4063 1.25C13.4063 0.875 13.0938 0.5625 12.7188 0.5625H7.3125C6.9375 0.5625 6.625 0.875 6.625 1.25C6.625 1.625 6.9375 1.9375 7.3125 1.9375H9.3125V2.9375C5.0625 3.28125 1.71875 6.84375 1.71875 11.1875C1.71875 15.75 5.4375 19.4688 10 19.4688C14.5625 19.4688 18.2812 15.75 18.2812 11.1875C18.2812 8.65625 17.125 6.375 15.3437 4.84375ZM10 18.0625C6.21875 18.0625 3.125 14.9688 3.125 11.1875C3.125 7.40625 6.21875 4.3125 10 4.3125C13.7813 4.3125 16.875 7.40625 16.875 11.1875C16.875 14.9688 13.7813 18.0625 10 18.0625Z"
                     fill="currentColor" />
@@ -1196,7 +1206,7 @@ function renderStatusIcon(status) {
                     d="M10.6875 11.0625V7.4375C10.6875 7.0625 10.375 6.75 10 6.75C9.625 6.75 9.3125 7.0625 9.3125 7.4375V11.3437C9.3125 11.5312 9.375 11.7188 9.53125 11.8438L11.8438 14.1562C11.9688 14.2812 12.1563 14.375 12.3438 14.375C12.5313 14.375 12.7188 14.3125 12.8438 14.1562C13.125 13.875 13.125 13.4375 12.8438 13.1562L10.6875 11.0625Z"
                     fill="currentColor" />
             </svg>`,
-    Canceled: `<svg xmlns="http://www.w3.org/2000/svg" fill="#FA5252" viewBox="0 0 50 50" width="20px" height="20px">
+    690970001: `<svg xmlns="http://www.w3.org/2000/svg" fill="#FA5252" viewBox="0 0 50 50" width="20px" height="20px">
                   <path d="M 25 2 C 12.309534 2 2 12.309534 2 25 C 2 37.690466 12.309534 48 25 48 C 37.690466 48 48 37.690466 48 25 C 48 12.309534 37.690466 2 25 2 z M 25 4 C 36.609534 4 46 13.390466 46 25 C 46 36.609534 36.609534 46 25 46 C 13.390466 46 4 36.609534 4 25 C 4 13.390466 13.390466 4 25 4 z M 32.990234 15.986328 A 1.0001 1.0001 0 0 0 32.292969 16.292969 L 25 23.585938 L 17.707031 16.292969 A 1.0001 1.0001 0 0 0 16.990234 15.990234 A 1.0001 1.0001 0 0 0 16.292969 17.707031 L 23.585938 25 L 16.292969 32.292969 A 1.0001 1.0001 0 1 0 17.707031 33.707031 L 25 26.414062 L 32.292969 33.707031 A 1.0001 1.0001 0 1 0 33.707031 32.292969 L 26.414062 25 L 33.707031 17.707031 A 1.0001 1.0001 0 0 0 32.990234 15.986328 z"/>
                 </svg>`,
     unscheduled: null,
@@ -1350,7 +1360,10 @@ function formatEventTime(date) {
 // }
 
 function renderEventDetails(arg) {
-  console.log("args", arg);
+
+
+  let id = arg.event.resourceIds[0].toString();
+  console.log("args", workOrderStatusMap[arg?.event.resourceIds[0]] || "empty");
   const start = new Date(arg.event.start);
   const end = new Date(arg.event.end);
   const diffMs = end - start;
@@ -1387,9 +1400,10 @@ function renderEventDetails(arg) {
         <div class="event-disp">
             <p>${arg?.event?.extendedProps?.employeeName
       }</p> <!-- Display first name and last name -->
-            <p>${arg.event.extendedProps.suburb || "N/A"
+            <p>${arg?.event.extendedProps.suburb || "N/A"
       }</p> <!-- Display suburb -->
             <!-- Display type of service -->
+             <p>${arg?.event?.extendedProps?.serviceType || "N/A"}
             <p>${formatEventTime(start)} - ${arg.event.extendedProps.duration
       }</p> <!-- Display formatted start time -->
              
@@ -1397,18 +1411,13 @@ function renderEventDetails(arg) {
              <!-- Display duration -->
         </div>
         <div class="event-disp-icon">
-       
-            ${renderStatusIcon(arg.event.extendedProps.bookingStatus)}
+      
+            ${renderStatusIcon(workOrderStatusMap[arg?.event.resourceIds[0]])}
         </div>
       </div>
     `,
   };
 }
-
-
-
-
-
 
 function renderResources(info) {
   const resource = info?.resource;
@@ -1834,6 +1843,7 @@ function refreshCalendarUI() {
 }
 
 function createCalendar() {
+  console.log("holidays dates", holidayDates)
   const ecEl = document.getElementById("ec");
 
   if (!ecEl || typeof EventCalendar === "undefined") {
@@ -1842,6 +1852,8 @@ function createCalendar() {
   }
 
   const ec = EventCalendar.create(ecEl, {
+
+
     view: "resourceTimelineDay",
     initialView: "resourceTimelineDay",
     slotWidth: "220", //249
@@ -1852,12 +1864,14 @@ function createCalendar() {
     durationEditable: false,
     eventStartEditable: false,
     slotEventOverlap: true,
-    highlightedDates: ['2025-09-01', '2025-09-03', '2025-09-07'],
+    highlightedDates: holidayDates,
+
+
 
     dayHeaderFormat: parseDate,
     eventContent: renderEventDetails,
     resourceLabelContent: renderResources,
-    viewDidMount: renderSearch,
+    viewDidMount: resizableBar,
     eventAllUpdated: refreshCalendarUI,
     datesSet: handleEventFetch,
 
@@ -1865,6 +1879,40 @@ function createCalendar() {
     slotMaxTime: "24:00:00",
   });
   window.ecCalendar = ec;
+}
+
+
+function resizableBar() {
+  renderSearch();
+  const sidebar = document.querySelector(".ec-sidebar");
+
+  if (sidebar && !sidebar.querySelector(".drag-resize")) {
+    const resizer = document.createElement("div");
+    resizer.classList.add("drag-resize");
+    sidebar.appendChild(resizer);
+
+    resizer.addEventListener("mousedown", function (e) {
+      e.preventDefault();
+      const startX = e.clientX;
+      const startWidth = sidebar.offsetWidth;
+
+      function onMouseMove(e) {
+        const newWidth = startWidth + (e.clientX - startX);
+        if (newWidth >= 260 && newWidth <= 440) {
+          sidebar.style.width = newWidth + "px";
+        }
+      }
+
+      function onMouseUp() {
+        window.removeEventListener("mousemove", onMouseMove);
+        window.removeEventListener("mouseup", onMouseUp);
+      }
+
+      window.addEventListener("mousemove", onMouseMove);
+      window.addEventListener("mouseup", onMouseUp);
+    });
+  }
+
 }
 
 // function getTerritory() {
@@ -1983,9 +2031,6 @@ function renderDropdowns() {
 // }
 
 function handleGetTimeoffWithoutSet(getResources, mapResources) {
-  // const requestToken = ++currentRequestToken; // Create a unique token for this call
-
-
 
   return getResources()
     .then((response) => {
@@ -2001,11 +2046,85 @@ function handleGetTimeoffWithoutSet(getResources, mapResources) {
         { id: "error", title: "Error loading resources" },
       ]);
     })
-    .finally(() => {
 
-      refreshCalendarUI();
+}
 
-    });
+function handlegetIcon() {
+  return new Promise((resolve, reject) => {
+    resolve(
+      {
+        entities: [
+          {
+            "@odata.etag": "W/\"549345635\"",
+            "msdyn_workorderid": "b3141cf1-91e1-ee11-904c-000d3aca6924",
+            "msdyn_systemstatus": 690970000
+          },
+          {
+            "@odata.etag": "W/\"549345635\"",
+            "msdyn_workorderid": "f688a720-78a1-ef11-8a6a-000d3a6a01ab",
+            "msdyn_systemstatus": 690970001
+          },
+          {
+            "@odata.etag": "W/\"570491269\"",
+            "msdyn_workorderid": "4c092942-43e4-ef11-be1f-000d3a6a0461",
+            "msdyn_systemstatus": 690970001
+          },
+          {
+            "@odata.etag": "W/\"565506384\"",
+            "msdyn_workorderid": "ab89bd90-c657-f011-bec1-000d3a6a18d4",
+            "msdyn_systemstatus": 690970001
+          },
+          {
+            "@odata.etag": "W/\"570372743\"",
+            "msdyn_workorderid": "9f478cae-8f58-f011-bec1-000d3a6a18d4",
+            "msdyn_systemstatus": 690970001
+          },
+          {
+            "@odata.etag": "W/\"565586088\"",
+            "msdyn_workorderid": "2bc184b4-8f58-f011-bec1-000d3a6a18d4",
+            "msdyn_systemstatus": 690970001
+          },
+          {
+            "@odata.etag": "W/\"565583562\"",
+            "msdyn_workorderid": "2fc184b4-8f58-f011-bec1-000d3a6a18d4",
+            "msdyn_systemstatus": 690970000
+          },
+          {
+            "@odata.etag": "W/\"565585586\"",
+            "msdyn_workorderid": "3cc184b4-8f58-f011-bec1-000d3a6a18d4",
+            "msdyn_systemstatus": 690970000
+          },
+          {
+            "@odata.etag": "W/\"565584232\"",
+            "msdyn_workorderid": "43c184b4-8f58-f011-bec1-000d3a6a18d4",
+            "msdyn_systemstatus": 690970001
+          },
+          {
+            "@odata.etag": "W/\"565584259\"",
+            "msdyn_workorderid": "45c184b4-8f58-f011-bec1-000d3a6a18d4",
+            "msdyn_systemstatus": 690970001
+          },
+          {
+            "@odata.etag": "W/\"565583818\"",
+            "msdyn_workorderid": "4ac184b4-8f58-f011-bec1-000d3a6a18d4",
+            "msdyn_systemstatus": 690970001
+          },
+        ]
+      }
+    )
+  })
+}
+
+function loadWorkOrderStatus() {
+  return handlegetIcon().then((data) => {
+    workOrderStatusMap = data.entities.reduce((acc, item) => {
+      acc[item.msdyn_workorderid] = item.msdyn_systemstatus;
+      return acc;
+    }, {});
+
+    console.log("work order", workOrderStatusMap);
+    return workOrderStatusMap;
+  });
 }
 
 function handleGetResorces(getResources, mapResources) {
@@ -2723,6 +2842,40 @@ function getBookableResources() {
   });
 }
 
+function getHolidays() {
+  return new Promise((resolve, reject) => {
+    resolve({
+      entities: [
+        {
+          "@odata.etag": "W/\"573300136\"",
+          "crce0_date": "2024-09-03T00:00:00Z",
+          "crce0_holidayname": "New Year's Day",
+          "crce0_ph_autoid": "4fe7f687-c405-ef11-9f89-000d3acb40a4"
+        },
+        {
+          "@odata.etag": "W/\"573300148\"",
+          "crce0_date": "2025-09-04T00:00:00Z",
+          "crce0_holidayname": "Easter Sunday",
+          "crce0_ph_autoid": "51e7f687-c405-ef11-9f89-000d3acb40a4"
+        },
+
+      ]
+    })
+  })
+}
+
+function loadHolidayDates() {
+  return getHolidays().then((data) => {
+    holidayDates = data.entities.map(
+      (holiday) => holiday.crce0_date.split("T")[0]
+    );
+
+    console.log("holidayysss", holidayDates);
+    return holidayDates;
+  });
+}
+
+
 function getTimeOffRequests() {
   return new Promise((resolve, reject) => {
     resolve({
@@ -3135,6 +3288,7 @@ function handleEventFetch() {
             serviceType:
               event?.msdyn_bookingsetup?._ang_incidenttype_value ||
               "Care Worker",
+
             bookingStatus: statusMap[event?.msdyn_status] || "Unknown",
             region: event?.msdyn_workorder?._msdyn_serviceterritory_value,
             agreementBookingSetupId:
@@ -3166,19 +3320,24 @@ function handleEventFetch() {
     });
 }
 
+
+
+
 // --- INIT ---
 window.addEventListener("DOMContentLoaded", function () {
-  console.log("heer1")
-  createCalendar();
-  // setIntialData();
-  // handleFilterFetch();
-  handleGetResorces(getBookableResources, mapOverIntialData);
-  // handleGetResorces(getTimeOffRequests, mapOverLeaveData);
-  handleEventFetch();
-  chnageActivetab();
-  currentTab = "init";
-  this.window.refreshCalendarUI = refreshCalendarUI;
-  this.window.handleEventFetch = handleEventFetch;
+
+  loadHolidayDates().then(() => {
+    loadWorkOrderStatus();
+    createCalendar(); // now holidayDates is ready
+
+    // the rest of your init calls
+    handleGetResorces(getBookableResources, mapOverIntialData);
+    handleEventFetch();
+    chnageActivetab();
+    currentTab = "init";
+    window.refreshCalendarUI = refreshCalendarUI;
+    window.handleEventFetch = handleEventFetch;
+  });
 
 
 
@@ -3231,12 +3390,21 @@ window.addEventListener("DOMContentLoaded", function () {
   // });
 
   let hideTimer;
+  let activeTooltip = null;
 
   // Show tooltip on event box hover
   $(document).on('mouseenter', '.event-disp-container', function () {
     clearTimeout(hideTimer);
+
+    // hide any previously active tooltip
+    if (activeTooltip && activeTooltip !== this) {
+      const oldTooltip = bootstrap.Tooltip.getInstance(activeTooltip);
+      if (oldTooltip) oldTooltip.hide();
+    }
+
     const tooltip = bootstrap.Tooltip.getInstance(this) || new bootstrap.Tooltip(this);
     tooltip.show();
+    activeTooltip = this; // update active tooltip
   });
 
   // Hide tooltip when leaving event box (with delay)
@@ -3244,11 +3412,12 @@ window.addEventListener("DOMContentLoaded", function () {
     const tooltipInstance = bootstrap.Tooltip.getInstance(this);
     if (tooltipInstance) {
       hideTimer = setTimeout(() => {
-        const tooltipEl = document.querySelector('.tooltip');
-        if (!tooltipEl || !tooltipEl.matches(':hover')) {
+        const tooltipEl = document.querySelector('.tooltip:hover');
+        if (!tooltipEl) {
           tooltipInstance.hide();
+          if (activeTooltip === this) activeTooltip = null; // clear tracker
         }
-      }, 200);
+      }, 100);
     }
   });
 
@@ -3268,8 +3437,11 @@ window.addEventListener("DOMContentLoaded", function () {
           if (tooltip) tooltip.hide();
         }
       });
-    }, 200);
+      activeTooltip = null; // reset tracker
+    }, 100);
   });
+
+
 });
 
 
@@ -3347,21 +3519,22 @@ const refreshBtn = document.getElementById('refresh-btn');
 
 refreshBtn.addEventListener("click", (el) => {
   if (currentTab === "init") {
-    console.log("inn init");
     handleGetResorces(getBookableResources, mapOverIntialData)
       .then(() => handleEventFetch())
       .then(() => reRenderEvents());
   } else if (currentTab === "leave") {
-
-    console.log("in leave");
     handleGetResorces(getBookableResources, mapOverIntialData)
       .then(() => handleGetTimeoffWithoutSet(getTimeOffRequests, mapOverLeaveData))
       .then((res) => {
-        console.log("resss111", res);
+
         calculateLookupData(res)
       })
       .then(() => handleEventFetch())
       .then(() => reRenderEvents());
   }
 })
+
+
+
+
 

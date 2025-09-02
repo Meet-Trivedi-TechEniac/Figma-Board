@@ -860,7 +860,7 @@ select:focus>option:hover {
 
 .ec-highlight {
     background-color: #edcaee !important;
-    /* Example yellow */
+   
 }
 
 /* .ec-highlight {
@@ -870,3 +870,27 @@ select:focus>option:hover {
 /* .popover {
     pointer-events: auto;
 } */
+
+.ec-sidebar {
+    position: relative;
+    min-width: 150px;
+    max-width: 540px;
+    width: fit-content;
+    overflow: auto;
+    float: left;
+}
+
+/* If you remove this go to 538 and applay border  */
+/*  TO This class   .ec-timeline .ec-sidebar .ec-resource   */
+.drag-resize {
+    position: absolute;
+    background-color: var(--border-color) !important;
+    top: 0;
+    right: 0;
+    width: 4px;
+    height: 100%;
+    cursor: ew-resize;
+    z-index: 10;
+    background-color: transparent;
+    /* or rgba(0,0,0,0.05) for visibility */
+}
